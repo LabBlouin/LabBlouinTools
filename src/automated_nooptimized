@@ -1,0 +1,21 @@
+## Template for modeller input file for
+## automated homology modeling to be carried out.
+
+from modeller import *
+from modeller.automodel import *
+
+env = environ()
+
+# directories for input atom files
+env.io.atom_files_directory = '%(template_folder)s'
+
+
+a = automodel(env, alnfile='%(f_pir)s',
+              knowns=( %(knowns_py)s ),
+              sequence='%(target_id)s')
+
+a.md_level = None
+a.starting_model = %(starting_model)i
+a.ending_model = %(ending_model)i
+a.make()
+

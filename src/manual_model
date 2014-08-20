@@ -1,0 +1,20 @@
+## Template for modeller input file for
+## manual homology modeling to be carried out.
+
+from modeller import *
+from modeller.automodel import *
+
+env = environ()
+
+# directories for input atom files
+env.io.atom_files_directory = '@@PDBDIR@@'
+
+
+a = automodel(env, alnfile='@@ALNFILE@@',
+	knowns=(@@KNOWN@@), sequence='@@SEQUENCE@@')
+
+a.auto_align()
+a.md_level = None
+a.starting_model = 1
+a.ending_model = 1
+a.make()
