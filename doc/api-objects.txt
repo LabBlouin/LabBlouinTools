@@ -182,11 +182,15 @@ src.PDBnet.PDBchain.pop	src.PDBnet.PDBchain-class.html#pop
 src.PDBnet.PDBchain.GetResidueByIndex	src.PDBnet.PDBchain-class.html#GetResidueByIndex
 src.PDBnet.PDBmodel.__init__	src.PDBnet.PDBmodel-class.html#__init__
 src.PDBnet.PDBchain.WriteAsPDB	src.PDBnet.PDBchain-class.html#WriteAsPDB
+src.PDBnet.PDBmodel.GetChainNames	src.PDBnet.PDBmodel-class.html#GetChainNames
 src.PDBnet.PDBchain.GetPrimaryPropertiesFromBioPython	src.PDBnet.PDBchain-class.html#GetPrimaryPropertiesFromBioPython
+src.PDBnet.PDBmodel.GetChain	src.PDBnet.PDBmodel-class.html#GetChain
 src.PDBnet.PDBchain.__len__	src.PDBnet.PDBchain-class.html#__len__
 src.PDBnet.PDBchain.__getitem__	src.PDBnet.PDBchain-class.html#__getitem__
+src.PDBnet.PDBmodel.GetChainByName	src.PDBnet.PDBmodel-class.html#GetChainByName
 src.PDBnet.PDBchain.update	src.PDBnet.PDBchain-class.html#update
 src.PDBnet.PDBchain.__iter__	src.PDBnet.PDBchain-class.html#__iter__
+src.PDBnet.PDBmodel.AddChain	src.PDBnet.PDBmodel-class.html#AddChain
 src.PDBnet.PDBchain.SortByNumericalIndices	src.PDBnet.PDBchain-class.html#SortByNumericalIndices
 src.PDBnet.PDBmodel.AddResidue	src.PDBnet.PDBmodel-class.html#AddResidue
 src.PDBnet.PDBchain.GetIndices	src.PDBnet.PDBchain-class.html#GetIndices

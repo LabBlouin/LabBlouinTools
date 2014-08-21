@@ -64,9 +64,13 @@
 <h1 class="epydoc">Class PDBmodel</h1><p class="nomargin-top"><span class="codelink"><a href="src.PDBnet-pysrc.html#PDBmodel">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_src_pdbn_2" name="uml_class_diagram_for_src_pdbn_2">
-<area shape="rect" id="node2" href="src.PDBnet.PDBmodel-class.html#__init__" title="Construct a PDB model (a specific kind of chain)." alt="" coords="72,321,216,340"/>
-<area shape="rect" id="node2" href="src.PDBnet.PDBmodel-class.html#AddResidue" title="Add a residue to this model." alt="" coords="72,340,216,359"/>
-<area shape="rect" id="node1" href="src.PDBnet.PDBmodel-class.html" title="src.PDBnet.PDBmodel" alt="" coords="60,289,228,365"/>
+<area shape="rect" id="node2" href="src.PDBnet.PDBmodel-class.html#__init__" title="Construct a PDB model (a specific kind of chain)." alt="" coords="52,321,235,340"/>
+<area shape="rect" id="node2" href="src.PDBnet.PDBmodel-class.html#GetChain" title="src.PDBnet.PDBmodel.GetChain" alt="" coords="52,340,235,359"/>
+<area shape="rect" id="node2" href="src.PDBnet.PDBmodel-class.html#GetChainByName" title="src.PDBnet.PDBmodel.GetChainByName" alt="" coords="52,359,235,377"/>
+<area shape="rect" id="node2" href="src.PDBnet.PDBmodel-class.html#GetChainNames" title="src.PDBnet.PDBmodel.GetChainNames" alt="" coords="52,377,235,396"/>
+<area shape="rect" id="node2" href="src.PDBnet.PDBmodel-class.html#AddChain" title="Add a PDBchain (chain) to this model." alt="" coords="52,396,235,415"/>
+<area shape="rect" id="node2" href="src.PDBnet.PDBmodel-class.html#AddResidue" title="Add a residue to this model." alt="" coords="52,415,235,433"/>
+<area shape="rect" id="node1" href="src.PDBnet.PDBmodel-class.html" title="src.PDBnet.PDBmodel" alt="" coords="40,289,245,439"/>
 <area shape="rect" id="node3" href="src.PDBnet.PDBchain-class.html#GetResidueByIndex" title="src.PDBnet.PDBchain.GetResidueByIndex" alt="" coords="17,39,269,57"/>
 <area shape="rect" id="node3" href="src.PDBnet.PDBchain-class.html#GetIndices" title="src.PDBnet.PDBchain.GetIndices" alt="" coords="17,57,269,76"/>
 <area shape="rect" id="node3" href="src.PDBnet.PDBchain-class.html#RemoveResidue" title="Remove a residue from this chain." alt="" coords="17,76,269,95"/>
@@ -113,6 +117,74 @@
       Construct a PDB model (a specific kind of chain).</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBmodel.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetChain"></a><span class="summary-sig-name">GetChain</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBmodel.GetChain">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetChainByName"></a><span class="summary-sig-name">GetChainByName</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBmodel.GetChainByName">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetChainNames"></a><span class="summary-sig-name">GetChainNames</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBmodel.GetChainNames">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="AddChain"></a><span class="summary-sig-name">AddChain</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">chain</span>)</span><br />
+      Add a PDBchain (chain) to this model.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBmodel.AddChain">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -293,7 +365,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Aug 20 13:03:13 2014
+    Generated by Epydoc 3.0.1 on Thu Aug 21 15:54:09 2014
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

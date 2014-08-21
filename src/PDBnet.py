@@ -258,7 +258,7 @@ class PDBchain(object):
         ''' Sort all internal items by a numerical index. '''
         
         self.residues = sorted(self.residues,key=lambda d: int(d.index))
-        self.indices  = sorted(self.indices,key=lambda d: int(d))
+        self.indices  = sorted(self.indices, key=lambda d: int(d))
 
     def pop(self,s):
         
@@ -294,6 +294,22 @@ class PDBmodel(PDBchain):
         ''' Construct a PDB model (a specific kind of chain). '''
         
         super(PDBmodel,self).__init__(name)
+        self.chains = []
+
+    def GetChain(self,name):
+        return self.GetChainByName(name)
+        
+    def GetChainByName(self,name):
+        for x in self.chains:
+            if x.name == name: return x
+
+    def GetChainNames(self): return [x.name for x in self.chains]
+
+    def AddChain(self,chain):
+        
+        ''' Add a PDBchain (chain) to this model. '''
+
+        self.chains.append(chain)
 
     def AddResidue(self,resid):
         
@@ -485,7 +501,9 @@ class PDBstructure:
                     model = int(line.strip().split()[-1])
                     isModel = True
                     continue
-                elif line.startswith('ATOM'): isModel = False
+                elif line.startswith('ENDMDL'):
+                    isModel = False
+                    continue
                 elif not line.startswith('ATOM'): continue
 
                 # Break the line into fields.
@@ -520,20 +538,29 @@ class PDBstructure:
                     if not model in self.models:
                         self.models[model] = PDBmodel(model)
                         self.orderofmodels.append(model)
+                    if chain != '' and not chain in self.GetModel(model).GetChainNames():
+                        # Is a MODEL and also has a chain.
+                        self.GetModel(model).AddChain(PDBchain(chain))
 
                 # Create chain instance if needed
-                if not chain in self.chains:
-                    self.chains[chain] = PDBchain(chain)
-                    self.orderofchains.append(chain)
+                else:
+                    if not chain in self.chains:
+                        self.chains[chain] = PDBchain(chain)
+                        self.orderofchains.append(chain)
 
                 # Create residue instance if needed
                 if currentRes.index != residue:
                     currentRes = PDBresidue(residue,residue_id)
-                    if not isModel: self.AddResidueToChain(chain,currentRes)
-                    else: self.AddResidueToModel(model,currentRes)
+                    if not isModel:self.AddResidueToChain(chain,currentRes)
+                    else: 
+                        if chain != '':
+                            # Is a MODEL and also has a chain.
+                            self.GetModel(model).GetChainByName(chain).AddResidue(currentRes)
+                        self.AddResidueToModel(model,currentRes)
 
                 # Add atom to currentRes
-                currentRes.AddAtom(PDBatom(serial,atom_name, x, y, z,occupancy,temp,symbol,charge))
+                currentRes.AddAtom(PDBatom(
+                    serial,atom_name,x,y,z,occupancy,temp,symbol,charge))
 
         # Return if had warnings.
         return hadwarning
