@@ -229,11 +229,12 @@ src.PDBnet.PDBstructure.WriteContacts	src.PDBnet.PDBstructure-class.html#WriteCo
 src.PDBnet.PDBstructure.read	src.PDBnet.PDBstructure-class.html#read
 src.PDBnet.PDBstructure.ReadFile	src.PDBnet.PDBstructure-class.html#ReadFile
 src.PDBnet.PDBstructure.GetResidueAssociations	src.PDBnet.PDBstructure-class.html#GetResidueAssociations
-src.PDBnet.PDBstructure.IndexSeq	src.PDBnet.PDBstructure-class.html#IndexSeq
+src.PDBnet.PDBstructure.NewModel	src.PDBnet.PDBstructure-class.html#NewModel
 src.PDBnet.PDBstructure.WriteFile	src.PDBnet.PDBstructure-class.html#WriteFile
 src.PDBnet.PDBstructure.CheckComplete	src.PDBnet.PDBstructure-class.html#CheckComplete
 src.PDBnet.PDBstructure.tmscore	src.PDBnet.PDBstructure-class.html#tmscore
 src.PDBnet.PDBstructure.rmsd	src.PDBnet.PDBstructure-class.html#rmsd
+src.PDBnet.PDBstructure.IndexSeq	src.PDBnet.PDBstructure-class.html#IndexSeq
 src.PDBnet.PDBstructure.AddResidueToModel	src.PDBnet.PDBstructure-class.html#AddResidueToModel
 src.PDBnet.PDBstructure.rrmsd	src.PDBnet.PDBstructure-class.html#rrmsd
 src.PDBnet.PDBstructure.__len__	src.PDBnet.PDBstructure-class.html#__len__

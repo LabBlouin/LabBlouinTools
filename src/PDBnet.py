@@ -332,6 +332,7 @@ class PDBstructure:
         self.orderofchains = []
         self.models        = {}
         self.orderofmodels = []
+        self.filepath      = filein
         self.organism      = None
         self.taxid         = None
         self.mutation      = False
@@ -362,10 +363,18 @@ class PDBstructure:
 
     def NewChain(self,name):
         
-        ''' Construct and add a new chain by name to the PDB. '''
+        ''' Construct and add a new chain by name to the PDB. Returns the chain. '''
         
         p = PDBchain(name)
         self.AddChainToStructure(name,p)
+        return p
+    
+    def NewModel(self,name):
+        
+        ''' Construct and add a new model by name to the PDB. Returns the model. '''
+        
+        p = PDBmodel(name)
+        self.AddModelToStructure(name,p)
         return p
 
     def AddChainToStructure(self,chainname,chain):
@@ -545,18 +554,14 @@ class PDBstructure:
 
                 # populate model if MD
                 if isModel:
-                    if not model in self.models:
-                        self.models[model] = PDBmodel(model)
-                        self.orderofmodels.append(model)
+                    if not model in self.models: self.NewModel(model)
                     if chain != '' and not chain in self.GetModel(model).GetChainNames():
                         # Is a MODEL and also has a chain.
                         self.GetModel(model).AddChain(PDBchain(chain))
 
                 # Create chain instance if needed
                 else:
-                    if not chain in self.chains:
-                        self.chains[chain] = PDBchain(chain)
-                        self.orderofchains.append(chain)
+                    if not chain in self.chains: self.NewChain(chain)
 
                 # Create residue instance if needed
                 if currentRes.index != residue:
@@ -653,8 +658,11 @@ class PDBstructure:
     def tmscore(self,fasta,chains=None,ismodel=False):
 
         ''' Get the TMscore between two chains. Requires a 
-        FASTA alignment. '''
-        
+        FASTA alignment and a value for the length of the
+        native structure (e.g., for a pairwise alignment,
+        the length of the structure used as a reference
+        before alignment was done). '''
+
         if ismodel:
             orderofthings = self.orderofmodels
             things = self.models
@@ -668,13 +676,13 @@ class PDBstructure:
         mapng,masks,posvect = self.GetResidueAssociations(fasta,chains,ismodel)
 
         # Get the lengths of the respective chains.
-        chA,chB = mapng
-        inA     = mapng[chA]
-        leA,leB = len(masks[inA]),len(posvect)
+        chA,chB = mapng            # Chains associated with alignment.
+        leN     = len(things[chA]) # Length of the reference structure.
+        leT     = len(posvect)     # Number of aligned positions.
 
         # Calculate d_0 for this alignment.
         cuberoot = lambda d: d**(1./3)
-        d_0 = 1.24 * cuberoot(leA-15) - 1.8
+        d_0 = 1.24 * cuberoot(leN-15) - 1.8
 
         # Get the summation portion of the TMscore.
         sumportion = 0
@@ -691,7 +699,7 @@ class PDBstructure:
             sumportion += suminside
 
         # Return the TMscore.
-        return (1./leA) * sumportion
+        return (1./leN) * sumportion
 
     def gdt(self,fasta,chains=None,distcutoffs=[1,2,4,8],ismodel=False):
 
