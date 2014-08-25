@@ -277,6 +277,22 @@
       
     </td>
   </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_pymol"></a><span class="summary-sig-name">_pymol</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure._pymol">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
@@ -287,6 +303,22 @@
       View the structure in a Pymol window.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.view">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ViewStructure"></a><span class="summary-sig-name">ViewStructure</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.ViewStructure">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -446,14 +478,14 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="src.PDBnet.PDBstructure-class.html#getResidueAssociations" class="summary-sig-name">getResidueAssociations</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="src.PDBnet.PDBstructure-class.html#GetResidueAssociations" class="summary-sig-name">GetResidueAssociations</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">fasta</span>,
         <span class="summary-sig-arg">chains</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">ismodel</span>=<span class="summary-sig-default">False</span>)</span><br />
       Use an input FASTA file to determine associations between residues as
       they exist between 2+ chains.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.getResidueAssociations">source&nbsp;code</a></span>
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.GetResidueAssociations">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -593,6 +625,26 @@
       Store in residues the correct index to the fasta.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.IndexSeq">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetFASTAIndices"></a><span class="summary-sig-name">GetFASTAIndices</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">thing</span>,
+        <span class="summary-sig-arg">fst</span>)</span><br />
+      Given a PDBchain, find 1-to-1 correspondances between it and a FASTA 
+      sequence.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.GetFASTAIndices">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -855,20 +907,20 @@
   </dl>
 </td></tr></table>
 </div>
-<a name="getResidueAssociations"></a>
+<a name="GetResidueAssociations"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getResidueAssociations</span>(<span class="sig-arg">self</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GetResidueAssociations</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">fasta</span>,
         <span class="sig-arg">chains</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">ismodel</span>=<span class="sig-default">False</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.getResidueAssociations">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.GetResidueAssociations">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -989,7 +1041,8 @@
   </tr></table>
   
   <p>Store in residues the correct index to the fasta. Requires a 1-to-1 
-  correspondance at least a portion of the way through.</p>
+  correspondance at least a portion of the way through. Deprecated; use 
+  GetFASTAIndices().</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -1026,7 +1079,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Aug 21 15:54:09 2014
+    Generated by Epydoc 3.0.1 on Mon Aug 25 11:48:12 2014
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

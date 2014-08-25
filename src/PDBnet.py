@@ -203,9 +203,10 @@ class PDBchain(object):
         
         ''' Construct a PDB chain (collection of protein residues). '''
         
-        self.name = name
-        self.residues = []
-        self.indices  = []
+        self.name       = name
+        self.structure  = None
+        self.residues   = []
+        self.indices    = []
     
     def GetResidueByIndex(self,index): return self.__getitem__(index)
     def GetIndices(self): return [int(x) for x in self.indices]    
@@ -228,7 +229,7 @@ class PDBchain(object):
         
         ''' Use BioPython to populate this class with attributes. '''
         
-        props=PA(self.ChainAsFASTA(chain))
+        props=PA(self.AsFASTA())
         self.amino_acid_composition= props.get_amino_acids_percent()
         self.molecular_weight= props.molecular_weight()
         self.aromaticity= props.aromaticity()
@@ -236,6 +237,7 @@ class PDBchain(object):
         self.flexibility= props.flexibility()
         self.isoelectric_point=props.isoelectric_point()
         self.secondary_structure_fraction=props.secondary_structure_fraction()        
+        return props
 
     def AsFASTA(self):
         
@@ -375,6 +377,7 @@ class PDBstructure:
             raise AssertionError('Chain already exists in structure by that name!')
         self.chains[chainname] = chain
         self.orderofchains.append(chainname)
+        chain.structure = self
 
     def AddModelToStructure(self,modelname,model):
 
@@ -385,6 +388,7 @@ class PDBstructure:
             raise AssertionError('Model already exists in structure by that name!')
         self.models[modelname] = model
         self.orderofmodels.append(modelname)
+        model.structure = self
 
     def AddResidueToChain(self, chain, res):
         
@@ -422,13 +426,17 @@ class PDBstructure:
     
     # I/O Functionality.
     
+    def _pymol(self):
+        
+        # Start pymol if not started.
+        import pymol
+        pymol.finish_launching()        
+    
     def view(self):
         
         ''' View the structure in a Pymol window. Requires an installation of Pymol. '''
-    
-        # Start pymol if not started.
-        import pymol
-        pymol.finish_launching()
+        
+        self._pymol() 
         
         # Save this file temporarily.
         fh = tempf(delete=False)
@@ -438,6 +446,8 @@ class PDBstructure:
         # Put it in pymol.
         pymol.cmd.load(fh.name,'PDBnet')
     
+    def ViewStructure(self): self.view()    
+        
     def write(self,filename):
         
         ''' Alias to WriteFile(). '''
@@ -581,7 +591,7 @@ class PDBstructure:
 
     # Scoring Functionality
 
-    def getResidueAssociations(self,fasta,chains=None,ismodel=False):
+    def GetResidueAssociations(self,fasta,chains=None,ismodel=False):
 
         ''' Use an input FASTA file to determine associations
         between residues as they exist between 2+ chains. Returns
@@ -595,7 +605,6 @@ class PDBstructure:
             orderofthings = self.orderofchains
             things = self.chains
 
-        #if not chains: chains = self.orderofchains
         if not chains: chains = orderofthings
         chaininds = [orderofthings.index(x) for x in chains]  
         if len(chaininds) < 2:
@@ -604,16 +613,17 @@ class PDBstructure:
         fast = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
         seqs = fast.orderedSequences
         if len(things) != len(seqs):
-            raise IOError('FASTA set length not equal to PDB length.')        
+            raise IOError('FASTA set length not equal to PDB length.')
+        
         # Build a set of masks to represent the FASTA
         # sequence alignment as corresponding to the
         # PDB.
-        mapng = {} # Mapping between chain and sequence.
-        masks = {}
+        mapng = {} # Mapping between chain name and sequence index.
+        masks = {} # Mapping between residue and position.
         for n in chaininds:
             seq = seqs[n].sequence
             ch  = orderofthings[n]
-            match = self.IndexSeq(ch,seq,ismodel)
+            match = self.GetFASTAIndices(things[ch],seq)
             if not match: raise IOError(
                 'Seq %d could not map to the respective PDB chain' % (n))
             else: mapng[ch] = n
@@ -625,6 +635,7 @@ class PDBstructure:
                 if char.isalpha():
                     masks[n].append(relist.pop(0))
                 else: masks[n].append(None)
+                
         # Go through masks and determine what
         # positions are fully aligned.
         posvect = []
@@ -654,7 +665,7 @@ class PDBstructure:
         if not chains: chains = orderofthings
         if len(chains) != 2:
             raise ValueError('Need exactly two chains to score.')
-        mapng,masks,posvect = self.getResidueAssociations(fasta,chains,ismodel)
+        mapng,masks,posvect = self.GetResidueAssociations(fasta,chains,ismodel)
 
         # Get the lengths of the respective chains.
         chA,chB = mapng
@@ -699,7 +710,7 @@ class PDBstructure:
         if not chains: chains = orderofthings
         if len(chains) != 2:
             raise ValueError('Need exactly two chains to score.')
-        mapng,masks,posvect = self.getResidueAssociations(fasta,chains,ismodel)
+        mapng,masks,posvect = self.GetResidueAssociations(fasta,chains,ismodel)
 
         # Get the Euclidean distances between
         # all pairs of aligned positions.
@@ -742,7 +753,7 @@ class PDBstructure:
             orderofthings = self.orderofchains
             things = self.chains
 
-        mapng,masks,posvect = self.getResidueAssociations(fasta,chains,ismodel)
+        mapng,masks,posvect = self.GetResidueAssociations(fasta,chains,ismodel)
         # Get the Euclidean distance squared between
         # all pairs of aligned positions.
         distsqs = {}
@@ -864,26 +875,30 @@ class PDBstructure:
 
         ''' Store in residues the correct index to the fasta.
         Requires a 1-to-1 correspondance at least a portion
-        of the way through. '''
+        of the way through. Deprecated; use GetFASTAIndices(). '''
         
-        if ismodel:
-            chainseq = self.ModelAsFASTA(chain)
-            things = self.models
-        else:
-            chainseq = self.ChainAsFASTA(chain)
-            things = self.chains
+        if ismodel: thing = self.GetModel(chain)
+        else: thing = self.GetChain(chain)
             
+        return self.GetFASTAIndices(thing, fst)
+            
+    def GetFASTAIndices(self, thing, fst):
+
+        ''' Given a PDBchain, find 1-to-1 correspondances between
+        it and a FASTA sequence. '''
+        
+        chainseq = thing.AsFASTA()
         ungapped = fst.replace('-','')
         if len(ungapped) != len(chainseq): return False
         for i in xrange(0,len(chainseq)):
             # See if there is a failed correspondance.
             if chainseq[i] != ungapped[i]: return False
         index = -1
-        for i in things[chain]:
-            i = things[chain][i]
+        for i in thing:
+            i = thing[i]
             index = fst.find(aa[i.name],index+1)
             i.fstindex = index
-        return True
+        return True        
 
     def Contacts(self,chain='ALL',thres=4.5):
         
@@ -940,7 +955,7 @@ class PDBstructure:
 
         out = ''
         for chain in self.orderofchains:
-            out += '\n'.join([str(x) for x in self.chains[chain]])
+            out += '\n'.join([str(self.chains[chain][x]) for x in self.chains[chain]])
             out += '\n'
         return out
 
