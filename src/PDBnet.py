@@ -45,6 +45,8 @@ aa = {'ALA':'A','CYS':'C','ASP':'D','GLU':'E',
       'THR':'T','VAL':'V','TRP':'W','TYR':'Y',
       'UNK':'X'}
 
+aa_names = {v:k for k, v in aa.items()} # Flip above dictionary.
+
 aa_lists = {'ALA':['N','CA','C','O','CB'],\
             'CYS':['N','CA','C','O','CB','SG'],\
             'ASP':['N','CA','C','O','CB','CG','OD1','OD2'],\
@@ -169,7 +171,7 @@ class PDBresidue:
         self.centroid.parent = self
         return self.centroid
 
-    def inContactWith(self,other,thres=4.5):
+    def InContactWith(self,other,thres=4.5):
         
         ''' Determine if in contact with another residue. '''
         
@@ -252,7 +254,7 @@ class PDBchain(object):
         ''' Write this single chain to a file as a PDB. '''
         
         fh = open(filename,'w')
-        fh.write('\n'.join([str(self.residues[x]) for x in self.residues]))
+        fh.write('\n'.join([str(x) for x in self.residues]))
         fh.close()        
         
     def SortByNumericalIndices(self):
@@ -655,13 +657,16 @@ class PDBstructure:
 
         return mapng, masks, posvect
 
-    def tmscore(self,fasta,chains=None,ismodel=False):
+    def tmscore(self,fasta,chains=None,ismodel=False,native=None):
 
         ''' Get the TMscore between two chains. Requires a 
         FASTA alignment and a value for the length of the
         native structure (e.g., for a pairwise alignment,
         the length of the structure used as a reference
-        before alignment was done). '''
+        before alignment was done). The latter is computed
+        by assuming the first of both provided chains is the
+        native structure; otherwise, uses a provided chain
+        name (native input). '''
 
         if ismodel:
             orderofthings = self.orderofmodels
@@ -676,9 +681,10 @@ class PDBstructure:
         mapng,masks,posvect = self.GetResidueAssociations(fasta,chains,ismodel)
 
         # Get the lengths of the respective chains.
-        chA,chB = mapng            # Chains associated with alignment.
-        leN     = len(things[chA]) # Length of the reference structure.
-        leT     = len(posvect)     # Number of aligned positions.
+        chA,chB = mapng # Chains associated with alignment.
+        if native == None: leN = len(things[chA]) 
+        else: leN = len(things[native]) # Length of the reference structure.
+        leT     = len(posvect) # Number of aligned positions.
 
         # Calculate d_0 for this alignment.
         cuberoot = lambda d: d**(1./3)
@@ -807,8 +813,8 @@ class PDBstructure:
             L_N, e = len_struct-1, math.e
             return 0.42-0.05*L_N*e**(-L_N/4.7)+0.63*e**(-L_N/37)        
         
-        R_A = self.radiusOfGyration([chains[0]],ismodel)
-        R_B = self.radiusOfGyration([chains[1]],ismodel)
+        R_A = self.RadiusOfGyration([chains[0]],ismodel)
+        R_B = self.RadiusOfGyration([chains[1]],ismodel)
         avglen = (len(things[chains[0]])+
                   len(things[chains[1]]))/2
         c = getAverageCorrelationCoefficient(avglen)
@@ -818,7 +824,7 @@ class PDBstructure:
 
     # Other Functionality
 
-    def radiusOfGyration(self,chains=None,ismodel=False):
+    def RadiusOfGyration(self,chains=None,ismodel=False):
         
         ''' Acquire the radius of the gyration of the entire, or a portion of, the
         PDB protein molecule. '''
@@ -908,30 +914,35 @@ class PDBstructure:
             i.fstindex = index
         return True        
 
+    def flat(self):
+        
+        ''' Produce an iterator to allow one to iterate over all possible residues. '''
+        
+        for ch in self.chains:
+            for res in self.chains[ch]: yield self.chains[ch][res]   
+        for mo in self.models:
+            for res in self.models[mo]: yield self.models[mo][res]
+
     def Contacts(self,chain='ALL',thres=4.5):
         
-        ''' Compute the contact map of all chains or a chain. '''
-        
-        def flat():
-            ''' iterator over chains yielding residue'''
-            for ch in self.chains:
-                for res in self.chains[ch]: yield self.chains[ch][res]        
+        ''' Compute the contact map of all chains or a chain. '''     
         
         done = []
         if chain != 'ALL':
-            for resA in self.chains[chain]:
-                for resB in self.chains[chain]:
-                    resA,resB = self.chains[chain][resA],self.chains[chain][resB]
+            chain = self.GetChain(chain)
+            for rA in chain:
+                for rB in chain:
+                    resA,resB = chain[rA],chain[rB]
                     if resA == resB or (resA,resB) in done: continue  
-                    elif resA.inContactWith(resB,thres):
+                    elif resA.InContactWith(resB,thres):
                         if not (int(resA),int(resB)) in self.contactmap:
                             self.contactmap.append((int(resA),int(resB)))
                     done.append((resA,resB))
         else:
-            for resA in flat():
-                for resB in flat():
+            for resA in self.flat():
+                for resB in self.flat():
                     if resA == resB or (resA,resB) in done: continue 
-                    elif resA.inContactWith(resB,thres):
+                    elif resA.InContactWith(resB,thres):
                         A = resA.index+resA.chain
                         B = resB.index+resB.chain
                         if not (A,B) in self.contactmap:
@@ -948,6 +959,13 @@ class PDBstructure:
         fout.close()            
 
     # Internals
+
+    def __iter__(self):
+        
+        ''' Returns all PDBchains as an iterator. '''
+        
+        for ch in self.chains: yield self.chains[ch]
+        for mo in self.models: yield self.models[mo]
 
     def __len__(self):
 
@@ -967,7 +985,6 @@ class PDBstructure:
             out += '\n'
         return out
 
-
 if __name__ == "__main__":
     mystructure = PDBstructure(sys.argv[1])
     if len(sys.argv) > 2:
@@ -976,3 +993,5 @@ if __name__ == "__main__":
         print 'TMscore',mystructure.tmscore(sys.argv[2])
         print 'GDT',mystructure.gdt(sys.argv[2])
     x =  mystructure.GetAllCentroid('A')
+    mystructure.Contacts()
+    print mystructure.contactmap
