@@ -520,7 +520,8 @@
           <td><span class="summary-sig"><a href="src.PDBnet.PDBstructure-class.html#tmscore" class="summary-sig-name">tmscore</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">fasta</span>,
         <span class="summary-sig-arg">chains</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">ismodel</span>=<span class="summary-sig-default">False</span>)</span><br />
+        <span class="summary-sig-arg">ismodel</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">native</span>=<span class="summary-sig-default">None</span>)</span><br />
       Get the TMscore between two chains.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.tmscore">source&nbsp;code</a></span>
@@ -598,13 +599,13 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="radiusOfGyration"></a><span class="summary-sig-name">radiusOfGyration</span>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a name="RadiusOfGyration"></a><span class="summary-sig-name">RadiusOfGyration</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">chains</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">ismodel</span>=<span class="summary-sig-default">False</span>)</span><br />
       Acquire the radius of the gyration of the entire, or a portion of, 
       the PDB protein molecule.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.radiusOfGyration">source&nbsp;code</a></span>
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.RadiusOfGyration">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -676,6 +677,24 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a name="flat"></a><span class="summary-sig-name">flat</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Produce an iterator to allow one to iterate over all possible 
+      residues.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.flat">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a name="Contacts"></a><span class="summary-sig-name">Contacts</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">chain</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">ALL</code><code class="variable-quote">'</code></span>,
         <span class="summary-sig-arg">thres</span>=<span class="summary-sig-default">4.5</span>)</span><br />
@@ -699,6 +718,23 @@
         <span class="summary-sig-arg">filename</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.WriteContacts">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__iter__"></a><span class="summary-sig-name">__iter__</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns all PDBchains as an iterator.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.__iter__">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -1002,7 +1038,8 @@
   <h3 class="epydoc"><span class="sig"><span class="sig-name">tmscore</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">fasta</span>,
         <span class="sig-arg">chains</span>=<span class="sig-default">None</span>,
-        <span class="sig-arg">ismodel</span>=<span class="sig-default">False</span>)</span>
+        <span class="sig-arg">ismodel</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">native</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.tmscore">source&nbsp;code</a></span>&nbsp;
@@ -1012,7 +1049,9 @@
   <p>Get the TMscore between two chains. Requires a FASTA alignment and a 
   value for the length of the native structure (e.g., for a pairwise 
   alignment, the length of the structure used as a reference before 
-  alignment was done).</p>
+  alignment was done). The latter is computed by assuming the first of both
+  provided chains is the native structure; otherwise, uses a provided chain
+  name (native input).</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -1142,7 +1181,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Aug 25 15:05:12 2014
+    Generated by Epydoc 3.0.1 on Wed Aug 27 11:19:41 2014
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
