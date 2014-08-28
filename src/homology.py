@@ -288,13 +288,13 @@ def completePDB(pdbin,pdbout):
     Given a PDB, clean/complete the PDB using
     Modeller's complete_pdb function.
     '''
-    env = environ()
-    env.libs.topology.read('${LIB}/top_heav.lib')
-    env.libs.parameters.read('${LIB}/par.lib')
     # Squelch stdout.
     save_ = sys.stdout
     sys.stdout = cStringIO.StringIO()
     # Perform PDB completion.
+    env = environ()
+    env.libs.topology.read('${LIB}/top_heav.lib')
+    env.libs.parameters.read('${LIB}/par.lib')    
     m = complete_pdb(env,pdbin)
     m.write(file=pdbout)
     # Reclaim stdout.

@@ -32,7 +32,6 @@ To set the PYTHON PATH in UBUNTU:
 '''
 
 import sys, FASTAnet, math
-from tempfile import NamedTemporaryFile as tempf
 from math import sqrt
 from Bio.SeqUtils.ProtParam import ProteinAnalysis as PA
 
@@ -155,8 +154,7 @@ class PDBresidue:
         z = 0.0
 
         for atom in self.atoms:
-            if atom in ['C','N','O']:
-                continue
+            if atom in ['C','N','O']: continue
             x += self.atoms[atom].x
             y += self.atoms[atom].y
             z += self.atoms[atom].z
@@ -210,6 +208,7 @@ class PDBchain(object):
         self.residues   = []
         self.indices    = []
     
+    def GetResidues(self): return [self.GetResidueByIndex(i) for i in self.GetIndices()]
     def GetResidueByIndex(self,index): return self.__getitem__(index)
     def GetIndices(self): return [int(x) for x in self.indices]    
     
@@ -287,9 +286,7 @@ class PDBchain(object):
     def __len__(self): return len(self.residues)
 
     def __iter__(self):
-        for ind in self.indices: 
-            try: yield int(ind)
-            except: yield ind
+        for ind in self.indices: yield int(ind)
 
 class PDBmodel(PDBchain):
     
@@ -425,14 +422,16 @@ class PDBstructure:
                 res = self.chains[ch][re]
                 nam = res.name
                 if not nam in aa_lists: continue
-                check = set(res.atoms).difference(set(aa_lists[nam]))
-                if len(check) > 0: return res
+                check = set(set(aa_lists[nam])).difference(res.atoms)
+                if len(check) > 0:
+                    return res
         for ch in self.orderofmodels:
             for res in self.models[ch]:
                 nam = res.name
                 if not nam in aa_lists: continue
-                check = set(res.atoms).difference(set(aa_lists[nam]))
-                if len(check) > 0: return res                
+                check = set(set(aa_lists[nam])).difference(res.atoms)
+                if len(check) > 0:
+                    return res                
         return True    
     
     # I/O Functionality.
@@ -442,20 +441,17 @@ class PDBstructure:
         # Start pymol if not started.
         import pymol
         pymol.finish_launching()        
+        return pymol
     
-    def view(self):
+    def view(self,istrajectory=False):
         
         ''' View the structure in a Pymol window. Requires an installation of Pymol. '''
         
-        self._pymol() 
-        
-        # Save this file temporarily.
-        fh = tempf(delete=False)
-        fh.close()
-        self.write(fh.name)
-        
-        # Put it in pymol.
-        pymol.cmd.load(fh.name,'PDBnet')
+        pym = self._pymol()
+        pym.cmd.read_pdbstr(str(self),'PDBnet')
+        if len(self.models) > 0 and not istrajectory:
+            pym.cmd.set('all_states','on')
+        elif istrajectory: pass # SERGIO
     
     def ViewStructure(self): self.view()    
         
@@ -760,13 +756,6 @@ class PDBstructure:
 
         '''Get the RMSD between chains. Requires a FASTA alignment.'''
 
-        if ismodel:
-            orderofthings = self.orderofmodels
-            things = self.models
-        else:
-            orderofthings = self.orderofchains
-            things = self.chains
-
         mapng,masks,posvect = self.GetResidueAssociations(fasta,chains,ismodel)
         # Get the Euclidean distance squared between
         # all pairs of aligned positions.
@@ -893,8 +882,7 @@ class PDBstructure:
         
         if ismodel: thing = self.GetModel(chain)
         else: thing = self.GetChain(chain)
-            
-        return self.GetFASTAIndices(thing, fst)
+        return self.GetFASTAIndices(thing, fst)            
             
     def GetFASTAIndices(self, thing, fst):
 
@@ -922,6 +910,79 @@ class PDBstructure:
             for res in self.chains[ch]: yield self.chains[ch][res]   
         for mo in self.models:
             for res in self.models[mo]: yield self.models[mo][res]
+
+    def WriteGM(self,fasta,gm,chains=None,ismodel=False,CA=False):
+        
+        ''' Write the information present in this PDB between multiple
+        chains as a Geometric Morphometric text file. This file will be
+        formatted such that individual lines correspond to chains and semi-colons
+        separate the (x,y,z) coordinates between all homologous residue positions. 
+        Requires a FASTA alignment. Options include using alpha-carbon positions.
+        By default, uses centroids of residues. '''
+        
+        if ismodel:
+            orderofthings = self.orderofmodels
+            things        = self.models
+        else:
+            orderofthings = self.orderofchains
+            things        = self.chains
+        if chains == None: chains = orderofthings
+            
+        fgm = open(gm,'w')
+            
+        # Acquire all homologous positions as defined in FASTA.
+        mapng,masks,posvect = self.GetResidueAssociations(fasta,chains,ismodel)
+
+        # Set up name grabbing from FASTA file for GM labelling.
+        f = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
+        name = lambda d: f.orderedSequences[d].name
+        
+        # Start writing.
+        for ch in mapng:
+            nm = name(mapng[ch]).split(':')[0]
+            fgm.write('>%s:%s;' % (nm,nm[:4]))
+            for pos in posvect:
+                res = masks[mapng[ch]][pos]
+                if CA: atom = res.GetCA()
+                else:  atom = res.Centroid()
+                fgm.write('%f;%f;%f;' % (atom.x,atom.y,atom.z))
+            fgm.write('\n')
+            
+    def WriteLandmarks(self,fasta,lm,chains=None,ismodel=False):
+        
+        ''' Write the information present in this PDB between multiple
+        chains as a landmark text file. This file will be formatted such that 
+        the file is partitioned in sections starting with chain names and individual 
+        lines in these correspond to homologous residue positions denoted by
+        homologous position, residue number, and residue name tab-delimited. Requires
+        a FASTA file. '''
+        
+        if ismodel:
+            orderofthings = self.orderofmodels
+            things        = self.models
+        else:
+            orderofthings = self.orderofchains
+            things        = self.chains
+        if chains == None: chains = orderofthings
+            
+        flm = open(lm,'w')
+            
+        # Acquire all homologous positions as defined in FASTA.
+        mapng,masks,posvect = self.GetResidueAssociations(fasta,chains,ismodel)
+
+        # Set up name grabbing from FASTA file for labelling.
+        f = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
+        name = lambda d: f.orderedSequences[d].name
+        
+        # Start writing.
+        for ch in mapng:
+            nm = name(mapng[ch]).split(':')[0]
+            flm.write('>%s\n' % (nm))
+            ind = 0
+            for pos in posvect:
+                res = masks[mapng[ch]][pos]
+                flm.write('%s\t%s\t%s\n' % (ind,res.index,res.name))
+                ind += 1
 
     def Contacts(self,chain='ALL',thres=4.5):
         
@@ -953,6 +1014,9 @@ class PDBstructure:
             element[0], element[1]))
 
     def WriteContacts(self, filename):
+        
+        ''' Write contact map. '''
+        
         fout = open(filename, 'w')
         for a in self.contactmap:
             fout.write('%s\n'%(str(a)))
@@ -982,6 +1046,10 @@ class PDBstructure:
         out = ''
         for chain in self.orderofchains:
             out += '\n'.join([str(self.chains[chain][x]) for x in self.chains[chain]])
+            out += '\n'
+        for model in self.orderofmodels:
+            out += 'MODEL%9s\n' % (str(model))
+            out += '\n'.join([str(self.models[model][x]) for x in self.models[model]])
             out += '\n'
         return out
 

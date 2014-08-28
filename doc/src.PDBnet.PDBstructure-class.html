@@ -317,7 +317,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="src.PDBnet.PDBstructure-class.html#view" class="summary-sig-name">view</a>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a href="src.PDBnet.PDBstructure-class.html#view" class="summary-sig-name">view</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">istrajectory</span>=<span class="summary-sig-default">False</span>)</span><br />
       View the structure in a Pymol window.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.view">source&nbsp;code</a></span>
@@ -695,6 +696,51 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="src.PDBnet.PDBstructure-class.html#WriteGM" class="summary-sig-name">WriteGM</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fasta</span>,
+        <span class="summary-sig-arg">gm</span>,
+        <span class="summary-sig-arg">chains</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">ismodel</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">CA</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Write the information present in this PDB between multiple chains as 
+      a Geometric Morphometric text file.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.WriteGM">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.PDBnet.PDBstructure-class.html#WriteLandmarks" class="summary-sig-name">WriteLandmarks</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fasta</span>,
+        <span class="summary-sig-arg">lm</span>,
+        <span class="summary-sig-arg">chains</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">ismodel</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Write the information present in this PDB between multiple chains as 
+      a landmark text file.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.WriteLandmarks">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a name="Contacts"></a><span class="summary-sig-name">Contacts</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">chain</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">ALL</code><code class="variable-quote">'</code></span>,
         <span class="summary-sig-arg">thres</span>=<span class="summary-sig-default">4.5</span>)</span><br />
@@ -715,7 +761,8 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a name="WriteContacts"></a><span class="summary-sig-name">WriteContacts</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">filename</span>)</span></td>
+        <span class="summary-sig-arg">filename</span>)</span><br />
+      Write contact map.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.WriteContacts">source&nbsp;code</a></span>
             
@@ -886,7 +933,8 @@
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">view</span>(<span class="sig-arg">self</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">view</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">istrajectory</span>=<span class="sig-default">False</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.view">source&nbsp;code</a></span>&nbsp;
@@ -1149,6 +1197,63 @@
   </dl>
 </td></tr></table>
 </div>
+<a name="WriteGM"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">WriteGM</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">fasta</span>,
+        <span class="sig-arg">gm</span>,
+        <span class="sig-arg">chains</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">ismodel</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">CA</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.WriteGM">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Write the information present in this PDB between multiple chains as a
+  Geometric Morphometric text file. This file will be formatted such that 
+  individual lines correspond to chains and semi-colons separate the 
+  (x,y,z) coordinates between all homologous residue positions. Requires a 
+  FASTA alignment. Options include using alpha-carbon positions. By 
+  default, uses centroids of residues.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="WriteLandmarks"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">WriteLandmarks</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">fasta</span>,
+        <span class="sig-arg">lm</span>,
+        <span class="sig-arg">chains</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">ismodel</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.PDBnet-pysrc.html#PDBstructure.WriteLandmarks">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Write the information present in this PDB between multiple chains as a
+  landmark text file. This file will be formatted such that the file is 
+  partitioned in sections starting with chain names and individual lines in
+  these correspond to homologous residue positions denoted by homologous 
+  position, residue number, and residue name tab-delimited. Requires a 
+  FASTA file.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
 <br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
@@ -1181,7 +1286,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Aug 27 11:19:41 2014
+    Generated by Epydoc 3.0.1 on Thu Aug 28 14:30:29 2014
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
