@@ -70,7 +70,7 @@ aa_lists = {'ALA':['N','CA','C','O','CB'],\
 
 # Classes
 
-class PDBatom:
+class PDBatom(object):
     
     def __init__(self, serial, name, x,y,z, oc, b, symbol,charge):
         
@@ -85,7 +85,7 @@ class PDBatom:
         self.tempFactor = b
         self.charge     = charge
         self.symbol     = symbol
-        self.parent     = PDBresidue()
+        self.parent     = None
         
     def fixname(self):
         
@@ -115,6 +115,24 @@ class PDBatom:
         
         return ((self.x-atom.x)**2+(self.y-atom.y)**2+(self.z-atom.z)**2)**0.5
 
+class PDBterminator(PDBatom):
+    
+    ''' A placeholder class that represents a terminating ATOM-like line in the PDB file. '''
+    
+    def __init__(self,chaininst):
+        
+        self.lastatom = chaininst.GetAtoms()[-1]
+        self.lastresname = self.lastatom.parent.name
+        self.lastreschain =  self.lastatom.parent.chain
+        self.lastresind = self.lastatom.parent.index
+        newserial = str(int(self.lastatom.serial) + 1)
+        super(PDBterminator,self).__init__(newserial,'',0,0,0,0,0,'',0)
+
+    def __str__(self):
+        
+        return 'TER   %5s %4s %3s %1s%4s' % (
+            self.serial,'',self.lastresname,self.lastreschain,self.lastresind)
+
 class PDBresidue:
     
     def __init__(self,index=None,name=''):
@@ -127,8 +145,10 @@ class PDBresidue:
         self.atomsOrdered = []
         self.contacts = []
         self.centroid = None
-        self.chain = None
+        self.chain = ''
         self.model = None
+
+    def GetAtoms(self): return [x for x in self.atomsOrdered]
 
     def AddAtom(self, atom):
         
@@ -210,6 +230,15 @@ class PDBchain(object):
     
     def GetResidues(self): return [self.GetResidueByIndex(i) for i in self.GetIndices()]
     def GetResidueByIndex(self,index): return self.__getitem__(index)
+    
+    def GetAtoms(self): 
+        
+        ''' Get all comprising atoms in this chain in order of residues. '''
+        
+        atoms = []
+        for x in self.GetResidues(): atoms.extend(x.GetAtoms())
+        return atoms
+    
     def GetIndices(self): return [int(x) for x in self.indices]    
     
     def AddResidue(self,resid):
@@ -278,6 +307,14 @@ class PDBchain(object):
         
         for res in o: self.AddResidue(res)
 
+    def __str__(self):
+        
+        get = lambda d: self.GetResidueByIndex(d)
+        out = ''
+        out += '\n'.join([str(get(x)) for x in self.indices])
+        out += '\n%s\n' % (str(PDBterminator(self)))
+        return out
+
     def __getitem__(self,i):
         if str(i) in self.indices:
             return self.residues[self.indices.index(str(i))]
@@ -319,6 +356,11 @@ class PDBmodel(PDBchain):
         resid.model = self.name
         self.residues.append(resid)
         self.indices.append(str(resid.index))
+        
+    def __str__(self):
+        
+        return 'MODEL%9s\n' % (str(self.name)) + super(
+            PDBmodel,self).__str__() + 'ENDMDL\n'
 
 class PDBstructure:
     
@@ -331,6 +373,7 @@ class PDBstructure:
         self.orderofchains = []
         self.models        = {}
         self.orderofmodels = []
+        self.remarks       = []
         self.filepath      = filein
         self.organism      = None
         self.taxid         = None
@@ -383,6 +426,11 @@ class PDBstructure:
         # Do chain addition operations.
         if chainname in self.chains:
             raise AssertionError('Chain already exists in structure by that name!')
+        if type(chain) != PDBchain and type(chain) == PDBmodel:
+            # Cast into a PDBchain.
+            cast = PDBchain(chainname)
+            for i in chain: cast.AddResidue(chain[i])
+            chain = cast
         self.chains[chainname] = chain
         self.orderofchains.append(chainname)
         chain.structure = self
@@ -394,6 +442,11 @@ class PDBstructure:
         # Do chain addition operations.
         if model in self.models:
             raise AssertionError('Model already exists in structure by that name!')
+        if type(model) != PDBmodel and type(model) == PDBchain:
+            # Cast into a PDBmodel.
+            cast = PDBmodel(modelname)
+            for i in model: cast.AddResidue(model[i])
+            model = cast
         self.models[modelname] = model
         self.orderofmodels.append(modelname)
         model.structure = self
@@ -411,6 +464,18 @@ class PDBstructure:
         
         mo = self.GetModel(model)
         if mo != None: mo.AddResidue(res)      
+    
+    def AddRemark(self,remark):
+        
+        ''' Add a remark (note/comment) to the structure/PDB file. '''
+        
+        if len(remark) == 0:
+            self.remarks.append('')
+            return
+        for it in xrange(0,len(remark),68):
+            self.remarks.append(remark[it:it+68])
+            
+    def GetRemarks(self): return self.remarks
     
     def CheckComplete(self):
         
@@ -513,8 +578,13 @@ class PDBstructure:
                 elif 'MUTANT' in line or 'MUTATION' in line:
                     self.mutation = True
                     
+                # Store any appropriate REMARK entries.
+                if line.startswith('REMARK'):
+                    self.remarks.append(line[6:].strip('\n'))
+                    continue
+                    
                 # Skip non atom/model entries in the file
-                if line.startswith('MODEL'):
+                elif line.startswith('MODEL'):
                     model = int(line.strip().split()[-1])
                     isModel = True
                     continue
@@ -1039,18 +1109,21 @@ class PDBstructure:
         chs = self.chains
         return sum([len(chs[x]) for x in chs])
 
+    def _remarksToString(self):
+        
+        remarkstr = ''
+        for it in xrange(len(self.remarks)):
+            remarkstr += 'REMARK%4s %s\n' % (str(it+1),self.remarks[it])
+        return remarkstr
+
     def __str__(self):
 
         ''' As a string, outputs structure in the PDB format. '''
 
         out = ''
-        for chain in self.orderofchains:
-            out += '\n'.join([str(self.chains[chain][x]) for x in self.chains[chain]])
-            out += '\n'
-        for model in self.orderofmodels:
-            out += 'MODEL%9s\n' % (str(model))
-            out += '\n'.join([str(self.models[model][x]) for x in self.models[model]])
-            out += '\n'
+        out += self._remarksToString()
+        for chain in self.orderofchains: out += str(self.GetChain(chain))
+        for model in self.orderofmodels: out += str(self.GetModel(model))
         return out
 
 if __name__ == "__main__":

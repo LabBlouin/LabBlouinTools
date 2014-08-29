@@ -213,7 +213,21 @@ class FASTAstructure:
             del self.sequenceNames[f]
             return f
         else: return None
-            
+  
+    def reorderSequences(self,iterable):
+        
+        ''' Reorder all sequences by an iterable sequence
+        of their names. '''
+        
+        if len(iterable) != len(self.sequences):
+            raise ValueError('Mismatch of length with sequence list.')
+        neworder = []
+        for it in iterable:
+            if it in self.sequences: neworder.append(self.sequences[it])
+            else:
+                raise KeyError('Could not find %s among sequence names.' % (it))
+        self.orderedSequences = neworder
+                
     def removeGaps(self):
         
         '''
