@@ -152,6 +152,7 @@ src.FASTAnet.FASTAstructure.readFile	src.FASTAnet.FASTAstructure-class.html#read
 src.FASTAnet.FASTAstructure.__iter__	src.FASTAnet.FASTAstructure-class.html#__iter__
 src.FASTAnet.FASTAstructure.removeGaps	src.FASTAnet.FASTAstructure-class.html#removeGaps
 src.FASTAnet.FASTAstructure.__init__	src.FASTAnet.FASTAstructure-class.html#__init__
+src.FASTAnet.FASTAstructure.renameSequence	src.FASTAnet.FASTAstructure-class.html#renameSequence
 src.FASTAnet.FASTAstructure.allLower	src.FASTAnet.FASTAstructure-class.html#allLower
 src.FASTAnet.FASTAstructure.reorderSequences	src.FASTAnet.FASTAstructure-class.html#reorderSequences
 src.FASTAnet.FASTAstructure.__len__	src.FASTAnet.FASTAstructure-class.html#__len__
@@ -216,7 +217,7 @@ src.PDBnet.PDBstructure.ModelAsFASTA	src.PDBnet.PDBstructure-class.html#ModelAsF
 src.PDBnet.PDBstructure.ViewStructure	src.PDBnet.PDBstructure-class.html#ViewStructure
 src.PDBnet.PDBstructure.gdt	src.PDBnet.PDBstructure-class.html#gdt
 src.PDBnet.PDBstructure.WriteChain	src.PDBnet.PDBstructure-class.html#WriteChain
-src.PDBnet.PDBstructure.NewChain	src.PDBnet.PDBstructure-class.html#NewChain
+src.PDBnet.PDBstructure.Contacts	src.PDBnet.PDBstructure-class.html#Contacts
 src.PDBnet.PDBstructure.__str__	src.PDBnet.PDBstructure-class.html#__str__
 src.PDBnet.PDBstructure.GetModel	src.PDBnet.PDBstructure-class.html#GetModel
 src.PDBnet.PDBstructure.AddModelToStructure	src.PDBnet.PDBstructure-class.html#AddModelToStructure
@@ -234,16 +235,16 @@ src.PDBnet.PDBstructure.write	src.PDBnet.PDBstructure-class.html#write
 src.PDBnet.PDBstructure.AddChainToStructure	src.PDBnet.PDBstructure-class.html#AddChainToStructure
 src.PDBnet.PDBstructure.WriteModel	src.PDBnet.PDBstructure-class.html#WriteModel
 src.PDBnet.PDBstructure.GetFASTAIndices	src.PDBnet.PDBstructure-class.html#GetFASTAIndices
-src.PDBnet.PDBstructure.flat	src.PDBnet.PDBstructure-class.html#flat
+src.PDBnet.PDBstructure.NewChain	src.PDBnet.PDBstructure-class.html#NewChain
 src.PDBnet.PDBstructure.WriteLandmarks	src.PDBnet.PDBstructure-class.html#WriteLandmarks
 src.PDBnet.PDBstructure.WriteContacts	src.PDBnet.PDBstructure-class.html#WriteContacts
 src.PDBnet.PDBstructure.read	src.PDBnet.PDBstructure-class.html#read
 src.PDBnet.PDBstructure.tmscore	src.PDBnet.PDBstructure-class.html#tmscore
 src.PDBnet.PDBstructure.ReadFile	src.PDBnet.PDBstructure-class.html#ReadFile
 src.PDBnet.PDBstructure.GetResidueAssociations	src.PDBnet.PDBstructure-class.html#GetResidueAssociations
-src.PDBnet.PDBstructure.Contacts	src.PDBnet.PDBstructure-class.html#Contacts
 src.PDBnet.PDBstructure.NewModel	src.PDBnet.PDBstructure-class.html#NewModel
 src.PDBnet.PDBstructure.WriteFile	src.PDBnet.PDBstructure-class.html#WriteFile
+src.PDBnet.PDBstructure.IterAllResidues	src.PDBnet.PDBstructure-class.html#IterAllResidues
 src.PDBnet.PDBstructure.CheckComplete	src.PDBnet.PDBstructure-class.html#CheckComplete
 src.PDBnet.PDBstructure.RadiusOfGyration	src.PDBnet.PDBstructure-class.html#RadiusOfGyration
 src.PDBnet.PDBstructure.GetRemarks	src.PDBnet.PDBstructure-class.html#GetRemarks

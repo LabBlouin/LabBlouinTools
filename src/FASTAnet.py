@@ -198,13 +198,24 @@ class FASTAstructure:
                 # Get that instance of FASTAsequence.
                 f = [x for x in seqs if f == x][0]
                 self.sequenceNames[f].append(name)
+
+    def renameSequence(self,oldname,newname):
+
+        ''' Renames a given sequence. '''
+
+        if oldname in self.sequences:
+          f = self.sequences[oldname]
+          f.name = newname
+          del self.sequences[oldname]
+          self.sequences[newname] = f
+          self.sequenceNames[f] = newname
+        else:
+          raise IndexError('Could not find that name in sequences.')
                 
     def removeSequence(self,name):
         
-        '''
-        Remove a sequence from the FASTA object and
-        return it; or return None if it was not found.
-        '''
+        ''' Remove a sequence from the FASTA object and
+        return it; or return None if it was not found. '''
         
         if name in self.sequences:
             f = self.sequences[name]

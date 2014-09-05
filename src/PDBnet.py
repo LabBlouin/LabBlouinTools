@@ -972,14 +972,16 @@ class PDBstructure:
             i.fstindex = index
         return True        
 
-    def flat(self):
+    def IterAllResidues(self):
         
         ''' Produce an iterator to allow one to iterate over all possible residues. '''
         
-        for ch in self.chains:
-            for res in self.chains[ch]: yield self.chains[ch][res]   
-        for mo in self.models:
-            for res in self.models[mo]: yield self.models[mo][res]
+        for ch in self.chains.keys():
+            chain = self.GetChain(ch)
+            for res in chain: yield chain[res]   
+        for mo in self.models.keys():
+            model = self.GetModel(mo)
+            for res in model: yield model[res]
 
     def WriteGM(self,fasta,gm,chains=None,ismodel=False,CA=False):
         
@@ -1068,17 +1070,21 @@ class PDBstructure:
                     elif resA.InContactWith(resB,thres):
                         if not (int(resA),int(resB)) in self.contactmap:
                             self.contactmap.append((int(resA),int(resB)))
+                            self.contactmap.append((int(resB),int(resA)))
                     done.append((resA,resB))
-        else:
-            for resA in self.flat():
-                for resB in self.flat():
+                    done.append((resB,resA))
+        else: # All chains.
+            for resA in self.IterAllResidues():
+                for resB in self.IterAllResidues():
                     if resA == resB or (resA,resB) in done: continue 
                     elif resA.InContactWith(resB,thres):
                         A = resA.index+resA.chain
                         B = resB.index+resB.chain
                         if not (A,B) in self.contactmap:
                             self.contactmap.append((A,B))
+                            self.contactmap.append((B,A))
                     done.append((resA,resB))
+                    done.append((resB,resA))
                     
         self.contactmap = sorted(self.contactmap, key=lambda element: (
             element[0], element[1]))
