@@ -1,11 +1,11 @@
 #!/bin/python
+
 ''' 
-PDBnet is a utility script for ModulerV2, Contactmapper and Bootmoduler. Make sure
-you have this in your python path.
+PDBnet is a collection of Python objects intended to model and contain
+PDB protein data.
 
 PDBnet Copyright (C) 2012 Christian Blouin
-Newer versions 2014:
-Christian Blouin, Alex Safatli and Jose Sergio Hleap
+Later Revisions: Christian Blouin, Alex Safatli and Jose Sergio Hleap
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,14 +21,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 E-mail: cblouin@cs.dal.ca
+Dependencies: BioPython, FASTAnet (contained in LabBlouinTools)
 
-To set the PYTHON PATH in UBUNTU:
-1. Go to your home directory in the terminal
-2. type: nano .bashrc
-3. scroll down the document 
-4. at the end of the document write:
-   export PYTHONPATH=$PYTHONPATH:<path to PDBnet.py>
-5. Re-start your terminal
 '''
 
 import sys, FASTAnet, math
@@ -71,6 +65,8 @@ aa_lists = {'ALA':['N','CA','C','O','CB'],\
 # Classes
 
 class PDBatom(object):
+    
+    ''' ATOM in a PDB protein structure. '''
     
     def __init__(self, serial, name, x,y,z, oc, b, symbol,charge):
         
@@ -134,6 +130,8 @@ class PDBterminator(PDBatom):
             self.serial,'',self.lastresname,self.lastreschain,self.lastresind)
 
 class PDBresidue:
+    
+    ''' A residue (collection of ATOM fields) in a PDB protein structure. '''
     
     def __init__(self,index=None,name=''):
         
@@ -218,6 +216,8 @@ class PDBresidue:
     def __str__(self): return '\n'.join([str(x) for x in self.atomsOrdered])
 
 class PDBchain(object):
+    
+    ''' A PDB chain (collection of protein residues). '''
     
     def __init__(self,name):
         
@@ -327,6 +327,8 @@ class PDBchain(object):
 
 class PDBmodel(PDBchain):
     
+    ''' A PDB model (a special kind of chain). '''
+    
     def __init__(self,name):
         
         ''' Construct a PDB model (a specific kind of chain). '''
@@ -363,6 +365,8 @@ class PDBmodel(PDBchain):
             PDBmodel,self).__str__() + 'ENDMDL\n'
 
 class PDBstructure:
+    
+    ''' A PDB protein structure. Allows one to read in and parse PDB files. '''
     
     def __init__(self, filein=''):
     

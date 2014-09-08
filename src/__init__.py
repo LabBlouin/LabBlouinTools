@@ -1,4 +1,4 @@
-# below is boilerplate code in order to recognize all files in this directory
+# below is boilerplate code in order to recognize all python files in this directory
 
 import os
 
