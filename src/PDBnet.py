@@ -122,7 +122,7 @@ class PDBterminator(PDBatom):
         self.lastreschain =  self.lastatom.parent.chain
         self.lastresind = self.lastatom.parent.index
         newserial = str(int(self.lastatom.serial) + 1)
-        super(PDBterminator,self).__init__(newserial,'',0,0,0,0,0,'',0)
+        super(PDBterminator,self).__init__(newserial,'',0,0,0,0,0,'','')
 
     def __str__(self):
         
@@ -333,6 +333,8 @@ class PDBmodel(PDBchain):
         
         ''' Construct a PDB model (a specific kind of chain). '''
         
+        if type(name) != int: raise TypeError('Model names should be integers.')
+        elif name <= 0: raise ValueError('Model name should be positive integer.')
         super(PDBmodel,self).__init__(name)
         self.chains = []
 
@@ -727,7 +729,7 @@ class PDBstructure:
 
         return mapng, masks, posvect
 
-    def tmscore(self,fasta,chains=None,ismodel=False,native=None):
+    def tmscore(self,fasta,chains=None,ismodel=False,native=None,CA=True):
 
         ''' Get the TMscore between two chains. Requires a 
         FASTA alignment and a value for the length of the
@@ -765,7 +767,9 @@ class PDBstructure:
         for pos in posvect: # Assume chA is Native Structure.
             cavect = []
             for ch in chA,chB:
-                cavect.append(masks[mapng[ch]][pos].GetCA())
+                if CA: atom = masks[mapng[ch]][pos].GetCA()
+                else:  atom = masks[mapng[ch]][pos].Centroid()
+                cavect.append(atom)
             ca1, ca2 = cavect[0], cavect[1]
             d_i       = sqrt((ca1.x-ca2.x)**2+
                              (ca1.y-ca2.y)**2+
@@ -777,7 +781,7 @@ class PDBstructure:
         # Return the TMscore.
         return (1./leN) * sumportion
 
-    def gdt(self,fasta,chains=None,distcutoffs=[1,2,4,8],ismodel=False):
+    def gdt(self,fasta,chains=None,distcutoffs=[1,2,4,8],ismodel=False,CA=True):
 
         ''' Get the GDT score between two chains. Requires a
         FASTA alignment. '''
@@ -802,7 +806,9 @@ class PDBstructure:
         for pos in posvect:
             cavect = []
             for ch in mapng: 
-                cavect.append(masks[mapng[ch]][pos].GetCA())
+                if CA: atom = masks[mapng[ch]][pos].GetCA()
+                else:  atom = masks[mapng[ch]][pos].Centroid()
+                cavect.append(atom)
             if len(cavect) != 2: raise AssertionError(
                 'Too many CA vectors.')
             ca1, ca2 = cavect[0], cavect[1]
@@ -826,7 +832,7 @@ class PDBstructure:
         GDT_P4 = counts[3]/poslen
         return (GDT_P1+GDT_P2+GDT_P3+GDT_P4)/4.0
 
-    def rmsd(self,fasta,chains=None,ismodel=False):
+    def rmsd(self,fasta,chains=None,ismodel=False,CA=True):
 
         '''Get the RMSD between chains. Requires a FASTA alignment.'''
 
@@ -837,7 +843,9 @@ class PDBstructure:
         for pos in posvect:
             cavect = []
             for ch in mapng: 
-                cavect.append(masks[mapng[ch]][pos].GetCA())
+                if CA: atom = masks[mapng[ch]][pos].GetCA()
+                else:  atom = masks[mapng[ch]][pos].Centroid()
+                cavect.append(atom)
             for a in xrange(len(cavect)):
                 for b in xrange(a+1,len(cavect)):
                     if (a,b) not in distsqs: distsqs[(a,b)] = 0
@@ -855,7 +863,7 @@ class PDBstructure:
         rmsd /= len(distsqs)
         return rmsd
 
-    def rrmsd(self,fasta,chains=None,ismodel=False):
+    def rrmsd(self,fasta,chains=None,ismodel=False,CA=True):
         
         ''' Get the RRMSD between chains. Requires a FASTA alignment. 
         See Betancourt & Skolnick, "Universal Similarity Measure for
@@ -882,10 +890,74 @@ class PDBstructure:
                   len(things[chains[1]]))/2
         c = getAverageCorrelationCoefficient(avglen)
         denom = R_A**2+R_B**2-2*c*R_A*R_B
-        alignRMSD = self.rmsd(fasta,chains,ismodel)
+        alignRMSD = self.rmsd(fasta,chains,ismodel,CA)
         return float(alignRMSD)/sqrt(denom)
 
     # Other Functionality
+
+    def GetAverage(self,chains=None,ismodel=False,newname=None):
+        
+        ''' Acquire a new chain or model corresponding to an average of all present
+        chains or models specified. '''
+        
+        if ismodel:
+            orderofthings = self.orderofmodels
+            things        = self.models
+            if newname == None: newname = 1
+            output        = PDBmodel(newname)
+        else:
+            orderofthings = self.orderofchains
+            things        = self.chains
+            if newname == None: newname = '*'
+            output        = PDBchain(newname)
+        if chains == None: chains = orderofthings
+        
+        # Make sure all sequences have equal FASTAs.
+        fas = ''
+        for ch in chains:
+            if fas == '': fas = things[ch].AsFASTA()
+            if things[ch].AsFASTA() != fas:
+                raise AssertionError('Not all provided chains/models have equal sequences.')
+        
+        def avgResidue(res_no):
+            
+            # Create the dummy residue structure.
+            firstch  = things[chains[0]]
+            firstres = firstch.GetResidues()[res_no]
+            fake = PDBresidue(firstres.index,firstres.name)
+    
+            # Populate it with atoms.
+            atomlist = []
+            for a in firstres.GetAtoms():
+                atomlist.append(PDBatom(a.serial,a.name,0,0,0,
+                                        0,0,a.symbol,''))            
+            
+            # Average all properties.
+            count = 0
+            for ch in chains:
+                res = things[ch].GetResidues()[res_no]
+                atoms = res.GetAtoms()
+                count += 1
+                for i in xrange(len(atoms)):
+                    atomlist[i].x += atoms[i].x
+                    atomlist[i].y += atoms[i].y
+                    atomlist[i].z += atoms[i].z
+                    atomlist[i].occupancy += atoms[i].occupancy
+                    atomlist[i].tempFactor += atoms[i].tempFactor
+            for a in atomlist:
+                a.x /= float(count)
+                a.y /= float(count)
+                a.z /= float(count)
+                a.occupancy /= float(count)
+                a.tempFactor /= float(count)
+                
+            for a in atomlist: fake.AddAtom(a)
+            return fake
+        
+        res_nums = range(len(things[chains[0]]))
+        for i in res_nums: output.AddResidue(avgResidue(i))
+        
+        return output
 
     def RadiusOfGyration(self,chains=None,ismodel=False):
         
@@ -987,6 +1059,43 @@ class PDBstructure:
             model = self.GetModel(mo)
             for res in model: yield model[res]
 
+    def gm(self,fasta,chains=None,ismodel=False,CA=False):
+        
+        ''' Acquire Geometric Morphometric data corresponding to the
+        (x,y,z) coordinates between all homologous residue positions.
+        Requires a FASTA alignment. Options include using alpha-carbon
+        positions. By default, uses centroids of residues. Returns a list
+        of labels and a list of coordinates as raw GM data. '''
+        
+        if ismodel:
+            orderofthings = self.orderofmodels
+            things        = self.models
+        else:
+            orderofthings = self.orderofchains
+            things        = self.chains
+        if chains == None: chains = orderofthings
+        labels,coords = [],[] # Output Variables
+        
+        # Acquire all homologous positions as defined in FASTA.
+        mapng,masks,posvect = self.GetResidueAssociations(fasta,chains,ismodel)
+        
+        # Set up name grabbing from FASTA file for GM labelling.
+        f = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
+        name = lambda d: f.orderedSequences[d].name 
+        
+        for ch in mapng:
+            nm = name(mapng[ch]).split(':')[0]
+            labels.append('>%s:%s' % (nm,nm[:4]))
+            row = ''
+            for pos in posvect:
+                res = masks[mapng[ch]][pos]
+                if CA: atom = res.GetCA()
+                else:  atom = res.Centroid()
+                row += '%f;%f;%f;' % (atom.x,atom.y,atom.z)
+            coords.append(row)
+        
+        return labels,coords
+            
     def WriteGM(self,fasta,gm,chains=None,ismodel=False,CA=False):
         
         ''' Write the information present in this PDB between multiple
@@ -996,33 +1105,17 @@ class PDBstructure:
         Requires a FASTA alignment. Options include using alpha-carbon positions.
         By default, uses centroids of residues. '''
         
-        if ismodel:
-            orderofthings = self.orderofmodels
-            things        = self.models
-        else:
-            orderofthings = self.orderofchains
-            things        = self.chains
-        if chains == None: chains = orderofthings
-            
         fgm = open(gm,'w')
             
-        # Acquire all homologous positions as defined in FASTA.
-        mapng,masks,posvect = self.GetResidueAssociations(fasta,chains,ismodel)
-
-        # Set up name grabbing from FASTA file for GM labelling.
-        f = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
-        name = lambda d: f.orderedSequences[d].name
+        # Get raw GM data.
+        labels,coords = self.gm(fasta,chains,ismodel,CA)
         
         # Start writing.
-        for ch in mapng:
-            nm = name(mapng[ch]).split(':')[0]
-            fgm.write('>%s:%s;' % (nm,nm[:4]))
-            for pos in posvect:
-                res = masks[mapng[ch]][pos]
-                if CA: atom = res.GetCA()
-                else:  atom = res.Centroid()
-                fgm.write('%f;%f;%f;' % (atom.x,atom.y,atom.z))
-            fgm.write('\n')
+        for ind in xrange(len(labels)):
+            fgm.write(labels[ind] + ';' + coords[ind] + '\n')
+        
+        # Done.
+        fgm.close()
             
     def WriteLandmarks(self,fasta,lm,chains=None,ismodel=False):
         

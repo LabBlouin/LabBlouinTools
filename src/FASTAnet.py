@@ -133,7 +133,11 @@ class FASTAstructure:
             # of a file.
             try: self.readFile(filein)
             except: self.read(filein.split('\n'))
-            
+    
+    def getSequenceNames(self):    return self.sequenceNames.values()    
+    def getSequences(self):        return self.orderedSequences
+    def getSequenceByName(self,n): return self.sequenceNames[n]
+    
     def readFile(self,fin):
         
         '''

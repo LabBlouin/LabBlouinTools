@@ -32,7 +32,11 @@ def hasNoFolders(path):
     return True
 
 class homstradFolder:
+
+    ''' Model a single Homstrad folder or set. '''
+
     def __init__(self,foldrname):
+
         self.path = foldrname
         self.name = IO.getFileName(foldrname)
         self.files = glob.glob(os.path.join(foldrname,'*'))
@@ -40,7 +44,9 @@ class homstradFolder:
         self.molecules = []
         self.sequences = {}
         self.__manifest__()
+
     def __manifest__(self):
+
         # Find PIR file.
         pirfile = None
         pdbfile = None
@@ -88,7 +94,9 @@ class homstradFolder:
                 else:
                     raise IOError('PDB file did not match PIR structure series for %s.' % (
                         self.path))        
+
     def getNames(self): return self.molecules
+    def getNumSequences(self): return len(self.getSequences())
     def getSequences(self): return self.sequences
     def getFiles(self): return self.files
     def getPath(self): return self.path
@@ -116,6 +124,7 @@ class homstradFolder:
         if name in self.molecules:
             return os.path.join(self.path,'%s.atm' % (name))
         else: return None
+    def getSequenceLength(self): return self.getAlignmentLength()
     def getAlignmentLength(self):
         return len(self.sequences[self.sequences.keys()[0]])
     
@@ -127,6 +136,9 @@ class homstradDatabase:
         self.failed    = []
         self.succeeded = []
         if (traverse): self.traverse()
+    def __iter__(self):
+        for it in self.folders:
+            yield self.folders[it]
     def traverse(self):
         if len(self.folders) == 0:
             folders = glob.glob(os.path.join(self.path,'*'))
