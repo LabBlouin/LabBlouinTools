@@ -5,7 +5,7 @@
 # Homology Modelling utilities.
 
 import os, math, glob, tempfile, random, subprocess, warnings, sys, cStringIO
-import utils.PDBnet as PDBnet
+import PDBnet as PDBnet
 from pfam import extractPDBChain
 import __main__
 __main__.pymol_argv = ['pymol', '-qc'] # Quiet, no GUI for Pymol.
