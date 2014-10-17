@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>labblouin.pfam</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="labblouin-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://web.cs.dal.ca/~safatli/">LabBlouinTools</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="labblouin-module.html">Package&nbsp;labblouin</a> ::
+        Module&nbsp;pfam
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="labblouin.pfam-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="labblouin.pfam-module.html">Module labblouin.pfam</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># pfam.py</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment"># -------------------------</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment"># May 14, 2012; Alex Safatli</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment"># -------------------------</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment"># Operations for PFAM.</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Module labblouin.pfamFile=labblouin.pfamFile-module.html"><a title="labblouin.pfamFile" class="py-name" href="#" onclick="return doclink('link-0', 'pfamFile', 'link-0');">pfamFile</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">utils</tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module labblouin.PDBnet=labblouin.PDBnet-module.html"><a title="labblouin.PDBnet" class="py-name" href="#" onclick="return doclink('link-1', 'PDBnet', 'link-1');">PDBnet</a></tt> <tt class="py-keyword">as</tt> <tt id="link-2" class="py-name"><a title="labblouin.PDBnet" class="py-name" href="#" onclick="return doclink('link-2', 'PDBnet', 'link-1');">PDBnet</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">xml</tt><tt class="py-op">.</tt><tt class="py-name">dom</tt><tt class="py-op">.</tt><tt class="py-name">minidom</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">urllib2</tt><tt class="py-op">,</tt> <tt class="py-name">urllib</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">time</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">gzip</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-keyword">try</tt><tt class="py-op">:</tt> <tt class="py-keyword">import</tt> <tt class="py-name">texttable</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-keyword">except</tt><tt class="py-op">:</tt> <tt class="py-keyword">pass</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line">     </tt>
+<a name="extractPDBSequences"></a><div id="extractPDBSequences-def"><a name="L17"></a><tt class="py-lineno"> 17</tt> <a class="py-toggle" href="#" id="extractPDBSequences-toggle" onclick="return toggle('extractPDBSequences');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#extractPDBSequences">extractPDBSequences</a><tt class="py-op">(</tt><tt class="py-param">pdb_file</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="extractPDBSequences-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="extractPDBSequences-expanded"><a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">    Extracts the Amino Acid sequences for a protein structure</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">    defined by a PDB file and returns as a dictionary.</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">    <tt class="py-name">out_seq_list</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">     </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">    <tt class="py-name">pdb</tt> <tt class="py-op">=</tt> <tt id="link-3" class="py-name"><a title="labblouin.PDBnet" class="py-name" href="#" onclick="return doclink('link-3', 'PDBnet', 'link-1');">PDBnet</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Class labblouin.PDBnet.PDBstructure=labblouin.PDBnet.PDBstructure-class.html"><a title="labblouin.PDBnet.PDBstructure" class="py-name" href="#" onclick="return doclink('link-4', 'PDBstructure', 'link-4');">PDBstructure</a></tt><tt class="py-op">(</tt><tt class="py-name">pdb_file</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">ch</tt> <tt class="py-keyword">in</tt> <tt class="py-name">pdb</tt><tt class="py-op">.</tt><tt class="py-name">chains</tt><tt class="py-op">:</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">        <tt class="py-comment"># For every chain in the PDB file</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-comment"># get the FASTA sequence.</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-name">seq</tt> <tt class="py-op">=</tt> <tt class="py-name">pdb</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Method labblouin.PDBnet.PDBstructure.ChainAsFASTA()=labblouin.PDBnet.PDBstructure-class.html#ChainAsFASTA"><a title="labblouin.PDBnet.PDBstructure.ChainAsFASTA" class="py-name" href="#" onclick="return doclink('link-5', 'ChainAsFASTA', 'link-5');">ChainAsFASTA</a></tt><tt class="py-op">(</tt><tt class="py-name">ch</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">        <tt class="py-name">out_seq_list</tt><tt class="py-op">[</tt><tt class="py-name">ch</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">seq</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">         </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">out_seq_list</tt> </tt>
+</div><a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"> </tt>
+<a name="extractPDBChain"></a><div id="extractPDBChain-def"><a name="L33"></a><tt class="py-lineno"> 33</tt> <a class="py-toggle" href="#" id="extractPDBChain-toggle" onclick="return toggle('extractPDBChain');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#extractPDBChain">extractPDBChain</a><tt class="py-op">(</tt><tt class="py-param">pdb_file</tt><tt class="py-op">,</tt> <tt class="py-param">ch</tt><tt class="py-op">,</tt> <tt class="py-param">dest_file</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="extractPDBChain-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="extractPDBChain-expanded"><a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-docstring">    Extracts a PDB file from another that has only</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-docstring">    information for a single chain.</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">    <tt class="py-name">fin</tt> <tt class="py-op">=</tt> <tt id="link-6" class="py-name" targets="Method labblouin.loadingBar.loadingBar.open()=labblouin.loadingBar.loadingBar-class.html#open"><a title="labblouin.loadingBar.loadingBar.open" class="py-name" href="#" onclick="return doclink('link-6', 'open', 'link-6');">open</a></tt><tt class="py-op">(</tt><tt class="py-name">pdb_file</tt><tt class="py-op">,</tt><tt class="py-string">'r'</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">    <tt class="py-name">out</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">line</tt> <tt class="py-keyword">in</tt> <tt class="py-name">fin</tt><tt class="py-op">:</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">line</tt><tt class="py-op">.</tt><tt class="py-name">startswith</tt><tt class="py-op">(</tt><tt class="py-string">'ATOM'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">continue</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-name">sl</tt> <tt class="py-op">=</tt> <tt class="py-name">line</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">int</tt><tt class="py-op">(</tt><tt class="py-name">sl</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> <tt class="py-op">&gt;=</tt> <tt class="py-number">100000</tt><tt class="py-op">:</tt> <tt class="py-name">k</tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> <tt class="py-name">k</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-name">chain</tt> <tt class="py-op">=</tt> <tt class="py-name">line</tt><tt class="py-op">[</tt><tt class="py-number">21</tt><tt class="py-op">+</tt><tt class="py-name">k</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">chain</tt> <tt class="py-op">==</tt> <tt class="py-name">ch</tt><tt class="py-op">:</tt> <tt class="py-name">out</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">line</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">    <tt class="py-name">fin</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method labblouin.loadingBar.loadingBar.close()=labblouin.loadingBar.loadingBar-class.html#close"><a title="labblouin.loadingBar.loadingBar.close" class="py-name" href="#" onclick="return doclink('link-7', 'close', 'link-7');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">    <tt class="py-name">fout</tt> <tt class="py-op">=</tt> <tt id="link-8" class="py-name"><a title="labblouin.loadingBar.loadingBar.open" class="py-name" href="#" onclick="return doclink('link-8', 'open', 'link-6');">open</a></tt><tt class="py-op">(</tt><tt class="py-name">dest_file</tt><tt class="py-op">,</tt> <tt class="py-string">'w'</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt id="link-9" class="py-name" targets="Variable labblouin.x=labblouin-module.html#x"><a title="labblouin.x" class="py-name" href="#" onclick="return doclink('link-9', 'x', 'link-9');">x</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">out</tt><tt class="py-op">:</tt> <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method labblouin.PDBnet.PDBstructure.write()=labblouin.PDBnet.PDBstructure-class.html#write,Method labblouin.logfile.XMLfile.write()=labblouin.logfile.XMLfile-class.html#write,Method labblouin.logfile.logfile.write()=labblouin.logfile.logfile-class.html#write"><a title="labblouin.PDBnet.PDBstructure.write
+labblouin.logfile.XMLfile.write
+labblouin.logfile.logfile.write" class="py-name" href="#" onclick="return doclink('link-10', 'write', 'link-10');">write</a></tt><tt class="py-op">(</tt><tt id="link-11" class="py-name"><a title="labblouin.x" class="py-name" href="#" onclick="return doclink('link-11', 'x', 'link-9');">x</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">    <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="labblouin.loadingBar.loadingBar.close" class="py-name" href="#" onclick="return doclink('link-12', 'close', 'link-7');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt>     </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">dest_file</tt> </tt>
+</div><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
+<a name="writeSequencesToFile"></a><div id="writeSequencesToFile-def"><a name="L53"></a><tt class="py-lineno"> 53</tt> <a class="py-toggle" href="#" id="writeSequencesToFile-toggle" onclick="return toggle('writeSequencesToFile');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#writeSequencesToFile">writeSequencesToFile</a><tt class="py-op">(</tt><tt class="py-param">seq_list</tt><tt class="py-op">,</tt> <tt class="py-param">targetfolder</tt><tt class="py-op">,</tt> <tt class="py-param">fasta</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="writeSequencesToFile-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="writeSequencesToFile-expanded"><a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"><tt class="py-docstring">    Takes in a dictionary of sequences and writes them</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"><tt class="py-docstring">    to seperate .seq or .fasta files.</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt>     </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">    <tt class="py-name">out_file_list</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">ch</tt><tt class="py-op">,</tt> <tt class="py-name">seq</tt> <tt class="py-keyword">in</tt> <tt class="py-name">seq_list</tt><tt class="py-op">.</tt><tt class="py-name">iteritems</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-op">(</tt><tt id="link-13" class="py-name" targets="Class labblouin.homology.fasta=labblouin.homology.fasta-class.html"><a title="labblouin.homology.fasta" class="py-name" href="#" onclick="return doclink('link-13', 'fasta', 'link-13');">fasta</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-name">ext</tt> <tt class="py-op">=</tt> <tt class="py-string">'fasta'</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> <tt class="py-name">ext</tt> <tt class="py-op">=</tt> <tt class="py-string">'sequence'</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-name">path</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">targetfolder</tt><tt class="py-op">,</tt> <tt class="py-name">ch</tt> <tt class="py-op">+</tt> <tt class="py-string">'.'</tt> <tt class="py-op">+</tt> <tt class="py-name">ext</tt><tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-name">fout</tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name"><a title="labblouin.loadingBar.loadingBar.open" class="py-name" href="#" onclick="return doclink('link-14', 'open', 'link-6');">open</a></tt><tt class="py-op">(</tt><tt class="py-name">path</tt><tt class="py-op">,</tt> <tt class="py-string">"w"</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-op">(</tt><tt id="link-15" class="py-name"><a title="labblouin.homology.fasta" class="py-name" href="#" onclick="return doclink('link-15', 'fasta', 'link-13');">fasta</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="labblouin.PDBnet.PDBstructure.write
+labblouin.logfile.XMLfile.write
+labblouin.logfile.logfile.write" class="py-name" href="#" onclick="return doclink('link-16', 'write', 'link-10');">write</a></tt><tt class="py-op">(</tt><tt class="py-string">'&gt;%s\n'</tt> <tt class="py-op">%</tt> <tt class="py-name">ch</tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">y</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">seq</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-number">80</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="labblouin.PDBnet.PDBstructure.write
+labblouin.logfile.XMLfile.write
+labblouin.logfile.logfile.write" class="py-name" href="#" onclick="return doclink('link-17', 'write', 'link-10');">write</a></tt><tt class="py-op">(</tt><tt class="py-name">seq</tt><tt class="py-op">[</tt><tt class="py-name">y</tt><tt class="py-op">:</tt><tt class="py-name">y</tt><tt class="py-op">+</tt><tt class="py-number">80</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">'\n'</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="labblouin.loadingBar.loadingBar.close" class="py-name" href="#" onclick="return doclink('link-18', 'close', 'link-7');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-name">out_file_list</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">path</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">         </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">out_file_list</tt> </tt>
+</div><a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"> </tt>
+<a name="writeSequenceToFasta"></a><div id="writeSequenceToFasta-def"><a name="L72"></a><tt class="py-lineno"> 72</tt> <a class="py-toggle" href="#" id="writeSequenceToFasta-toggle" onclick="return toggle('writeSequenceToFasta');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#writeSequenceToFasta">writeSequenceToFasta</a><tt class="py-op">(</tt><tt class="py-param">seq</tt><tt class="py-op">,</tt> <tt class="py-param">seq_id</tt><tt class="py-op">,</tt> <tt class="py-param">targetpath</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="writeSequenceToFasta-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="writeSequenceToFasta-expanded"><a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-docstring">    Creates FASTA file from given sequence string.</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">    <tt class="py-name">fout</tt> <tt class="py-op">=</tt> <tt id="link-19" class="py-name"><a title="labblouin.loadingBar.loadingBar.open" class="py-name" href="#" onclick="return doclink('link-19', 'open', 'link-6');">open</a></tt><tt class="py-op">(</tt><tt class="py-name">targetpath</tt><tt class="py-op">,</tt> <tt class="py-string">'w'</tt><tt class="py-op">)</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">    <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name"><a title="labblouin.PDBnet.PDBstructure.write
+labblouin.logfile.XMLfile.write
+labblouin.logfile.logfile.write" class="py-name" href="#" onclick="return doclink('link-20', 'write', 'link-10');">write</a></tt><tt class="py-op">(</tt><tt class="py-string">'&gt;%s\n'</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">seq_id</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">y</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">seq</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-number">80</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="labblouin.PDBnet.PDBstructure.write
+labblouin.logfile.XMLfile.write
+labblouin.logfile.logfile.write" class="py-name" href="#" onclick="return doclink('link-21', 'write', 'link-10');">write</a></tt><tt class="py-op">(</tt><tt class="py-name">seq</tt><tt class="py-op">[</tt><tt class="py-name">y</tt><tt class="py-op">:</tt><tt class="py-name">y</tt><tt class="py-op">+</tt><tt class="py-number">80</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">'\n'</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">    <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="labblouin.loadingBar.loadingBar.close" class="py-name" href="#" onclick="return doclink('link-22', 'close', 'link-7');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">     </tt>
+<a name="writeSequencesToFasta"></a><div id="writeSequencesToFasta-def"><a name="L82"></a><tt class="py-lineno"> 82</tt> <a class="py-toggle" href="#" id="writeSequencesToFasta-toggle" onclick="return toggle('writeSequencesToFasta');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#writeSequencesToFasta">writeSequencesToFasta</a><tt class="py-op">(</tt><tt class="py-param">seq_list</tt><tt class="py-op">,</tt> <tt class="py-param">dest_file</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="writeSequencesToFasta-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="writeSequencesToFasta-expanded"><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"><tt class="py-docstring">    Creates single FASTA file from given sequence tuple list</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"><tt class="py-docstring">    where first item is sequence ID, second item is the sequence.</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">    <tt class="py-name">fout</tt> <tt class="py-op">=</tt> <tt id="link-23" class="py-name"><a title="labblouin.loadingBar.loadingBar.open" class="py-name" href="#" onclick="return doclink('link-23', 'open', 'link-6');">open</a></tt><tt class="py-op">(</tt><tt class="py-name">dest_file</tt><tt class="py-op">,</tt> <tt class="py-string">"w"</tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">s</tt> <tt class="py-keyword">in</tt> <tt class="py-name">seq_list</tt><tt class="py-op">:</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-name">seq</tt> <tt class="py-op">=</tt> <tt class="py-name">s</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-name">ch</tt> <tt class="py-op">=</tt> <tt class="py-name">s</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="labblouin.PDBnet.PDBstructure.write
+labblouin.logfile.XMLfile.write
+labblouin.logfile.logfile.write" class="py-name" href="#" onclick="return doclink('link-24', 'write', 'link-10');">write</a></tt><tt class="py-op">(</tt><tt class="py-string">'&gt;%s\n'</tt> <tt class="py-op">%</tt> <tt class="py-name">ch</tt><tt class="py-op">)</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">y</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">seq</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-number">80</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">            <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name"><a title="labblouin.PDBnet.PDBstructure.write
+labblouin.logfile.XMLfile.write
+labblouin.logfile.logfile.write" class="py-name" href="#" onclick="return doclink('link-25', 'write', 'link-10');">write</a></tt><tt class="py-op">(</tt><tt class="py-name">seq</tt><tt class="py-op">[</tt><tt class="py-name">y</tt><tt class="py-op">:</tt><tt class="py-name">y</tt><tt class="py-op">+</tt><tt class="py-number">80</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">'\n'</tt><tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">    <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name"><a title="labblouin.loadingBar.loadingBar.close" class="py-name" href="#" onclick="return doclink('link-26', 'close', 'link-7');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"> </tt>
+<a name="doSequenceSearch"></a><div id="doSequenceSearch-def"><a name="L96"></a><tt class="py-lineno"> 96</tt> <a class="py-toggle" href="#" id="doSequenceSearch-toggle" onclick="return toggle('doSequenceSearch');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#doSequenceSearch">doSequenceSearch</a><tt class="py-op">(</tt><tt class="py-param">seq_file</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="doSequenceSearch-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="doSequenceSearch-expanded"><a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"><tt class="py-docstring">    Performs the PFAM search for a sequence file.</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt>        </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">    <tt class="py-comment"># Set up curl request.</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">    <tt class="py-name">url</tt> <tt class="py-op">=</tt> <tt class="py-string">'http://pfam.sanger.ac.uk/search/sequence'</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">    <tt class="py-name">values</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">'seq'</tt><tt class="py-op">:</tt> <tt id="link-27" class="py-name"><a title="labblouin.loadingBar.loadingBar.open" class="py-name" href="#" onclick="return doclink('link-27', 'open', 'link-6');">open</a></tt><tt class="py-op">(</tt><tt class="py-name">seq_file</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Method labblouin.FASTAnet.FASTAstructure.read()=labblouin.FASTAnet.FASTAstructure-class.html#read,Method labblouin.PDBnet.PDBstructure.read()=labblouin.PDBnet.PDBstructure-class.html#read,Method labblouin.homology.fasta.read()=labblouin.homology.fasta-class.html#read,Method labblouin.logfile.XMLfile.read()=labblouin.logfile.XMLfile-class.html#read"><a title="labblouin.FASTAnet.FASTAstructure.read
+labblouin.PDBnet.PDBstructure.read
+labblouin.homology.fasta.read
+labblouin.logfile.XMLfile.read" class="py-name" href="#" onclick="return doclink('link-28', 'read', 'link-28');">read</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-string">'evalue'</tt><tt class="py-op">:</tt> <tt class="py-string">'1.0'</tt><tt class="py-op">,</tt> <tt class="py-string">'ga'</tt><tt class="py-op">:</tt><tt class="py-string">'0'</tt><tt class="py-op">,</tt> <tt class="py-string">'output'</tt><tt class="py-op">:</tt><tt class="py-string">'xml'</tt><tt class="py-op">}</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">    <tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-name">urllib</tt><tt class="py-op">.</tt><tt class="py-name">urlencode</tt><tt class="py-op">(</tt><tt class="py-name">values</tt><tt class="py-op">)</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">    <tt class="py-name">req</tt> <tt class="py-op">=</tt> <tt class="py-name">urllib2</tt><tt class="py-op">.</tt><tt class="py-name">Request</tt><tt class="py-op">(</tt><tt class="py-name">url</tt><tt class="py-op">,</tt><tt class="py-name">data</tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">    <tt class="py-comment"># Retrieve search results.</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">    <tt class="py-name">response</tt> <tt class="py-op">=</tt> <tt class="py-name">urllib2</tt><tt class="py-op">.</tt><tt class="py-name">urlopen</tt><tt class="py-op">(</tt><tt class="py-name">req</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name"><a title="labblouin.FASTAnet.FASTAstructure.read
+labblouin.PDBnet.PDBstructure.read
+labblouin.homology.fasta.read
+labblouin.logfile.XMLfile.read" class="py-name" href="#" onclick="return doclink('link-29', 'read', 'link-28');">read</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">    <tt class="py-name">dom</tt> <tt class="py-op">=</tt> <tt class="py-name">xml</tt><tt class="py-op">.</tt><tt class="py-name">dom</tt><tt class="py-op">.</tt><tt class="py-name">minidom</tt><tt class="py-op">.</tt><tt class="py-name">parseString</tt><tt class="py-op">(</tt><tt class="py-name">response</tt><tt class="py-op">)</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">    <tt class="py-name">result_url</tt> <tt class="py-op">=</tt> <tt class="py-name">dom</tt><tt class="py-op">.</tt><tt class="py-name">getElementsByTagName</tt><tt class="py-op">(</tt><tt class="py-string">'result_url'</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">toxml</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">    <tt class="py-comment"># Find URL for results.</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">    <tt class="py-name">result_url</tt> <tt class="py-op">=</tt> <tt class="py-name">result_url</tt><tt class="py-op">.</tt><tt class="py-name">replace</tt><tt class="py-op">(</tt><tt class="py-string">'&lt;result_url&gt;'</tt><tt class="py-op">,</tt><tt class="py-string">''</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">replace</tt><tt class="py-op">(</tt><tt class="py-string">'&lt;/result_url&gt;'</tt><tt class="py-op">,</tt><tt class="py-string">''</tt><tt class="py-op">)</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">    <tt class="py-comment"># Get results.</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">    <tt id="link-30" class="py-name" targets="Variable labblouin.psub.results=labblouin.psub-module.html#results"><a title="labblouin.psub.results" class="py-name" href="#" onclick="return doclink('link-30', 'results', 'link-30');">results</a></tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">    <tt class="py-keyword">while</tt> <tt id="link-31" class="py-name"><a title="labblouin.psub.results" class="py-name" href="#" onclick="return doclink('link-31', 'results', 'link-30');">results</a></tt> <tt class="py-op">==</tt> <tt class="py-string">''</tt><tt class="py-op">:</tt> <tt class="py-comment"># Ensures job is done server-side.</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-name">result_out</tt> <tt class="py-op">=</tt> <tt class="py-name">urllib2</tt><tt class="py-op">.</tt><tt class="py-name">Request</tt><tt class="py-op">(</tt><tt class="py-name">result_url</tt><tt class="py-op">)</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">        <tt id="link-32" class="py-name"><a title="labblouin.psub.results" class="py-name" href="#" onclick="return doclink('link-32', 'results', 'link-30');">results</a></tt> <tt class="py-op">=</tt> <tt class="py-name">urllib2</tt><tt class="py-op">.</tt><tt class="py-name">urlopen</tt><tt class="py-op">(</tt><tt class="py-name">result_out</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name"><a title="labblouin.FASTAnet.FASTAstructure.read
+labblouin.PDBnet.PDBstructure.read
+labblouin.homology.fasta.read
+labblouin.logfile.XMLfile.read" class="py-name" href="#" onclick="return doclink('link-33', 'read', 'link-28');">read</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-34" class="py-name"><a title="labblouin.psub.results" class="py-name" href="#" onclick="return doclink('link-34', 'results', 'link-30');">results</a></tt> </tt>
+</div><a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line"> </tt>
+<a name="processSequenceSearch"></a><div id="processSequenceSearch-def"><a name="L118"></a><tt class="py-lineno">118</tt> <a class="py-toggle" href="#" id="processSequenceSearch-toggle" onclick="return toggle('processSequenceSearch');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#processSequenceSearch">processSequenceSearch</a><tt class="py-op">(</tt><tt class="py-param">search_results</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="processSequenceSearch-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="processSequenceSearch-expanded"><a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"><tt class="py-docstring">    Takes in a XML result returned from a sequence</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"><tt class="py-docstring">    search and parses it in order to determine what</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line"><tt class="py-docstring">    the most significant results are for related families.</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line"><tt class="py-docstring">    Returns a list of the family PFAM IDs.</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt>         </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">    <tt class="py-name">sigresults</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">    <tt class="py-name">dom</tt> <tt class="py-op">=</tt> <tt class="py-name">xml</tt><tt class="py-op">.</tt><tt class="py-name">dom</tt><tt class="py-op">.</tt><tt class="py-name">minidom</tt><tt class="py-op">.</tt><tt class="py-name">parseString</tt><tt class="py-op">(</tt><tt class="py-name">search_results</tt><tt class="py-op">)</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">    <tt class="py-name">matches</tt> <tt class="py-op">=</tt> <tt class="py-name">dom</tt><tt class="py-op">.</tt><tt class="py-name">getElementsByTagName</tt><tt class="py-op">(</tt><tt class="py-string">'location'</tt><tt class="py-op">)</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">match</tt> <tt class="py-keyword">in</tt> <tt class="py-name">matches</tt><tt class="py-op">:</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">match</tt><tt class="py-op">.</tt><tt class="py-name">getAttribute</tt><tt class="py-op">(</tt><tt class="py-string">'significant'</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-string">'1'</tt><tt class="py-op">:</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">            <tt class="py-name">sigresult</tt> <tt class="py-op">=</tt> <tt class="py-name">match</tt><tt class="py-op">.</tt><tt class="py-name">parentNode</tt><tt class="py-op">.</tt><tt class="py-name">getAttribute</tt><tt class="py-op">(</tt><tt class="py-string">'id'</tt><tt class="py-op">)</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">            <tt class="py-name">sigresults</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">sigresult</tt><tt class="py-op">)</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">sigresults</tt> </tt>
+</div><a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line"> </tt>
+<a name="downloadFamilySequences"></a><div id="downloadFamilySequences-def"><a name="L134"></a><tt class="py-lineno">134</tt> <a class="py-toggle" href="#" id="downloadFamilySequences-toggle" onclick="return toggle('downloadFamilySequences');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#downloadFamilySequences">downloadFamilySequences</a><tt class="py-op">(</tt><tt class="py-param">pfam_family_id</tt><tt class="py-op">,</tt> <tt class="py-param">dest_folder</tt><tt class="py-op">,</tt> <tt class="py-param">atype</tt><tt class="py-op">=</tt><tt class="py-string">'seed'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="downloadFamilySequences-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="downloadFamilySequences-expanded"><a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line"><tt class="py-docstring">    Takes in PFAM family ID and acquires the gzipped</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line"><tt class="py-docstring">    flat file filled with seed or full sequence allignments.</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt>      </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">    <tt class="py-name">dest</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">dest_folder</tt><tt class="py-op">,</tt> <tt class="py-string">'%s-pfam-%s.gz'</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">atype</tt><tt class="py-op">,</tt><tt class="py-name">pfam_family_id</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">isfile</tt><tt class="py-op">(</tt><tt class="py-name">dest</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">dest</tt> <tt class="py-comment"># If already exists.</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">    <tt class="py-name">url</tt> <tt class="py-op">=</tt> <tt class="py-string">'http://pfam.sanger.ac.uk/family/%s/alignment/%s/gzipped'</tt> \ </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">pfam_family_id</tt><tt class="py-op">,</tt> <tt class="py-name">atype</tt><tt class="py-op">)</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt class="py-name">dest</tt><tt class="py-op">,</tt> <tt class="py-name">hdrs</tt> <tt class="py-op">=</tt> <tt class="py-name">urllib</tt><tt class="py-op">.</tt><tt class="py-name">urlretrieve</tt><tt class="py-op">(</tt><tt class="py-name">url</tt><tt class="py-op">,</tt> <tt class="py-name">dest</tt><tt class="py-op">)</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt> <tt class="py-name">IOError</tt><tt class="py-op">,</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"Can't retrieve %r to %r: %s"</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">url</tt><tt class="py-op">,</tt> <tt class="py-name">dest_folder</tt><tt class="py-op">,</tt> <tt class="py-name">e</tt><tt class="py-op">)</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">dest</tt> </tt>
+</div><a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line"> </tt>
+<a name="decompressGzipFile"></a><div id="decompressGzipFile-def"><a name="L150"></a><tt class="py-lineno">150</tt> <a class="py-toggle" href="#" id="decompressGzipFile-toggle" onclick="return toggle('decompressGzipFile');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#decompressGzipFile">decompressGzipFile</a><tt class="py-op">(</tt><tt class="py-param">gzip_file_name</tt><tt class="py-op">,</tt> <tt class="py-param">destfolder</tt><tt class="py-op">,</tt> <tt class="py-param">file_ext</tt><tt class="py-op">=</tt><tt class="py-string">'ann'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="decompressGzipFile-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="decompressGzipFile-expanded"><a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line"><tt class="py-docstring">    Takes in GZIP file from PFAM or PDB and decompresses it to an</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"><tt class="py-docstring">    .ann or specified file extension.</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">        <tt class="py-keyword">with</tt> <tt class="py-name">gzip</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name"><a title="labblouin.loadingBar.loadingBar.open" class="py-name" href="#" onclick="return doclink('link-35', 'open', 'link-6');">open</a></tt><tt class="py-op">(</tt><tt class="py-name">gzip_file_name</tt><tt class="py-op">,</tt> <tt class="py-string">'rb'</tt><tt class="py-op">)</tt> <tt class="py-keyword">as</tt> <tt class="py-name">f</tt><tt class="py-op">:</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">            <tt class="py-name">file_content</tt> <tt class="py-op">=</tt> <tt class="py-name">f</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name"><a title="labblouin.FASTAnet.FASTAstructure.read
+labblouin.PDBnet.PDBstructure.read
+labblouin.homology.fasta.read
+labblouin.logfile.XMLfile.read" class="py-name" href="#" onclick="return doclink('link-36', 'read', 'link-28');">read</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt><tt class="py-op">:</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">    <tt class="py-name">dest_file</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">destfolder</tt><tt class="py-op">,</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">splitext</tt> \ </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">                             <tt class="py-op">(</tt><tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">basename</tt><tt class="py-op">(</tt><tt class="py-name">gzip_file_name</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">'.'</tt> <tt class="py-op">+</tt> \ </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">                             <tt class="py-name">file_ext</tt><tt class="py-op">)</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">    <tt class="py-name">fout</tt> <tt class="py-op">=</tt> <tt id="link-37" class="py-name"><a title="labblouin.loadingBar.loadingBar.open" class="py-name" href="#" onclick="return doclink('link-37', 'open', 'link-6');">open</a></tt><tt class="py-op">(</tt><tt class="py-name">dest_file</tt><tt class="py-op">,</tt> <tt class="py-string">'w'</tt><tt class="py-op">)</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">    <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-38" class="py-name"><a title="labblouin.PDBnet.PDBstructure.write
+labblouin.logfile.XMLfile.write
+labblouin.logfile.logfile.write" class="py-name" href="#" onclick="return doclink('link-38', 'write', 'link-10');">write</a></tt><tt class="py-op">(</tt><tt class="py-name">file_content</tt><tt class="py-op">)</tt> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">    <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-39" class="py-name"><a title="labblouin.loadingBar.loadingBar.close" class="py-name" href="#" onclick="return doclink('link-39', 'close', 'link-7');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">dest_file</tt> </tt>
+</div><a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line"> </tt>
+<a name="readPfamFile"></a><div id="readPfamFile-def"><a name="L168"></a><tt class="py-lineno">168</tt> <a class="py-toggle" href="#" id="readPfamFile-toggle" onclick="return toggle('readPfamFile');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#readPfamFile">readPfamFile</a><tt class="py-op">(</tt><tt class="py-param">file_name</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="readPfamFile-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="readPfamFile-expanded"><a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line"><tt class="py-docstring">    Takes in PFAM Stockholm file and reads it, returning</tt> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line"><tt class="py-docstring">    a pfamFile object.</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt>          </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line">    <tt class="py-name">obj_out</tt> <tt class="py-op">=</tt> <tt id="link-40" class="py-name"><a title="labblouin.pfamFile" class="py-name" href="#" onclick="return doclink('link-40', 'pfamFile', 'link-0');">pfamFile</a></tt><tt class="py-op">.</tt><tt id="link-41" class="py-name" targets="Module labblouin.pfam=labblouin.pfam-module.html,Class labblouin.pfamFile.pfam=labblouin.pfamFile.pfam-class.html"><a title="labblouin.pfam
+labblouin.pfamFile.pfam" class="py-name" href="#" onclick="return doclink('link-41', 'pfam', 'link-41');">pfam</a></tt><tt class="py-op">(</tt><tt class="py-name">file_name</tt><tt class="py-op">)</tt> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">    <tt class="py-name">obj_out</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name" targets="Method labblouin.pfamFile.pfam.parse()=labblouin.pfamFile.pfam-class.html#parse"><a title="labblouin.pfamFile.pfam.parse" class="py-name" href="#" onclick="return doclink('link-42', 'parse', 'link-42');">parse</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">obj_out</tt> </tt>
+</div><a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line"> </tt>
+<a name="grabNCBIAccessionMetadata"></a><div id="grabNCBIAccessionMetadata-def"><a name="L177"></a><tt class="py-lineno">177</tt> <a class="py-toggle" href="#" id="grabNCBIAccessionMetadata-toggle" onclick="return toggle('grabNCBIAccessionMetadata');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#grabNCBIAccessionMetadata">grabNCBIAccessionMetadata</a><tt class="py-op">(</tt><tt class="py-param">accession_id</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="grabNCBIAccessionMetadata-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="grabNCBIAccessionMetadata-expanded"><a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line"><tt class="py-docstring">    Takes in an accession ID and returns NCBI</tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line"><tt class="py-docstring">    metadata from GenBank.</tt> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt>         </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">    <tt class="py-name">url</tt> <tt class="py-op">=</tt> <tt class="py-string">'http://www.ncbi.nlm.nih.gov/sviewer/viewer.fcgi?'</tt> <tt class="py-op">+</tt> \ </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">        <tt class="py-string">'tool=portal&amp;sendto=on&amp;log$=seqview&amp;db=protein&amp;dopt=genpept'</tt> <tt class="py-op">+</tt> \ </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line">        <tt class="py-string">'&amp;val=%s&amp;extrafeat=984&amp;maxplex=1'</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">accession_id</tt><tt class="py-op">)</tt> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">urllib</tt><tt class="py-op">.</tt><tt class="py-name">urlopen</tt><tt class="py-op">(</tt><tt class="py-name">url</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-43" class="py-name"><a title="labblouin.FASTAnet.FASTAstructure.read
+labblouin.PDBnet.PDBstructure.read
+labblouin.homology.fasta.read
+labblouin.logfile.XMLfile.read" class="py-name" href="#" onclick="return doclink('link-43', 'read', 'link-28');">read</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line"> </tt>
+<a name="grabPDBFile"></a><div id="grabPDBFile-def"><a name="L187"></a><tt class="py-lineno">187</tt> <a class="py-toggle" href="#" id="grabPDBFile-toggle" onclick="return toggle('grabPDBFile');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#grabPDBFile">grabPDBFile</a><tt class="py-op">(</tt><tt class="py-param">pdb_code</tt><tt class="py-op">,</tt> <tt class="py-param">dest_folder</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="grabPDBFile-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="grabPDBFile-expanded"><a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line"><tt class="py-docstring">    Takes in a PDB code and acquires the PDB file</tt> </tt>
+<a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line"><tt class="py-docstring">    from the PDB database, placing it in the specified</tt> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line"><tt class="py-docstring">    destination folder.</tt> </tt>
+<a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt>            </tt>
+<a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line">    <tt class="py-name">dest</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">dest_folder</tt><tt class="py-op">,</tt> <tt class="py-name">pdb_code</tt> <tt class="py-op">+</tt> <tt class="py-string">'.pdb'</tt><tt class="py-op">)</tt>     </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">isfile</tt><tt class="py-op">(</tt><tt class="py-name">dest</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">dest</tt>     </tt>
+<a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line">    <tt class="py-name">url</tt> <tt class="py-op">=</tt> <tt class="py-string">'http://www.rcsb.org/pdb/download/downloadFile.do?'</tt> <tt class="py-op">+</tt> \ </tt>
+<a name="L196"></a><tt class="py-lineno">196</tt>  <tt class="py-line">        <tt class="py-string">'fileFormat=pdb&amp;compression=NO&amp;structureId=%s'</tt> \ </tt>
+<a name="L197"></a><tt class="py-lineno">197</tt>  <tt class="py-line">        <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">pdb_code</tt><tt class="py-op">)</tt> </tt>
+<a name="L198"></a><tt class="py-lineno">198</tt>  <tt class="py-line">    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L199"></a><tt class="py-lineno">199</tt>  <tt class="py-line">        <tt class="py-name">dest</tt><tt class="py-op">,</tt> <tt class="py-name">hdrs</tt> <tt class="py-op">=</tt> <tt class="py-name">urllib</tt><tt class="py-op">.</tt><tt class="py-name">urlretrieve</tt><tt class="py-op">(</tt><tt class="py-name">url</tt><tt class="py-op">,</tt> <tt class="py-name">dest</tt><tt class="py-op">)</tt> </tt>
+<a name="L200"></a><tt class="py-lineno">200</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt> <tt class="py-name">IOError</tt><tt class="py-op">,</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L201"></a><tt class="py-lineno">201</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"Can't retrieve PDB for %s. Check network connection."</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">pdb_code</tt><tt class="py-op">)</tt> </tt>
+<a name="L202"></a><tt class="py-lineno">202</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">None</tt>         </tt>
+<a name="L203"></a><tt class="py-lineno">203</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">dest</tt> </tt>
+</div><a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line"> </tt>
+<a name="printListToFile"></a><div id="printListToFile-def"><a name="L205"></a><tt class="py-lineno">205</tt> <a class="py-toggle" href="#" id="printListToFile-toggle" onclick="return toggle('printListToFile');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#printListToFile">printListToFile</a><tt class="py-op">(</tt><tt class="py-param">list_in</tt><tt class="py-op">,</tt> <tt class="py-param">dest</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="printListToFile-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="printListToFile-expanded"><a name="L206"></a><tt class="py-lineno">206</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L207"></a><tt class="py-lineno">207</tt>  <tt class="py-line"><tt class="py-docstring">    Prints a list to a file.</tt> </tt>
+<a name="L208"></a><tt class="py-lineno">208</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt>            </tt>
+<a name="L209"></a><tt class="py-lineno">209</tt>  <tt class="py-line">    <tt class="py-name">fout</tt> <tt class="py-op">=</tt> <tt id="link-44" class="py-name"><a title="labblouin.loadingBar.loadingBar.open" class="py-name" href="#" onclick="return doclink('link-44', 'open', 'link-6');">open</a></tt><tt class="py-op">(</tt><tt class="py-name">dest</tt><tt class="py-op">,</tt> <tt class="py-string">'w'</tt><tt class="py-op">)</tt> </tt>
+<a name="L210"></a><tt class="py-lineno">210</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">item</tt> <tt class="py-keyword">in</tt> <tt class="py-name">list_in</tt><tt class="py-op">:</tt> </tt>
+<a name="L211"></a><tt class="py-lineno">211</tt>  <tt class="py-line">        <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-45" class="py-name"><a title="labblouin.PDBnet.PDBstructure.write
+labblouin.logfile.XMLfile.write
+labblouin.logfile.logfile.write" class="py-name" href="#" onclick="return doclink('link-45', 'write', 'link-10');">write</a></tt><tt class="py-op">(</tt><tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">item</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'\n'</tt><tt class="py-op">)</tt> </tt>
+<a name="L212"></a><tt class="py-lineno">212</tt>  <tt class="py-line">    <tt class="py-name">fout</tt><tt class="py-op">.</tt><tt id="link-46" class="py-name"><a title="labblouin.loadingBar.loadingBar.close" class="py-name" href="#" onclick="return doclink('link-46', 'close', 'link-7');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L213"></a><tt class="py-lineno">213</tt>  <tt class="py-line"> </tt>
+<a name="list2txttable"></a><div id="list2txttable-def"><a name="L214"></a><tt class="py-lineno">214</tt> <a class="py-toggle" href="#" id="list2txttable-toggle" onclick="return toggle('list2txttable');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#list2txttable">list2txttable</a><tt class="py-op">(</tt><tt class="py-param">list_in</tt><tt class="py-op">,</tt> <tt class="py-param">title</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="list2txttable-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="list2txttable-expanded"><a name="L215"></a><tt class="py-lineno">215</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L216"></a><tt class="py-lineno">216</tt>  <tt class="py-line"><tt class="py-docstring">    Converts a list to a string table.</tt> </tt>
+<a name="L217"></a><tt class="py-lineno">217</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt>        </tt>
+<a name="L218"></a><tt class="py-lineno">218</tt>  <tt class="py-line">    <tt class="py-name">txttable</tt> <tt class="py-op">=</tt> <tt class="py-name">texttable</tt><tt class="py-op">.</tt><tt class="py-name">Texttable</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L219"></a><tt class="py-lineno">219</tt>  <tt class="py-line">    <tt class="py-name">header</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">title</tt><tt class="py-op">]</tt> </tt>
+<a name="L220"></a><tt class="py-lineno">220</tt>  <tt class="py-line">    <tt class="py-name">txttable</tt><tt class="py-op">.</tt><tt class="py-name">header</tt><tt class="py-op">(</tt><tt class="py-name">header</tt><tt class="py-op">)</tt> </tt>
+<a name="L221"></a><tt class="py-lineno">221</tt>  <tt class="py-line">    <tt class="py-name">txttable</tt><tt class="py-op">.</tt><tt class="py-name">set_deco</tt><tt class="py-op">(</tt><tt class="py-name">txttable</tt><tt class="py-op">.</tt><tt class="py-name">BORDER</tt> <tt class="py-op">|</tt> <tt class="py-name">txttable</tt><tt class="py-op">.</tt><tt class="py-name">HEADER</tt> <tt class="py-op">|</tt> <tt class="py-name">txttable</tt><tt class="py-op">.</tt><tt class="py-name">VLINES</tt><tt class="py-op">)</tt> </tt>
+<a name="L222"></a><tt class="py-lineno">222</tt>  <tt class="py-line">    <tt class="py-name">txttable</tt><tt class="py-op">.</tt><tt class="py-name">set_chars</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-string">'-'</tt><tt class="py-op">,</tt><tt class="py-string">'|'</tt><tt class="py-op">,</tt><tt class="py-string">'+'</tt><tt class="py-op">,</tt><tt class="py-string">'-'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L223"></a><tt class="py-lineno">223</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">item</tt> <tt class="py-keyword">in</tt> <tt class="py-name">list_in</tt><tt class="py-op">:</tt> </tt>
+<a name="L224"></a><tt class="py-lineno">224</tt>  <tt class="py-line">        <tt class="py-name">txttable</tt><tt class="py-op">.</tt><tt class="py-name">add_row</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">item</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L225"></a><tt class="py-lineno">225</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">txttable</tt><tt class="py-op">.</tt><tt class="py-name">draw</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L226"></a><tt class="py-lineno">226</tt>  <tt class="py-line"> </tt>
+<a name="removeListDuplicates"></a><div id="removeListDuplicates-def"><a name="L227"></a><tt class="py-lineno">227</tt> <a class="py-toggle" href="#" id="removeListDuplicates-toggle" onclick="return toggle('removeListDuplicates');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.pfam-module.html#removeListDuplicates">removeListDuplicates</a><tt class="py-op">(</tt><tt class="py-param">list_in</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>  </tt>
+</div><a name="L228"></a><tt class="py-lineno">228</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L229"></a><tt class="py-lineno">229</tt>  <tt class="py-line"><tt class="py-docstring">    Removes all duplicates in a list.</tt> </tt>
+<a name="L230"></a><tt class="py-lineno">230</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt>      </tt>
+<a name="L231"></a><tt class="py-lineno">231</tt>  <tt class="py-line">    <tt class="py-name">seen</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L232"></a><tt class="py-lineno">232</tt>  <tt class="py-line">    <tt class="py-name">list_out</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L233"></a><tt class="py-lineno">233</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">item</tt> <tt class="py-keyword">in</tt> <tt class="py-name">list_in</tt><tt class="py-op">:</tt> </tt>
+<a name="L234"></a><tt class="py-lineno">234</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">item</tt> <tt class="py-keyword">in</tt> <tt class="py-name">seen</tt><tt class="py-op">:</tt> <tt class="py-keyword">continue</tt> </tt>
+<a name="L235"></a><tt class="py-lineno">235</tt>  <tt class="py-line">        <tt class="py-name">seen</tt><tt class="py-op">[</tt><tt class="py-name">item</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L236"></a><tt class="py-lineno">236</tt>  <tt class="py-line">        <tt class="py-name">list_out</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">item</tt><tt class="py-op">)</tt> </tt>
+<a name="L237"></a><tt class="py-lineno">237</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">list_out</tt> </tt>
+</div><a name="L238"></a><tt class="py-lineno">238</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="labblouin-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://web.cs.dal.ca/~safatli/">LabBlouinTools</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Oct 17 09:36:35 2014
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

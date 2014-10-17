@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>labblouin.sabmark</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="labblouin-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://web.cs.dal.ca/~safatli/">LabBlouinTools</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="labblouin-module.html">Package&nbsp;labblouin</a> ::
+        Module&nbsp;sabmark
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="labblouin.sabmark-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="labblouin.sabmark-module.html">Module labblouin.sabmark</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment"># sabmark.py</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment"># -------------------------</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment"># Jun 14, 2013; Alex Safatli</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-comment"># -------------------------</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-comment"># SABMARK Database API</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">glob</tt> <tt class="py-keyword">import</tt> <tt class="py-name">glob</tt> <tt class="py-keyword">as</tt> <tt class="py-name">g</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">utils</tt> <tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Module labblouin.IO=labblouin.IO-module.html"><a title="labblouin.IO" class="py-name" href="#" onclick="return doclink('link-0', 'IO', 'link-0');">IO</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
+<a name="sabmarkFile"></a><div id="sabmarkFile-def"><a name="L11"></a><tt class="py-lineno">11</tt> <a class="py-toggle" href="#" id="sabmarkFile-toggle" onclick="return toggle('sabmarkFile');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkFile-class.html">sabmarkFile</a><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkFile-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="sabmarkFile-expanded"><a name="sabmarkFile.__init__"></a><div id="sabmarkFile.__init__-def"><a name="L12"></a><tt class="py-lineno">12</tt> <a class="py-toggle" href="#" id="sabmarkFile.__init__-toggle" onclick="return toggle('sabmarkFile.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkFile-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">path</tt><tt class="py-op">,</tt><tt class="py-param">l</tt><tt class="py-op">,</tt><tt class="py-param">fp</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkFile.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="sabmarkFile.__init__-expanded"><a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">path</tt> <tt class="py-op">=</tt> <tt class="py-name">path</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">length</tt> <tt class="py-op">=</tt> <tt class="py-name">l</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">true</tt> <tt class="py-op">=</tt> <tt class="py-name">fp</tt> </tt>
+</div></div><a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"> </tt>
+<a name="sabmarkSummary"></a><div id="sabmarkSummary-def"><a name="L17"></a><tt class="py-lineno">17</tt> <a class="py-toggle" href="#" id="sabmarkSummary-toggle" onclick="return toggle('sabmarkSummary');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkSummary-class.html">sabmarkSummary</a><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkSummary-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="sabmarkSummary-expanded"><a name="sabmarkSummary.__init__"></a><div id="sabmarkSummary.__init__-def"><a name="L18"></a><tt class="py-lineno">18</tt> <a class="py-toggle" href="#" id="sabmarkSummary.__init__-toggle" onclick="return toggle('sabmarkSummary.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkSummary-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">path</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkSummary.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="sabmarkSummary.__init__-expanded"><a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">path</tt> <tt class="py-op">=</tt> <tt class="py-name">path</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Variable labblouin.scop.scopHierarchy.entries=labblouin.scop.scopHierarchy-class.html#entries"><a title="labblouin.scop.scopHierarchy.entries" class="py-name" href="#" onclick="return doclink('link-1', 'entries', 'link-1');">entries</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">names</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Method labblouin.expresso.expressoParser.__read__()=labblouin.expresso.expressoParser-class.html#__read__,Method labblouin.sabmark.sabmarkSummary.__read__()=labblouin.sabmark.sabmarkSummary-class.html#__read__"><a title="labblouin.expresso.expressoParser.__read__
+labblouin.sabmark.sabmarkSummary.__read__" class="py-name" href="#" onclick="return doclink('link-2', '__read__', 'link-2');">__read__</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="sabmarkSummary.__read__"></a><div id="sabmarkSummary.__read__-def"><a name="L23"></a><tt class="py-lineno">23</tt> <a class="py-toggle" href="#" id="sabmarkSummary.__read__-toggle" onclick="return toggle('sabmarkSummary.__read__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkSummary-class.html#__read__">__read__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkSummary.__read__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="sabmarkSummary.__read__-expanded"><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-name">f</tt> <tt class="py-op">=</tt> <tt id="link-3" class="py-name" targets="Method labblouin.loadingBar.loadingBar.open()=labblouin.loadingBar.loadingBar-class.html#open"><a title="labblouin.loadingBar.loadingBar.open" class="py-name" href="#" onclick="return doclink('link-3', 'open', 'link-3');">open</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">        <tt class="py-name">l</tt> <tt class="py-op">=</tt> <tt class="py-name">f</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method labblouin.FASTAnet.FASTAstructure.read()=labblouin.FASTAnet.FASTAstructure-class.html#read,Method labblouin.PDBnet.PDBstructure.read()=labblouin.PDBnet.PDBstructure-class.html#read,Method labblouin.homology.fasta.read()=labblouin.homology.fasta-class.html#read,Method labblouin.logfile.XMLfile.read()=labblouin.logfile.XMLfile-class.html#read"><a title="labblouin.FASTAnet.FASTAstructure.read
+labblouin.PDBnet.PDBstructure.read
+labblouin.homology.fasta.read
+labblouin.logfile.XMLfile.read" class="py-name" href="#" onclick="return doclink('link-4', 'read', 'link-4');">read</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt class="py-name">f</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Method labblouin.loadingBar.loadingBar.close()=labblouin.loadingBar.loadingBar-class.html#close"><a title="labblouin.loadingBar.loadingBar.close" class="py-name" href="#" onclick="return doclink('link-5', 'close', 'link-5');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt id="link-6" class="py-name" targets="Variable labblouin.x=labblouin-module.html#x"><a title="labblouin.x" class="py-name" href="#" onclick="return doclink('link-6', 'x', 'link-6');">x</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">l</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">"\n"</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt><tt class="py-op">:</tt>  </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">            <tt class="py-name">s</tt> <tt class="py-op">=</tt> <tt id="link-7" class="py-name"><a title="labblouin.x" class="py-name" href="#" onclick="return doclink('link-7', 'x', 'link-6');">x</a></tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">s</tt><tt class="py-op">)</tt> <tt class="py-op">&lt;=</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> <tt class="py-keyword">continue</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name"><a title="labblouin.scop.scopHierarchy.entries" class="py-name" href="#" onclick="return doclink('link-8', 'entries', 'link-1');">entries</a></tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">s</tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">names</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">s</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"> </tt>
+<a name="sabmarkFolder"></a><div id="sabmarkFolder-def"><a name="L33"></a><tt class="py-lineno">33</tt> <a class="py-toggle" href="#" id="sabmarkFolder-toggle" onclick="return toggle('sabmarkFolder');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkFolder-class.html">sabmarkFolder</a><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkFolder-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="sabmarkFolder-expanded"><a name="sabmarkFolder.__init__"></a><div id="sabmarkFolder.__init__-def"><a name="L34"></a><tt class="py-lineno">34</tt> <a class="py-toggle" href="#" id="sabmarkFolder.__init__-toggle" onclick="return toggle('sabmarkFolder.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkFolder-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">foldrname</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkFolder.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="sabmarkFolder.__init__-expanded"><a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">path</tt> <tt class="py-op">=</tt> <tt class="py-name">foldrname</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">files</tt> <tt class="py-op">=</tt> <tt class="py-name">g</tt><tt class="py-op">(</tt><tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">foldrname</tt><tt class="py-op">,</tt><tt class="py-string">'*'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">name</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pdbs</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pdbs_nf</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method labblouin.homstrad.homstradFolder.__manifest__()=labblouin.homstrad.homstradFolder-class.html#__manifest__,Method labblouin.sabmark.sabmarkFolder.__manifest__()=labblouin.sabmark.sabmarkFolder-class.html#__manifest__"><a title="labblouin.homstrad.homstradFolder.__manifest__
+labblouin.sabmark.sabmarkFolder.__manifest__" class="py-name" href="#" onclick="return doclink('link-9', '__manifest__', 'link-9');">__manifest__</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="sabmarkFolder.__manifest__"></a><div id="sabmarkFolder.__manifest__-def"><a name="L41"></a><tt class="py-lineno">41</tt> <a class="py-toggle" href="#" id="sabmarkFolder.__manifest__-toggle" onclick="return toggle('sabmarkFolder.__manifest__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkFolder-class.html#__manifest__">__manifest__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkFolder.__manifest__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="sabmarkFolder.__manifest__-expanded"><a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-name">grsums</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">,</tt><tt class="py-string">"group.summary"</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">name</tt> <tt class="py-op">=</tt> <tt id="link-10" class="py-name"><a title="labblouin.IO" class="py-name" href="#" onclick="return doclink('link-10', 'IO', 'link-0');">IO</a></tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Function labblouin.IO.getFileName()=labblouin.IO-module.html#getFileName"><a title="labblouin.IO.getFileName" class="py-name" href="#" onclick="return doclink('link-11', 'getFileName', 'link-11');">getFileName</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">        <tt class="py-name">pdbs</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">,</tt><tt class="py-string">"pdb"</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-op">(</tt><tt class="py-keyword">not</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">isfile</tt><tt class="py-op">(</tt><tt class="py-name">grsums</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">raise</tt> <tt class="py-name">IOError</tt><tt class="py-op">(</tt><tt class="py-string">"Group summary could not be found."</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-op">(</tt><tt class="py-keyword">not</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">isdir</tt><tt class="py-op">(</tt><tt class="py-name">pdbs</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>  <tt class="py-keyword">raise</tt> <tt class="py-name">IOError</tt><tt class="py-op">(</tt><tt class="py-string">"PDB directory for group not found."</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-name">summary</tt> <tt class="py-op">=</tt> <tt id="link-12" class="py-name" targets="Class labblouin.sabmark.sabmarkSummary=labblouin.sabmark.sabmarkSummary-class.html"><a title="labblouin.sabmark.sabmarkSummary" class="py-name" href="#" onclick="return doclink('link-12', 'sabmarkSummary', 'link-12');">sabmarkSummary</a></tt><tt class="py-op">(</tt><tt class="py-name">grsums</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">name</tt> <tt class="py-keyword">in</tt> <tt class="py-name">summary</tt><tt class="py-op">.</tt><tt class="py-name">names</tt><tt class="py-op">:</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">            <tt class="py-name">e</tt> <tt class="py-op">=</tt> <tt class="py-name">summary</tt><tt class="py-op">.</tt><tt class="py-name">names</tt><tt class="py-op">.</tt><tt class="py-name">index</tt><tt class="py-op">(</tt><tt class="py-name">name</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">            <tt class="py-name">entry</tt> <tt class="py-op">=</tt> <tt class="py-name">summary</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="labblouin.scop.scopHierarchy.entries" class="py-name" href="#" onclick="return doclink('link-13', 'entries', 'link-1');">entries</a></tt><tt class="py-op">[</tt><tt class="py-name">e</tt><tt class="py-op">]</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">            <tt class="py-name">length</tt> <tt class="py-op">=</tt> <tt class="py-name">int</tt><tt class="py-op">(</tt><tt class="py-name">entry</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">            <tt class="py-name">fp</tt> <tt class="py-op">=</tt> <tt class="py-name">entry</tt><tt class="py-op">[</tt><tt class="py-number">2</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-string">'1'</tt> <tt class="py-comment"># is true?</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">            <tt class="py-name">fpath</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">pdbs</tt><tt class="py-op">,</tt><tt class="py-name">name</tt><tt class="py-op">+</tt><tt class="py-string">'.ent'</tt><tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">isfile</tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pdbs_nf</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt id="link-14" class="py-name" targets="Class labblouin.sabmark.sabmarkFile=labblouin.sabmark.sabmarkFile-class.html"><a title="labblouin.sabmark.sabmarkFile" class="py-name" href="#" onclick="return doclink('link-14', 'sabmarkFile', 'link-14');">sabmarkFile</a></tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">,</tt><tt class="py-name">length</tt><tt class="py-op">,</tt><tt class="py-name">fp</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">                <tt class="py-keyword">print</tt> <tt class="py-string">'Warning: %s could not be found but existed in summary.'</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">name</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pdbs</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt id="link-15" class="py-name"><a title="labblouin.sabmark.sabmarkFile" class="py-name" href="#" onclick="return doclink('link-15', 'sabmarkFile', 'link-14');">sabmarkFile</a></tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">,</tt><tt class="py-name">length</tt><tt class="py-op">,</tt><tt class="py-name">fp</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">         </tt>
+<a name="sabmarkDatabase"></a><div id="sabmarkDatabase-def"><a name="L59"></a><tt class="py-lineno">59</tt> <a class="py-toggle" href="#" id="sabmarkDatabase-toggle" onclick="return toggle('sabmarkDatabase');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkDatabase-class.html">sabmarkDatabase</a><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkDatabase-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="sabmarkDatabase-expanded"><a name="sabmarkDatabase.__init__"></a><div id="sabmarkDatabase.__init__-def"><a name="L60"></a><tt class="py-lineno">60</tt> <a class="py-toggle" href="#" id="sabmarkDatabase.__init__-toggle" onclick="return toggle('sabmarkDatabase.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkDatabase-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">dbpath</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkDatabase.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="sabmarkDatabase.__init__-expanded"><a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">path</tt> <tt class="py-op">=</tt> <tt class="py-name">dbpath</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">categories</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'sup'</tt><tt class="py-op">,</tt><tt class="py-string">'sup_fp'</tt><tt class="py-op">,</tt><tt class="py-string">'twi'</tt><tt class="py-op">,</tt><tt class="py-string">'twi_fp'</tt><tt class="py-op">]</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">folders</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pdbs</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">falsepositives</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">truepositives</tt>  <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+</div><a name="sabmarkDatabase.traverse"></a><div id="sabmarkDatabase.traverse-def"><a name="L67"></a><tt class="py-lineno">67</tt> <a class="py-toggle" href="#" id="sabmarkDatabase.traverse-toggle" onclick="return toggle('sabmarkDatabase.traverse');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkDatabase-class.html#traverse">traverse</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkDatabase.traverse-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="sabmarkDatabase.traverse-expanded"><a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">cat</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt id="link-16" class="py-name"><a title="labblouin.x" class="py-name" href="#" onclick="return doclink('link-16', 'x', 'link-6');">x</a></tt> <tt class="py-keyword">for</tt> <tt id="link-17" class="py-name"><a title="labblouin.x" class="py-name" href="#" onclick="return doclink('link-17', 'x', 'link-6');">x</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">categories</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">            <tt class="py-name">path</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">,</tt><tt class="py-name">cat</tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-op">(</tt><tt class="py-keyword">not</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">isdir</tt><tt class="py-op">(</tt><tt class="py-name">path</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">categories</tt><tt class="py-op">.</tt><tt class="py-name">remove</tt><tt class="py-op">(</tt><tt class="py-name">cat</tt><tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">folders</tt><tt class="py-op">[</tt><tt class="py-op">(</tt><tt class="py-name">path</tt><tt class="py-op">,</tt><tt class="py-name">cat</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">path</tt><tt class="py-op">,</tt> <tt class="py-name">cat</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">folders</tt><tt class="py-op">:</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line">            <tt id="link-18" class="py-name" targets="Method labblouin.sabmark.sabmarkDatabase.groups()=labblouin.sabmark.sabmarkDatabase-class.html#groups"><a title="labblouin.sabmark.sabmarkDatabase.groups" class="py-name" href="#" onclick="return doclink('link-18', 'groups', 'link-18');">groups</a></tt> <tt class="py-op">=</tt> <tt class="py-name">g</tt><tt class="py-op">(</tt><tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">path</tt><tt class="py-op">,</tt><tt class="py-string">'group*'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-op">(</tt><tt class="py-string">'fp'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">cat</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">falsepositives</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">path</tt><tt class="py-op">,</tt><tt class="py-name">cat</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">truepositives</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">path</tt><tt class="py-op">,</tt><tt class="py-name">cat</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">group</tt> <tt class="py-keyword">in</tt> <tt id="link-19" class="py-name"><a title="labblouin.sabmark.sabmarkDatabase.groups" class="py-name" href="#" onclick="return doclink('link-19', 'groups', 'link-18');">groups</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line">                <tt class="py-name">groupf</tt> <tt class="py-op">=</tt> <tt id="link-20" class="py-name" targets="Class labblouin.sabmark.sabmarkFolder=labblouin.sabmark.sabmarkFolder-class.html"><a title="labblouin.sabmark.sabmarkFolder" class="py-name" href="#" onclick="return doclink('link-20', 'sabmarkFolder', 'link-20');">sabmarkFolder</a></tt><tt class="py-op">(</tt><tt class="py-name">group</tt><tt class="py-op">)</tt> </tt>
+<a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">folders</tt><tt class="py-op">[</tt><tt class="py-op">(</tt><tt class="py-name">path</tt><tt class="py-op">,</tt><tt class="py-name">cat</tt><tt class="py-op">)</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">groupf</tt><tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pdbs</tt><tt class="py-op">.</tt><tt class="py-name">extend</tt><tt class="py-op">(</tt><tt class="py-name">groupf</tt><tt class="py-op">.</tt><tt class="py-name">pdbs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="sabmarkDatabase.groups"></a><div id="sabmarkDatabase.groups-def"><a name="L80"></a><tt class="py-lineno">80</tt> <a class="py-toggle" href="#" id="sabmarkDatabase.groups-toggle" onclick="return toggle('sabmarkDatabase.groups');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="labblouin.sabmark.sabmarkDatabase-class.html#groups">groups</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">fkey</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="sabmarkDatabase.groups-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="sabmarkDatabase.groups-expanded"><a name="L81"></a><tt class="py-lineno">81</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-op">(</tt><tt class="py-keyword">not</tt> <tt class="py-name">fkey</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">folders</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">yield</tt> <tt class="py-op">(</tt><tt class="py-string">''</tt><tt class="py-op">,</tt><tt class="py-string">''</tt><tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno">82</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L83"></a><tt class="py-lineno">83</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">group</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">folders</tt><tt class="py-op">[</tt><tt class="py-name">fkey</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> <tt class="py-keyword">yield</tt> <tt class="py-name">group</tt> </tt>
+</div></div><a name="L84"></a><tt class="py-lineno">84</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="labblouin-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://web.cs.dal.ca/~safatli/">LabBlouinTools</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Oct 17 09:36:35 2014
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
