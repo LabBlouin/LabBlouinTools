@@ -1122,17 +1122,16 @@ class PDBstructure(object):
 		else: row = ''		
 		for pos,chain,res in items:
 			if chain not in chainsSaw:
-				nm = name(self.GetChainNames().index(chain)).split(':')[0]
+				ind = orderofthings.index(chain)
+				nm = name(ind).strip().split(':')[0]
 				labels.append('>%s:%s' % (nm,nm[:4]))
 				coords.append(row)
 				if typeof == 'matrix': row = []
 				else: row = ''					
 			if CA: atom = res.GetCA()
 			else:  atom = res.Centroid()
-			if isinstance(row, str):
-				row += '%f;%f;%f;' % (atom.x,atom.y,atom.z)
-			elif isinstance(row,list):
-				row.extend([atom.x,atom.y,atom.z])
+			if isinstance(row, str):   row += '%f;%f;%f;'%(atom.x,atom.y,atom.z)
+			elif isinstance(row,list): row.extend([atom.x,atom.y,atom.z])
 			
 		if typeof == 'matrix': coords = matrix(coords)
 		return labels,coords
