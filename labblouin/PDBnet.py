@@ -17,6 +17,11 @@ from math import sqrt
 from os.path import getsize as sizeOfFile
 from Bio.SeqUtils.ProtParam import ProteinAnalysis as PA
 
+# Metadata
+
+__author__  = 'Christian Blouin'
+__version__ = '1.0.2'
+
 # Constants
 
 PDB_LARGE_FILE_SIZE = 100000000 #bytes
@@ -483,7 +488,7 @@ class PDBstructure(object):
 		''' Construct and add a new chain by name to the PDB. Returns the chain. '''
 
 		p = PDBchain(name)
-		self.AddChainToStructure(name,p)
+		self.AddChain(name,p)
 		return p
 
 	def NewModel(self,name):
@@ -491,16 +496,38 @@ class PDBstructure(object):
 		''' Construct and add a new model by name to the PDB. Returns the model. '''
 
 		p = PDBmodel(name)
-		self.AddModelToStructure(name,p)
+		self.AddModel(name,p)
 		return p
+	
+	def RemoveChain(self,name):
+		
+		''' Remove a chain from the structure (by name). Returns the chain. '''
+		
+		c = self.GetChain(name)
+		if not name in self.chains:
+			raise KeyError('Chain does not exist in structure by that name!')
+		del self.chains[name]
+		self.orderofchains.remove(name)
+		return c
+	
+	def RemoveModel(self,name):
+		
+		''' Remove a model from the structure (by name). Returns the chain. '''
+		
+		m = self.GetModel(name)
+		if not name in self.models:
+			raise KeyError('Model does not exist in structure by that name!')
+		del self.models[name]
+		self.orderofmodels.remove(name)
+		return m
 
-	def AddChainToStructure(self,chainname,chain):
+	def AddChain(self,chainname,chain):
 
 		''' Add a chain as a list of residues to the PDB. '''
 
 		# Do chain addition operations.
 		if chainname in self.chains:
-			raise AssertionError('Chain already exists in structure by that name!')
+			raise KeyError('Chain already exists in structure by that name!')
 		if type(chain) != PDBchain and type(chain) == PDBmodel:
 			# Cast into a PDBchain.
 			cast = PDBchain(chainname)
@@ -510,7 +537,7 @@ class PDBstructure(object):
 		self.orderofchains.append(chainname)
 		chain.structure = self
 
-	def AddModelToStructure(self,modelname,model):
+	def AddModel(self,modelname,model):
 
 		''' Add a model as a list of residues to the PDB. '''
 
@@ -675,12 +702,12 @@ class PDBstructure(object):
 
 	# Scoring Functionality
 
-	def _GetResidueAssociations(self,fasta,chains=None,ismodel=False):
+	def _iterResidueAssociations(self,fasta,chains=None,ismodel=False,fast=None):
 
 		''' PRIVATE: Use an input FASTA file to determine associations
-        between residues as they exist between 2+ chains. Returns
-        a mapping between chain and sequence, a masking of gapped
-        parts of the sequence(s), and a list of aligned positions.'''
+        between residues as they exist between 2+ chains. Constructs a
+		mapping between chain and sequence and yields all strictly
+		homologous positions as residues, chain-by-chain.'''
 
 		if ismodel:
 			orderofthings = self.orderofmodels
@@ -692,48 +719,28 @@ class PDBstructure(object):
 		if not chains: chains = orderofthings
 		chaininds = [orderofthings.index(x) for x in chains]  
 		if len(chaininds) < 2:
-			raise ValueError('Need more than two chains.')
+			raise ValueError('Need more than two chains (gave %d).' % (len(chaininds)))
 
-		fast = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
+		if fast is None:
+			fast = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
 		seqs = fast.orderedSequences
 		if len(things) != len(seqs):
-			raise IOError('FASTA set length not equal to PDB length.')
-
-		# Build a set of masks to represent the FASTA
-		# sequence alignment as corresponding to the
-		# PDB.
-		mapng = {} # Mapping between chain name and sequence index.
-		masks = {} # Mapping between residue and position.
-		for n in chaininds:
+			raise IOError('FASTA set length not equal to PDB length.')	
+		posv = fast.getStrictlyUngappedPositions(chaininds)
+		
+		for n in chaininds: # Go chain by chain and yield information.
 			seq = seqs[n].sequence
 			ch  = orderofthings[n]
-			match = self.GetFASTAIndices(things[ch],seq)
-			if not match: raise IOError(
-			    'Seq %d could not map to the respective PDB chain' % (n))
-			else: mapng[ch] = n
-			relist = [things[ch][x] for x in things[ch]]
-			relist = sorted(relist,key=lambda d:d.fstindex)
-			masks[n] = []
-			for i in xrange(len(seq)):
-				char = seq[i]
-				if char.isalpha():
-					masks[n].append(relist.pop(0))
-				else: masks[n].append(None)
-
-		# Go through masks and determine what
-		# positions are fully aligned.
-		posvect = []
-		alnlen  = len(masks.values()[0])
-		for pos in xrange(alnlen):
-			all_aligned = True
-			for chain in mapng:
-				if not masks[mapng[chain]][pos]:
-					all_aligned = False
-					break
-			if all_aligned: posvect.append(pos) 
-
-		return mapng, masks, posvect
-
+			matches = self.GetFASTAIndices(things[ch],seq)
+			residueList = [match for match in matches]
+			if residueList[0] is None:
+				nm = seqs[n].name
+				chn = things[ch].name
+				raise IOError('No relation found between sequence %s and chain %s.' % (nm,chn))			
+			residueList = sorted(residueList,key=lambda d:d.fstindex)
+			for pos in posv: # Go position by position.
+				yield pos, ch, residueList.pop(0) # Yield position, chain name, and residue.
+				
 	def tmscore(self,fasta,chains=None,ismodel=False,native=None,CA=True):
 
 		''' Get the TMscore between two chains. Requires a 
@@ -755,13 +762,14 @@ class PDBstructure(object):
 		if not chains: chains = orderofthings
 		if len(chains) != 2:
 			raise ValueError('Need exactly two chains to score.')
-		mapng,masks,posvect = self._GetResidueAssociations(fasta,chains,ismodel)
+		fas     = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
+		posvect = fas.getStrictlyUngappedPositions()
+		items   = self._iterResidueAssociations(fasta,chains,ismodel,fas)
 
 		# Get the lengths of the respective chains.
-		chA,chB = mapng # Chains associated with alignment.
-		if native == None: leN = len(things[chA]) 
+		if native == None: leN = len(things[chains[0]]) 
 		else: leN = len(things[native]) # Length of the reference structure.
-		leT     = len(posvect) # Number of aligned positions.
+		leT = len(posvect) # Number of aligned positions.
 
 		# Calculate d_0 for this alignment.
 		cuberoot = lambda d: d**(1./3)
@@ -769,16 +777,18 @@ class PDBstructure(object):
 
 		# Get the summation portion of the TMscore.
 		sumportion = 0
+		posmask    = {}
+		for pos,_,residue in items:
+			if not pos in posmask: posmask[pos] = []
+			if CA: atom = residue.GetCA()
+			else:  atom = residue.Centroid()
+			posmask[pos].append(atom)
 		for pos in posvect: # Assume chA is Native Structure.
-			cavect = []
-			for ch in chA,chB:
-				if CA: atom = masks[mapng[ch]][pos].GetCA()
-				else:  atom = masks[mapng[ch]][pos].Centroid()
-				cavect.append(atom)
+			cavect   = posmask[pos]
 			ca1, ca2 = cavect[0], cavect[1]
-			d_i       = sqrt((ca1.x-ca2.x)**2+
-			                 (ca1.y-ca2.y)**2+
-			                 (ca1.z-ca2.z)**2)
+			d_i      = sqrt((ca1.x-ca2.x)**2+
+			                (ca1.y-ca2.y)**2+
+			                (ca1.z-ca2.z)**2)
 			sumdenom  = 1 + (d_i/d_0)**2
 			suminside = 1./(sumdenom)
 			sumportion += suminside
@@ -803,24 +813,27 @@ class PDBstructure(object):
 		if not chains: chains = orderofthings
 		if len(chains) != 2:
 			raise ValueError('Need exactly two chains to score.')
-		mapng,masks,posvect = self._GetResidueAssociations(fasta,chains,ismodel)
+		items = self._iterResidueAssociations(fasta,chains,ismodel)
+
+		# Get all relevant atoms.
+		posmask = {}
+		for pos,_,residue in items:
+			if not pos in posmask: posmask[pos] = []
+			if CA: atom = residue.GetCA()
+			else:  atom = residue.Centroid()
+			posmask[pos].append(atom)		
 
 		# Get the Euclidean distances between
 		# all pairs of aligned positions.
 		distances = {}
-		for pos in posvect:
-			cavect = []
-			for ch in mapng: 
-				if CA: atom = masks[mapng[ch]][pos].GetCA()
-				else:  atom = masks[mapng[ch]][pos].Centroid()
-				cavect.append(atom)
-			if len(cavect) != 2: raise AssertionError(
-			    'Too many CA vectors.')
+		for pos in posmask:
+			cavect = posmask[pos]
 			ca1, ca2 = cavect[0], cavect[1]
 			dist = sqrt((ca1.x-ca2.x)**2+
 			            (ca1.y-ca2.y)**2+
 			            (ca1.z-ca2.z)**2)
 			distances[pos] = dist
+			
 		# Calculate the counts for different cutoffs.
 		counts  = [0,0,0,0]
 		poslen  = float(len(distances))
@@ -841,16 +854,19 @@ class PDBstructure(object):
 
 		'''Get the RMSD between chains. Requires a FASTA alignment.'''
 
-		mapng,masks,posvect = self._GetResidueAssociations(fasta,chains,ismodel)
+		items = self._iterResidueAssociations(fasta,chains,ismodel)
+		# Get all relevant atoms.
+		posmask = {}
+		for pos,_,residue in items:
+			if not pos in posmask: posmask[pos] = []
+			if CA: atom = residue.GetCA()
+			else:  atom = residue.Centroid()
+			posmask[pos].append(atom)			
 		# Get the Euclidean distance squared between
 		# all pairs of aligned positions.
 		distsqs = {}
-		for pos in posvect:
-			cavect = []
-			for ch in mapng: 
-				if CA: atom = masks[mapng[ch]][pos].GetCA()
-				else:  atom = masks[mapng[ch]][pos].Centroid()
-				cavect.append(atom)
+		for pos in posmask:
+			cavect = posmask[pos]
 			for a in xrange(len(cavect)):
 				for b in xrange(a+1,len(cavect)):
 					if (a,b) not in distsqs: distsqs[(a,b)] = 0
@@ -863,7 +879,7 @@ class PDBstructure(object):
 		rmsd = 0
 		for d in distsqs:
 			d = distsqs[d]
-			r = sqrt((float(d)/len(posvect)))
+			r = sqrt((float(d)/len(posmask)))
 			rmsd += r
 		rmsd /= len(distsqs)
 		return rmsd
@@ -938,11 +954,10 @@ class PDBstructure(object):
 				                        0,0,a.symbol,''))            
 
 			# Average all properties.
-			count = 0
+			count = len(chains)
 			for ch in chains:
-				res = things[ch].GetResidues()[res_no]
+				res = things[ch].GetResidueByIndex(things[ch].GetIndices()[res_no])
 				atoms = res.GetAtoms()
-				count += 1
 				for i in xrange(len(atoms)):
 					atomlist[i].x += atoms[i].x
 					atomlist[i].y += atoms[i].y
@@ -1009,7 +1024,9 @@ class PDBstructure(object):
 		return sqrt(sumdistratio)
 
 	def GetAllCentroid(self, chain):
+		
 		''' Populates the centroids of all residues. '''
+		
 		out = []
 		if chain:
 			if not chain in self.chains:
@@ -1045,16 +1062,23 @@ class PDBstructure(object):
 
 		chainseq = thing.AsFASTA()
 		ungapped = fst.replace('-','')
-		if len(ungapped) != len(chainseq): return False
+		success  = True
+		if len(ungapped) != len(chainseq):
+			success = False
+			yield None
 		for i in xrange(0,len(chainseq)):
 			# See if there is a failed correspondance.
-			if chainseq[i] != ungapped[i]: return False
-		index = -1
-		for i in thing:
-			i = thing[i]
-			index = fst.find(aa[i.name],index+1)
-			i.fstindex = index
-		return True        
+			if chainseq[i] != ungapped[i]: 
+				yield None
+				success = False
+				break
+		if success:
+			index = -1
+			for i in thing:
+				i = thing[i]
+				index = fst.find(aa[i.name],index+1)
+				i.fstindex = index
+				yield i
 
 	def IterAllResidues(self):
 
@@ -1073,9 +1097,9 @@ class PDBstructure(object):
         (x,y,z) coordinates between all homologous residue positions.
         Requires a FASTA alignment. Options include using alpha-carbon
         positions. By default, uses centroids of residues. Returns a list
-        of labels and a list of coordinates as raw GM data. The typeof option
-		regards to if the coordinates must be returned as a semicolon-delimited
-		string (str) or as a scipy matrix (matrix)'''
+        of labels and a list of coordinates as raw GM data. The typeof 
+		option provides an option for coordinate output; they are returned 
+		as a semicolon-delimited string (str) or as a scipy matrix (matrix). '''
 
 		if ismodel:
 			orderofthings = self.orderofmodels
@@ -1086,27 +1110,30 @@ class PDBstructure(object):
 		if chains == None: chains = orderofthings
 		labels,coords = [],[] # Output Variables
 
-		# Acquire all homologous positions as defined in FASTA.
-		mapng,masks,posvect = self._GetResidueAssociations(fasta,chains,ismodel)
-
 		# Set up name grabbing from FASTA file for GM labelling.
 		f = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
 		name = lambda d: f.orderedSequences[d].name 
+
+		# Acquire all homologous positions as defined in FASTA.
+		items = self._iterResidueAssociations(fasta,chains,ismodel,f)
 		
-		for ch in mapng:
-			nm = name(mapng[ch]).split(':')[0]
-			labels.append('>%s:%s' % (nm,nm[:4]))
-			if typeof == 'matrix': row=[]
-			else: row = ''
-			for pos in posvect:
-				res = masks[mapng[ch]][pos]
-				if CA: atom = res.GetCA()
-				else:  atom = res.Centroid()
-				if isinstance(row, str):
-					row += '%f;%f;%f;' % (atom.x,atom.y,atom.z)
-				elif isinstance(row,list):
-					row.extend([atom.x,atom.y,atom.z])
-			coords.append(row)
+		chainsSaw = []
+		if typeof == 'matrix': row = []
+		else: row = ''		
+		for pos,chain,res in items:
+			if chain not in chainsSaw:
+				nm = name(self.GetChainNames().index(chain)).split(':')[0]
+				labels.append('>%s:%s' % (nm,nm[:4]))
+				coords.append(row)
+				if typeof == 'matrix': row = []
+				else: row = ''					
+			if CA: atom = res.GetCA()
+			else:  atom = res.Centroid()
+			if isinstance(row, str):
+				row += '%f;%f;%f;' % (atom.x,atom.y,atom.z)
+			elif isinstance(row,list):
+				row.extend([atom.x,atom.y,atom.z])
+			
 		if typeof == 'matrix': coords = matrix(coords)
 		return labels,coords
 
@@ -1150,22 +1177,23 @@ class PDBstructure(object):
 
 		flm = open(lm,'w')
 
-		# Acquire all homologous positions as defined in FASTA.
-		mapng,masks,posvect = self._GetResidueAssociations(fasta,chains,ismodel)
-
 		# Set up name grabbing from FASTA file for labelling.
 		f = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
 		name = lambda d: f.orderedSequences[d].name
 
+		# Acquire all homologous positions as defined in FASTA.
+		items = self._iterResidueAssociations(fasta,chains,ismodel,f)
+
 		# Start writing.
-		for ch in mapng:
-			nm = name(mapng[ch]).split(':')[0]
-			flm.write('>%s\n' % (nm))
-			ind = 0
-			for pos in posvect:
-				res = masks[mapng[ch]][pos]
-				flm.write('%s\t%s\t%s\n' % (ind,res.index,res.name))
-				ind += 1
+		chainsSaw = []
+		ind       = -1
+		for pos,chain,res in items:
+			if chain not in chainsSaw:
+				nm = name(mapng[ch]).split(':')[0]
+				flm.write('>%s\n' % (nm))
+				ind = 0
+			flm.write('%s\t%s\t%s\n' % (ind,res.index,res.name))
+			ind += 1
 
 	def Contacts(self,chain='ALL',thres=4.5):
 

@@ -1,4 +1,4 @@
-''' Bioinformatic python utilities modules, and libraries for use with Lab Blouin applications. '''
+# below is boilerplate code in order to recognize all python files in this directory
 
 import os
 
