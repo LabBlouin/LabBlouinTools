@@ -1126,6 +1126,7 @@ class PDBstructure(object):
 				nm = name(ind).strip().split(':')[0]
 				labels.append('>%s:%s' % (nm,nm[:4]))
 				coords.append(row)
+				chainsSaw.append(chain)
 				if typeof == 'matrix': row = []
 				else: row = ''					
 			if CA: atom = res.GetCA()
@@ -1188,8 +1189,10 @@ class PDBstructure(object):
 		ind       = -1
 		for pos,chain,res in items:
 			if chain not in chainsSaw:
-				nm = name(mapng[ch]).split(':')[0]
+				ind = orderofthings.index(chain)
+				nm = name(ind).strip().split(':')[0]
 				flm.write('>%s\n' % (nm))
+				chainsSaw.append(chain)
 				ind = 0
 			flm.write('%s\t%s\t%s\n' % (ind,res.index,res.name))
 			ind += 1
