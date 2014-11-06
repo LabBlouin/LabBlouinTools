@@ -64,22 +64,27 @@
 <h1 class="epydoc">Class PDBchain</h1><p class="nomargin-top"><span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_labbloui_2" name="uml_class_diagram_for_labbloui_2">
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#__init__" title="Construct a PDB chain (collection of protein residues)." alt="" coords="17,39,269,57"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#GetResidues" title="labblouin.PDBnet.PDBchain.GetResidues" alt="" coords="17,57,269,76"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#GetResidueByIndex" title="labblouin.PDBnet.PDBchain.GetResidueByIndex" alt="" coords="17,76,269,95"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#GetAtoms" title="Get all comprising atoms in this chain in order of residues." alt="" coords="17,95,269,113"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#GetIndices" title="labblouin.PDBnet.PDBchain.GetIndices" alt="" coords="17,113,269,132"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#AddResidue" title="Add a residue to this chain." alt="" coords="17,132,269,151"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#RemoveResidue" title="Remove a residue from this chain." alt="" coords="17,151,269,169"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#GetPrimaryPropertiesFromBioPython" title="Use BioPython to populate this class with attributes." alt="" coords="17,169,269,188"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#AsFASTA" title="Return the string representing this chain&#39;s FASTA sequence." alt="" coords="17,188,269,207"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#WriteAsPDB" title="Write this single chain to a file as a PDB." alt="" coords="17,207,269,225"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#SortByNumericalIndices" title="Sort all internal items by a numerical index." alt="" coords="17,225,269,244"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#pop" title="Mimic dictionary class function to pop a residue from this chain." alt="" coords="17,244,269,263"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#update" title="Mimic dictionary class function to add residues from another chain." alt="" coords="17,263,269,281"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBchain-class.html#__iter__" title="labblouin.PDBnet.PDBchain.__iter__" alt="" coords="17,300,269,319"/>
-<area shape="rect" id="node1" href="labblouin.PDBnet.PDBchain-class.html" title="A PDB chain (collection of protein residues)." alt="" coords="5,6,280,325"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBmodel-class.html" title="A PDB model (a special kind of chain)." alt="" coords="95,345,193,383"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#indices" title="labblouin.PDBnet.PDBchain.indices" alt="" coords="17,31,269,49"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#name" title="labblouin.PDBnet.PDBchain.name" alt="" coords="17,49,269,68"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#parent" title="labblouin.PDBnet.PDBchain.parent" alt="" coords="17,68,269,87"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#residues" title="labblouin.PDBnet.PDBchain.residues" alt="" coords="17,87,269,105"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#structure" title="labblouin.PDBnet.PDBchain.structure" alt="" coords="17,105,269,124"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#__init__" title="x.__init__(...) initializes x; see help(type(x)) for signature" alt="" coords="17,127,269,145"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#GetResidues" title="Acquire all of the residues in this chain." alt="" coords="17,145,269,164"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#IterResidues" title="Iteratively yield all of the residues in this chain." alt="" coords="17,164,269,183"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#GetResidueByIndex" title="Alias for acquiring a residue from this instance using [] operator." alt="" coords="17,183,269,201"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#GetAtoms" title="Get all comprising atoms in this chain in order of residues." alt="" coords="17,201,269,220"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#GetIndices" title="Acquire all of the indices for residues present in this chain." alt="" coords="17,220,269,239"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#AddIndexOfResidue" title="Add an index for a residue to this chain." alt="" coords="17,239,269,257"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#AddResidue" title="Add a residue to this chain." alt="" coords="17,257,269,276"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#AddResidueByIndex" title="Add a residue to this chain by its index in the PDB." alt="" coords="17,276,269,295"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#RemoveResidue" title="Remove a residue from this chain." alt="" coords="17,295,269,313"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#GetPrimaryPropertiesFromBioPython" title="Use BioPython to populate this class with attributes." alt="" coords="17,313,269,332"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#AsFASTA" title="Return the string representing this chain&#39;s FASTA sequence." alt="" coords="17,332,269,351"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#WriteAsPDB" title="Write this single chain to a file as a PDB." alt="" coords="17,351,269,369"/>
+<area shape="rect" id="node4" href="labblouin.PDBnet.PDBchain-class.html#__iter__" title="labblouin.PDBnet.PDBchain.__iter__" alt="" coords="17,388,269,407"/>
+<area shape="rect" id="node1" href="labblouin.PDBnet.PDBchain-class.html" title="A PDB chain (collection of protein residues)." alt="" coords="5,6,280,413"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBmodel-class.html" title="A PDB model (a special kind of chain)." alt="" coords="95,433,193,471"/>
 </map>
   <img src="uml_class_diagram_for_labbloui_2.gif" alt='' usemap="#uml_class_diagram_for_labbloui_2" ismap="ismap" class="graph-without-title" />
 </center>
@@ -112,7 +117,7 @@
         <tr>
           <td><span class="summary-sig"><a href="labblouin.PDBnet.PDBchain-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">name</span>)</span><br />
-      Construct a PDB chain (collection of protein residues).</td>
+      x.__init__(...) initializes x; see help(type(x)) for signature</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.__init__">source&nbsp;code</a></span>
             
@@ -128,7 +133,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="GetResidues"></a><span class="summary-sig-name">GetResidues</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="labblouin.PDBnet.PDBchain-class.html#GetResidues" class="summary-sig-name">GetResidues</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Acquire all of the residues in this chain.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.GetResidues">source&nbsp;code</a></span>
             
@@ -144,8 +150,26 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="labblouin.PDBnet.PDBchain-class.html#IterResidues" class="summary-sig-name">IterResidues</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Iteratively yield all of the residues in this chain.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.IterResidues">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a name="GetResidueByIndex"></a><span class="summary-sig-name">GetResidueByIndex</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">index</span>)</span></td>
+        <span class="summary-sig-arg">index</span>)</span><br />
+      Alias for acquiring a residue from this instance using [] operator.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.GetResidueByIndex">source&nbsp;code</a></span>
             
@@ -178,9 +202,28 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="GetIndices"></a><span class="summary-sig-name">GetIndices</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a name="GetIndices"></a><span class="summary-sig-name">GetIndices</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Acquire all of the indices for residues present in this chain.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.GetIndices">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="labblouin.PDBnet.PDBchain-class.html#AddIndexOfResidue" class="summary-sig-name">AddIndexOfResidue</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span><br />
+      Add an index for a residue to this chain.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.AddIndexOfResidue">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -199,6 +242,24 @@
       Add a residue to this chain.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.AddResidue">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="labblouin.PDBnet.PDBchain-class.html#AddResidueByIndex" class="summary-sig-name">AddResidueByIndex</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span><br />
+      Add a residue to this chain by its index in the PDB.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.AddResidueByIndex">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -301,7 +362,7 @@
         <tr>
           <td><span class="summary-sig"><a name="pop"></a><span class="summary-sig-name">pop</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">s</span>)</span><br />
-      Mimic dictionary class function to pop a residue from this chain.</td>
+      Pop a residue.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.pop">source&nbsp;code</a></span>
             
@@ -319,7 +380,7 @@
         <tr>
           <td><span class="summary-sig"><a name="update"></a><span class="summary-sig-name">update</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">o</span>)</span><br />
-      Mimic dictionary class function to add residues from another chain.</td>
+      Add residues from another chain.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.update">source&nbsp;code</a></span>
             
@@ -353,7 +414,9 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a name="__getitem__"></a><span class="summary-sig-name">__getitem__</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">i</span>)</span></td>
+        <span class="summary-sig-arg">i</span>)</span><br />
+      Force the object to load the residue if not present in this 
+      structure.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.__getitem__">source&nbsp;code</a></span>
             
@@ -430,6 +493,41 @@
     </table>
   </td>
 </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="indices"></a><span class="summary-name">indices</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="name"></a><span class="summary-name">name</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="parent"></a><span class="summary-name">parent</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="residues"></a><span class="summary-name">residues</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="structure"></a><span class="summary-name">structure</span>
+    </td>
+  </tr>
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
@@ -472,11 +570,96 @@
     </td>
   </tr></table>
   
-  <p>Construct a PDB chain (collection of protein residues).</p>
+  <p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
   <dl class="fields">
     <dt>Overrides:
         object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="GetResidues"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GetResidues</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.GetResidues">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Acquire all of the residues in this chain. Note that if this is a 
+  large file, this will force the object to load all of these residues into
+  memory from the file.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="IterResidues"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">IterResidues</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.IterResidues">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Iteratively yield all of the residues in this chain. Note that if this
+  is a large file, this will force the object to load all of these residues
+  into memory from the file.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="AddIndexOfResidue"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">AddIndexOfResidue</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.AddIndexOfResidue">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Add an index for a residue to this chain. Will generate own residue 
+  information if called upon (forces lazy evaluation).</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="AddResidueByIndex"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">AddResidueByIndex</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBchain.AddResidueByIndex">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Add a residue to this chain by its index in the PDB. The residue 
+  object will automatically be constructed from the file.</p>
+  <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
@@ -536,7 +719,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Oct 17 09:36:35 2014
+    Generated by Epydoc 3.0.1 on Thu Nov  6 15:51:14 2014
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

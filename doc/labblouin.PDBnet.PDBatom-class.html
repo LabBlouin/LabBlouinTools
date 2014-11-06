@@ -64,13 +64,23 @@
 <h1 class="epydoc">Class PDBatom</h1><p class="nomargin-top"><span class="codelink"><a href="labblouin.PDBnet-pysrc.html#PDBatom">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_labbloui" name="uml_class_diagram_for_labbloui">
-<area shape="rect" id="node0" href="labblouin.PDBnet.PDBatom-class.html#__init__" title="Construct an atom in a PDB protein structure." alt="" coords="17,39,357,57"/>
-<area shape="rect" id="node0" href="labblouin.PDBnet.PDBatom-class.html#fixname" title="Ensures the name of this atom fits within 4 characters." alt="" coords="17,57,357,76"/>
-<area shape="rect" id="node0" href="labblouin.PDBnet.PDBatom-class.html#__str__" title="Express this atom as a single line in a PDB file (see PDB format)." alt="" coords="17,76,357,95"/>
-<area shape="rect" id="node0" href="labblouin.PDBnet.PDBatom-class.html#GetPosition" title="Get the 3&#45;dimensional coordinate of this atom in space." alt="" coords="17,95,357,113"/>
-<area shape="rect" id="node0" href="labblouin.PDBnet.PDBatom-class.html#DistanceTo" title="Acquire the distance from this atom to another atom." alt="" coords="17,113,357,132"/>
-<area shape="rect" id="node1" href="labblouin.PDBnet.PDBatom-class.html" title="ATOM in a PDB protein structure." alt="" coords="5,6,368,138"/>
-<area shape="rect" id="node2" href="labblouin.PDBnet.PDBterminator-class.html" title="A placeholder class that represents a terminating ATOM&#45;like line in the PDB file." alt="" coords="127,158,249,197"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#charge" title="labblouin.PDBnet.PDBatom.charge" alt="" coords="17,31,357,49"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#name" title="labblouin.PDBnet.PDBatom.name" alt="" coords="17,49,357,68"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#occupancy" title="labblouin.PDBnet.PDBatom.occupancy" alt="" coords="17,68,357,87"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#parent" title="labblouin.PDBnet.PDBatom.parent" alt="" coords="17,87,357,105"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#serial" title="labblouin.PDBnet.PDBatom.serial" alt="" coords="17,105,357,124"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#symbol" title="labblouin.PDBnet.PDBatom.symbol" alt="" coords="17,124,357,143"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#tempFactor" title="labblouin.PDBnet.PDBatom.tempFactor" alt="" coords="17,143,357,161"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#x" title="labblouin.PDBnet.PDBatom.x" alt="" coords="17,161,357,180"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#y" title="labblouin.PDBnet.PDBatom.y" alt="" coords="17,180,357,199"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#z" title="labblouin.PDBnet.PDBatom.z" alt="" coords="17,199,357,217"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#__init__" title="Construct an atom in a PDB protein structure." alt="" coords="17,220,357,239"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#fixname" title="Ensures the name of this atom fits within 4 characters." alt="" coords="17,239,357,257"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#__str__" title="Express this atom as a single line in a PDB file (see PDB format)." alt="" coords="17,257,357,276"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#GetPosition" title="Get the 3&#45;dimensional coordinate of this atom in space." alt="" coords="17,276,357,295"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBatom-class.html#DistanceTo" title="Acquire the distance from this atom to another atom." alt="" coords="17,295,357,313"/>
+<area shape="rect" id="node1" href="labblouin.PDBnet.PDBatom-class.html" title="ATOM in a PDB protein structure." alt="" coords="5,6,368,319"/>
+<area shape="rect" id="node2" href="labblouin.PDBnet.PDBterminator-class.html" title="A placeholder class that represents a terminating ATOM&#45;like line in the PDB file." alt="" coords="127,339,249,378"/>
 </map>
   <img src="uml_class_diagram_for_labbloui.gif" alt='' usemap="#uml_class_diagram_for_labbloui" ismap="ismap" class="graph-without-title" />
 </center>
@@ -225,6 +235,76 @@
     </table>
   </td>
 </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="charge"></a><span class="summary-name">charge</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="name"></a><span class="summary-name">name</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="occupancy"></a><span class="summary-name">occupancy</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="parent"></a><span class="summary-name">parent</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="serial"></a><span class="summary-name">serial</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="symbol"></a><span class="summary-name">symbol</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="tempFactor"></a><span class="summary-name">tempFactor</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="x"></a><span class="summary-name">x</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="y"></a><span class="summary-name">y</span>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="z"></a><span class="summary-name">z</span>
+    </td>
+  </tr>
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
@@ -338,7 +418,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Oct 17 09:36:35 2014
+    Generated by Epydoc 3.0.1 on Thu Nov  6 15:51:13 2014
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

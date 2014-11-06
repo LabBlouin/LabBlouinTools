@@ -60,9 +60,6 @@
 </table>
 <!-- ==================== PACKAGE DESCRIPTION ==================== -->
 <h1 class="epydoc">Package labblouin</h1><p class="nomargin-top"><span class="codelink"><a href="labblouin-pysrc.html">source&nbsp;code</a></span></p>
-<p>Bioinformatic python utilities modules, and libraries for use with Lab
-  Blouin applications.</p>
-
 <!-- ==================== SUBMODULES ==================== -->
 <a name="section-Submodules"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -85,6 +82,8 @@
     <li> <strong class="uidlink"><a href="labblouin.FASTAnet-module.html">labblouin.FASTAnet</a></strong>    </li>
     <li> <strong class="uidlink"><a href="labblouin.IO-module.html">labblouin.IO</a></strong>: <em class="summary">Different shortcut functions for dealing with file systems.</em>    </li>
     <li> <strong class="uidlink"><a href="labblouin.MATT2GM-module.html">labblouin.MATT2GM</a></strong>: <em class="summary">Process MATT output and convert them to the GM format.</em>    </li>
+    <li> <strong class="uidlink"><a href="labblouin.Ordination-module.html">labblouin.Ordination</a></strong>: <em class="summary">Ordination is a class designed to compute and plot ordination 
+        methods such as PCA and MDS.</em>    </li>
     <li> <strong class="uidlink"><a href="labblouin.PDBnet-module.html">labblouin.PDBnet</a></strong>: <em class="summary">PDBnet is a collection of Python objects intended to model and 
         contain PDB protein data.</em>    </li>
     <li> <strong class="uidlink"><a href="labblouin.RegExpress-module.html">labblouin.RegExpress</a></strong>: <em class="summary">Prosite pattern generator.</em>    </li>
@@ -96,11 +95,11 @@
     <li> <strong class="uidlink"><a href="labblouin.homology-module.html">labblouin.homology</a></strong>    </li>
     <li> <strong class="uidlink"><a href="labblouin.homstrad-module.html">labblouin.homstrad</a></strong>: <em class="summary">A library to manage interfacing with the Homstrad database raw 
         files.</em>    </li>
-    <li> <strong class="uidlink"><a href="labblouin.io-module.html">labblouin.io</a></strong>    </li>
     <li> <strong class="uidlink"><a href="labblouin.loadingBar-module.html">labblouin.loadingBar</a></strong>    </li>
     <li> <strong class="uidlink"><a href="labblouin.logfile-module.html">labblouin.logfile</a></strong>    </li>
     <li> <strong class="uidlink"><a href="labblouin.mdsa-module.html">labblouin.mdsa</a></strong>: <em class="summary">A library to manage interfacing with the MDSA database raw files 
         (http://dna.cs.byu.edu/mdsas/index.shtml).</em>    </li>
+    <li> <strong class="uidlink"><a href="labblouin.memEfficient-module.html">labblouin.memEfficient</a></strong>    </li>
     <li> <strong class="uidlink"><a href="labblouin.passToqsub-module.html">labblouin.passToqsub</a></strong>    </li>
     <li> <strong class="uidlink"><a href="labblouin.pdbCompare-module.html">labblouin.pdbCompare</a></strong>    </li>
     <li> <strong class="uidlink"><a href="labblouin.pfam-module.html">labblouin.pfam</a></strong>    </li>
@@ -145,14 +144,14 @@
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="labblouin-module.html#itlist" class="summary-name" onclick="show_private();">itlist</a> = <code title="['loadingBar.py',
- 'io.py',
  'automated_nooptimized',
  'expresso.py',
  'FASTAnet.py',
  'plotGM.py',
  'sabmark.py',
  'MATT2GM.py',
-..."><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">loadingBar.py</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">io.py</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">automated_nooptimized</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-ellipsis">...</code></code>
+ 'automated_model',
+..."><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">loadingBar.py</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">automated_nooptimized</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">expresso.</code><code class="variable-ellipsis">...</code></code>
     </td>
   </tr>
 <tr class="private">
@@ -201,13 +200,13 @@
     <dt>Value:</dt>
       <dd><table><tr><td><pre class="variable">
 <code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">loadingBar.py</code><code class="variable-quote">'</code><code class="variable-op">,</code>
- <code class="variable-quote">'</code><code class="variable-string">io.py</code><code class="variable-quote">'</code><code class="variable-op">,</code>
  <code class="variable-quote">'</code><code class="variable-string">automated_nooptimized</code><code class="variable-quote">'</code><code class="variable-op">,</code>
  <code class="variable-quote">'</code><code class="variable-string">expresso.py</code><code class="variable-quote">'</code><code class="variable-op">,</code>
  <code class="variable-quote">'</code><code class="variable-string">FASTAnet.py</code><code class="variable-quote">'</code><code class="variable-op">,</code>
  <code class="variable-quote">'</code><code class="variable-string">plotGM.py</code><code class="variable-quote">'</code><code class="variable-op">,</code>
  <code class="variable-quote">'</code><code class="variable-string">sabmark.py</code><code class="variable-quote">'</code><code class="variable-op">,</code>
  <code class="variable-quote">'</code><code class="variable-string">MATT2GM.py</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">automated_model</code><code class="variable-quote">'</code><code class="variable-op">,</code>
 <code class="variable-ellipsis">...</code>
 </pre></td></tr></table>
 </dd>
@@ -246,7 +245,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Oct 17 09:36:35 2014
+    Generated by Epydoc 3.0.1 on Thu Nov  6 15:51:13 2014
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
