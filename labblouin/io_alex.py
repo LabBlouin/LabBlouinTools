@@ -1,0 +1,2 @@
+#deprecated
+from IO import *

@@ -6,12 +6,12 @@
 
 from setuptools import setup
 
-VERSION = '0.1'
+VERSION = '0.3'
 DESCRIP = 'Bioinformatic python utilities modules, and libraries for use with Lab Blouin applications.'
-URL     = 'http://www.github.com/AlexSafatli/LabBlouinTools'
-AUTHOR  = 'Alex Safatli'
-EMAIL   = 'safatli@cs.dal.ca'
+URL     = 'http://www.github.com/LabBlouin/LabBlouinTools'
+AUTHOR  = 'Christian Blouin et al.'
+EMAIL   = 'cblouin@cs.dal.ca'
 DEPNDS  = ['pymol']
 LINKS   = []
 
-setup(name='labblouintools',version=VERSION,description=DESCRIP,url=URL,author=AUTHOR,author_email=EMAIL,license='MIT',packages=['labblouin'],install_requires=DEPNDS,dependency_links=LINKS,zip_safe=False)
+setup(name='labblouintools',version=VERSION,description=DESCRIP,url=URL,author=AUTHOR,author_email=EMAIL,license='GNU',packages=['labblouin'],install_requires=DEPNDS,dependency_links=LINKS,zip_safe=False)

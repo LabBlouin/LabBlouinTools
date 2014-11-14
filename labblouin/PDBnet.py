@@ -1119,13 +1119,14 @@ class PDBstructure(object):
 		
 		chainsSaw = []
 		if typeof == 'matrix': row = []
-		else: row = ''		
+		else:                  row = ''
 		for pos,chain,res in items:
 			if chain not in chainsSaw:
 				ind = orderofthings.index(chain)
 				nm = name(ind).strip().split(':')[0]
 				labels.append('>%s:%s' % (nm,nm[:4]))
-				coords.append(row)
+				if len(chainsSaw) != 0:
+					coords.append(row)
 				chainsSaw.append(chain)
 				if typeof == 'matrix': row = []
 				else: row = ''					
@@ -1133,7 +1134,8 @@ class PDBstructure(object):
 			else:  atom = res.Centroid()
 			if isinstance(row, str):   row += '%f;%f;%f;'%(atom.x,atom.y,atom.z)
 			elif isinstance(row,list): row.extend([atom.x,atom.y,atom.z])
-			
+		coords.append(row) # Last chain.
+		
 		if typeof == 'matrix': coords = matrix(coords)
 		return labels,coords
 

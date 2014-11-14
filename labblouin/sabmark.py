@@ -6,7 +6,7 @@
 
 import os
 from glob import glob as g
-from utils import IO
+from labblouin import IO
 
 class sabmarkFile:
     def __init__(self,path,l,fp):

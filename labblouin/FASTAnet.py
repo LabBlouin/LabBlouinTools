@@ -1,23 +1,15 @@
-#!/bin/python
+''' A simple parser and writer for FASTA sequence files that uses a rich object hierarchy. '''
 
-# FASTAnet.py
-# -------------------------
-# May 15, 2013; Alex Safatli
-# -------------------------
-# Read and abstract a FASTA 
-# file's sequences into a hash table
-# and handle manipulation as a Python
-# object. Duplicate occurences of
-# sequences are disregarded.
+# Date:   May 15 2013
+# Author: Alex Safatli
+# Email:  safatli@cs.dal.ca 
 
 class FASTAsequence:
 
     def __init__(self,name,seq):
 
-        '''
-        Initialize this object. Provide a name for the sequence
-        and the sequence itself as parameters.
-        '''
+        ''' Initialize this object. Provide a name for the sequence
+        and the sequence itself as parameters. '''
 
         self.name         = name
         self.sequence     = seq
@@ -25,87 +17,57 @@ class FASTAsequence:
 
     def __iter__(self):
 
-        '''
-        Iterate through a sequence in a pseudo-line-by-line 
-        manner as if it was read in a FASTA file.
-        '''
+        ''' Iterate through a sequence in a pseudo-line-by-line 
+        manner as if it was read in a FASTA file. '''
 
         s = self.sequence
         for i in xrange(0,len(s),70): yield s[i:i+70]
 
     def __hash__(self):
 
-        '''
-        Hash this object as the hash of the sequence.
-        '''
-
         return self.sequence.__hash__()
 
     def __eq__(self,o):
-
-        '''
-        Two FASTAsequences are equal if their sequences
-        are equal.
-        '''
 
         return self.sequence == o.sequence
 
     def __ne__(self,o):
 
-        '''
-        Reverse equal logic.
-        '''
-
         return not self.__eq__(o)
 
-    def count(self,it):
+    def count(self,item):
 
-        '''
-        Return the number of it characters in the sequence.
-        '''
+        ''' Return the number of characters in the sequence equal to input string. '''
 
-        return self.sequence.count(it)
+        return self.sequence.count(item)
 
     def removeGaps(self):
 
-        '''
-        Modify the sequence so gaps are removed and return it.
-        '''
+        ''' Modify the sequence so gaps are removed and return it. '''
 
         self.sequence = self.sequence.replace('-','').replace('.','')
         return self.sequence
 
     def toUpper(self):
 
-        '''
-        Modify the sequence so it is uppercase and return it.
-        '''
+        ''' Modify the sequence so it is uppercase and return it. '''
 
         self.sequence = self.sequence.upper()
         return self.sequence    
 
     def toLower(self):
 
-        '''
-        Modify the sequence so it is lowercase and return it.
-        '''
+        ''' Return a lowercase version of the sequence, also changing it
+        in the structure. '''
 
         self.sequence = self.sequence.lower()
         return self.sequence            
 
     def __len__(self):
 
-        '''
-        Return the length of the contained sequence string.
-        '''
-
         return len(self.sequence)
 
     def __str__(self):
-
-        '''
-        Return a string representation of the sequence.
-        '''
 
         return '>%s\n%s\n' % (self.name,self.__fastaseq__)
 
@@ -113,13 +75,11 @@ class FASTAstructure:
 
     def __init__(self,filein='',uniqueOnly=True,curate=False):
 
-        '''
-        A file to be read is optional. If uniqueOnly is triggered
+        ''' A file to be read is optional. If uniqueOnly is set to
         false, multiple duplicate sequences are allowed; otherwise,
         duplicates are ignored and their aliases are recorded in sequence
         Names. If curate is triggered, will remove special characters
-        from names.
-        '''
+        from names. '''
 
         self.sequences        = {}
         self.orderedSequences = []
@@ -168,9 +128,7 @@ class FASTAstructure:
 
     def readFile(self,fin):
 
-        '''
-        Read a file in. Return this FASTA object.
-        '''
+        ''' Read a file in. Return this FASTA object. '''
 
         fi = open(fin)
         fast = fi.read()
@@ -180,9 +138,7 @@ class FASTAstructure:
 
     def read(self,fast):
 
-        '''
-        Read the contents of a FASTA file.
-        '''
+        ''' Read the contents of a FASTA file. '''
 
         name, seq = '', ''
         for line in fast:
@@ -202,10 +158,8 @@ class FASTAstructure:
 
     def writeFile(self,fout):
 
-        '''
-        Write the information currently contained in the
-        FASTAstructure to a file as a FASTA-formatted file.
-        '''
+        ''' Write the information currently contained in the
+        FASTAstructure to a file as a FASTA-formatted file. '''
 
         f = open(fout,'w')
         f.write(str(self))
@@ -213,9 +167,7 @@ class FASTAstructure:
 
     def addSequence(self,name,seq):
 
-        '''
-        Add a sequence to the FASTA object.
-        '''
+        ''' Add a sequence to the FASTA object. '''
 
         # Ensure not already in list with
         # a different or same name.
@@ -241,8 +193,7 @@ class FASTAstructure:
             del self.sequences[oldname]
             self.sequences[newname] = f
             self.sequenceNames[f] = newname
-        else:
-            raise IndexError('Could not find that name in sequences.')
+        else: raise IndexError('Could not find that name among sequences.')
 
     def removeSequence(self,name):
 
@@ -273,52 +224,40 @@ class FASTAstructure:
 
     def removeGaps(self):
 
-        '''
-        Remove the gaps for all sequences.
-        '''
+        ''' Remove the gaps for all sequences. '''
 
         s = self.sequences
         for seq in s: s[seq].removeGaps()
 
     def allUpper(self):
 
-        '''
-        Change all sequences to uppercase.
-        '''
+        ''' Change all sequences to uppercase. '''
 
         s = self.sequences
         for seq in s: s[seq].toUpper()
 
     def allLower(self):
 
-        '''
-        Change all sequences to lowercase.
-        '''
+        ''' Change all sequences to lowercase. '''
 
         s = self.sequences
         for seq in s: s[seq].toLower()
 
     def __iter__(self):
 
-        '''
-        Iterate through the FASTA by going through
-        its sequences.
-        '''
+        ''' Iterate through the FASTA by going through
+        its sequences. '''
 
         for seq in self.sequences: yield self.sequences[seq]
 
     def __len__(self):
 
-        '''
-        Return the number of sequences in the FASTA object.
-        '''
+        ''' Return the number of sequences in the FASTA object. '''
 
         return len(self.sequences)
 
     def __str__(self):
 
-        '''
-        Return the FASTA object as FASTA file text content.
-        '''
+        ''' Return the FASTA object as FASTA file text content. '''
 
         return ''.join([str(x) for x in self.orderedSequences])

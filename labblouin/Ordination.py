@@ -23,10 +23,17 @@ from sklearn.metrics import euclidean_distances
 from sklearn.decomposition import PCA
 from sklearn.lda import LDA
 from sklearn.qda import QDA
-from utils.PDBnet import PDBstructure as P
+from labblouin.PDBnet import PDBstructure as P
 from matplotlib.patches import Ellipse
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 from random import shuffle
+import pickle
+from os.path import isfile
+from glob import glob as G
+from pylab import ion,ioff,draw,plot
+from time import sleep
+
 # END importing bit###############################################################################
 
 # Constants ######################################################################################
@@ -105,14 +112,12 @@ class ORD:
 
 		# vessel for ellipses if created
 		self.ellipses={}
-
 		#check if data is PDBnet instance or a filename
 		if isinstance(data, P): self.PrepData4PDBnet(data)
 		elif isinstance(data,str): self.LoadDataGMfile(data)
 
 		# Center the data
 		self.data -= self.data.mean(axis=0)
-
 
 	def PrepData4PDBnet(self,data):
 		'''Load the data to the class assuming is a PDBnet instance file'''
@@ -145,7 +150,14 @@ class ORD:
 		dist = sp.squareform(np.array(ar))
 		return dist
 	
-	def MDS(self,typeof='classic',dist=False,groups=None,MD=False, dpi=100,textsize=10):
+	def Store(self):
+		self.fit.tofile(self.prefix+'_vecs.temp',sep='\t')
+		fout=open(self.prefix+'_infovecs.temp','w')
+		fout.write('Number of components:\t%s\nType of ordination:\t%s'%(self.ncomp,self.type))
+		fout.close()
+		pickle.dump(self, open('%s.current%s.pckl'%(self.prefix,self.type),'wb'))
+		
+	def MDS(self,options,typeof='classic',dist=False,groups=None,):
 		'''
 		Perform Multidimensional Scaling wither classic (PCoA) or non-metric.
 		If you have the upper triangle of a distance matrix as a dictionary,
@@ -181,10 +193,11 @@ class ORD:
 
 		# Rotate the data
 		self.fit = self.clf.fit_transform(pos)
-		self.Plot(groups=groups, MD=MD,dpi=dpi, fontsize=textsize)
+		self.Plot(options, groups=groups)
+		self.Store()
 
 
-	def PCA(self,groups=None,MD=False,dpi=100,textsize=10):
+	def PCA(self,options,groups=None):
 		'''Performs a principal coordinate analysis of the data'''
 		# Rotation instance
 		self.clf = PCA(n_components=self.ncomp)		
@@ -192,20 +205,25 @@ class ORD:
 		self.type='PCA'
 		self.fit = pca
 		self.explained_variance_ratio = pca.explained_variance_ratio_
-		self.Plot(groups=groups, dpi=dpi, fontsize=textsize,MD=MD)
+		self.Plot(options,groups=groups)
+		self.Store()
 
 
-	def Plot(self,groups=None,dpi=100,fontsize=10,MD=False):
+	def Plot(self,options,groups=None):
 		'''
 		Plot the components from an ordination method of the class ORD. If the number of components
 		is greater than 3, it will plot the first three components. Components has to be a n x k 
 		numpy array of eigenvectors, where n is the observations/individuals and k the components.
 		The option groups allow to pass a list (of the same lenght of the arrar, that is a lenght of n).
 		'''
+		dpi = options.dpi
+		fontsize = options.textsize
+	
 		components=self.fit
 		markers = ['k.','b+','g*','r.','c+','m*','y.','k+','b*','g.','r+','c*','m.','y+','k*','b.',
 		           'g+','r*','c.','m+','y*']	
-
+		if options.interactive:
+			ioff()
 		if components.shape[1] >= 3: 
 			dim = 3
 			fig = plt.figure(dpi=dpi)
@@ -217,12 +235,16 @@ class ORD:
 			ax  = fig.add_subplot(111)
 
 		comp = components[:, 0:dim]
-
+		
+		#if MD:
+		#	colormap=cm.gray
+			
 		ax.spines['top'].set_color('none')
 		ax.xaxis.tick_bottom()
 		ax.spines['right'].set_color('none')
 		ax.yaxis.tick_left()
-
+		if options.interactive:
+			draw()
 		if groups and len(groups) <= len(markers):
 			d = {}
 			g=set(groups)
@@ -230,17 +252,54 @@ class ORD:
 				d[groups[gr]]=markers[gr]
 
 			for i in range(len(groups)):
-				ax.scatter(comp[i,], d[groups[i]],label=groups[i])
+				ax.scatter(comp[i,], d[groups[i]],label=groups[i],s=15)
 
 		elif dim == 2:
-			ax.scatter(comp[:,0],comp[:,1])
+			if options.interactive:
+				ion()
+			count=-1
+			step = range(5,len(comp),50)
+			for i in xrange(len(comp)):
+				count += 1
+				point = comp[i,:]
+				if options.MD and i == 0:
+					start=point
+					color='red'
+					marker=r'$\circlearrowleft$'
+					a = None
+				elif options.MD and i == len(comp)-1:
+					last=point
+					color='blue'
+					marker=r'$\lambda$'
+					a = None
+				else:
+					marker='o'
+					color = str(i/float(len(comp)))				
+					a = 0.5
+					
+				ax.plot(point[0],point[1],c=color,marker=marker,markersize=8,linestyle='None',alpha=a)
+				if options.interactive:
+					plot(point[0],point[1],c=color,marker=marker,markersize=8,linestyle='None',alpha=a)
+					if count < 10:	
+						sleep(1)
+						draw()
+					elif i in step:
+						draw()
+						
+					
+			if options.MD:
+				ax.plot(start[0],start[1],c="red",marker=r'$\circlearrowleft$',markersize=8,linestyle='None')
+				ax.plot(last[0] , last[1],c="blue",marker=r'$\lambda$',markersize=8,linestyle='None')
+				
+			#ax.scatter(comp[:,0],comp[:,1],c=color,cmap = colormap, s=15)
+			
 			groups=[None]*len(self.labels)
 		else:
-			ax.scatter(comp[:,0],comp[:1],comp[:2])
+			ax.scatter(comp[:,0],comp[:1],comp[:2],c=color,s=15)
 			groups=[None]*len(self.labels)			
 
 		fout=open('%s.equivalences'%self.prefix,'w')
-		if not MD:
+		if not options.MD:
 			for l in range(len(self.labels)):
 				ax.annotate(l,comp[l,]+0.1,fontsize=fontsize)
 				fout.write('%s\t%s\t%s'%(l,self.labels[l],groups[l]))
@@ -259,8 +318,14 @@ class ORD:
 				ax.view_init(30, 45)
 		if groups[0]:
 			ax.legend(loc=0, fancybox=True, shadow=True)
+
+
+		fig.tight_layout()
+		#plt.show()
+		fig.savefig(self.prefix+'_%s.png'%(self.type), dpi=dpi)
+		fout.close()		
 		
-		if MD:
+		if options.MD:
 			initx,inity = comp[:,0][0],comp[:,1][0]
 			lastx,lasty = comp[:,0][-1],comp[:,1][-1]
 			ax.annotate('Initial conformation', xy=(initx, inity), 
@@ -270,18 +335,24 @@ class ORD:
 			ax.annotate('Final conformation', xy=(lastx, lasty),
 				        xytext=(float(lastx)+10, float(lasty)+40),
 				        arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
+			fig.savefig(self.prefix+'_%s_startStop.png'%(self.type), dpi=dpi)
 
-		fig.tight_layout()
-		plt.show()
-		fig.savefig(self.prefix+'_%s.png'%(self.type), dpi=dpi)
-		fout.close()
+		
 
 
-	def PlotXDA(self,membership,group_labels=None,stds=3,ellipses=True,dpi=100,typeof='LDA',fontsize=10,MD=False):
+	def PlotXDA(self,membership,options,group_labels=None,):
 		'''
 		Plots a Linear Discriminant Analysis (LDA) or a Quadratic Discriminan Analysis (QDA) with
 		confidence ellipses at std (standard deviations)
 		'''
+		#options:
+		stds=options.std
+		ellipses=options.ellipses
+		dpi=options.dpi
+		typeof=self.type
+		fontsize=options.textsize
+		MD=options.MD
+		
 		if group_labels:
 			target_names = group_labels
 		else:
@@ -365,26 +436,27 @@ class ORD:
 			for j in xrange(1, stds+1):
 				self.ellipses[mem][j]=self.ellipse(Xs,Ys,std=j,color=col)
 
-	def LDA(self,membership,group_labels=None,stds=3,ellipses=True,dpi=100):
+	def LDA(self,membership,options,group_labels=None):
 		'''
 		Perform a Linear discriminant analysis of the data and plot it. Membership must be an array
 		of integers of the same lenght of the number of observations in the data. 
 		'''
-		
+		self.type='LDA'
 		lda = LDA(n_components=2)
 		self.fit = lda.fit(self.data, membership).transform(self.data)
 		if ellipses:
 			self.getEllipses(stds)
-		self.PlotXDA(membership,group_labels=group_labels,stds=stds,ellipses=ellipses,
-		             dpi=dpi, typeof='LDA')
+		self.PlotXDA(membership, options, group_labels=group_labels)
+		self.Store()
 
-	def QDA(self,membership,group_labels=None,stds=3,ellipses=True,dpi=100):
+	def QDA(self,membership, options, group_labels=None):
+		self.type = 'QDA'
 		qda = QDA()
 		self.fit = qda.fit(self.data, membership).predict(self.data)
 		if ellipses:
 			self.getEllipses(stds)
-		self.PlotXDA(membership,group_labels=group_labels,stds=stds,ellipses=ellipses,
-		             dpi=dpi,typeof='QDA')
+		self.PlotXDA(membership,options,group_labels=group_labels)
+		self.Store()
 # END Functions bit###############################################################################
 if __name__ == "__main__":
 	import optparse,sys
@@ -402,32 +474,46 @@ if __name__ == "__main__":
 	opts.add_option('-M','--MD',dest='MD', action="store_true", default=False, help='If too many '\
 	                'snapshots in a molecular dynamic simulation are used, this option will stop '\
 	                'printing the labels, and will point at the extremes of the trajectory')
+	opts.add_option('-d','--dpi',dest='dpi', action="store", default=300, help='Modify the dpi of' \
+	                ' the plots. Default: 300')	
+	opts.add_option('-c','--ncomp',dest='ncomp', action="store", default=2, help='Modify the number'\
+	                ' of components to be estimated. Default: 2')		
+	opts.add_option('-g','--groups',dest='groups', action="store", default=None, help='Provide a '\
+	                'grouping vector to color plots by. This file is a space sepatated format, just'\
+	                ' as the membership file. Default=No')	
+	opts.add_option('-T','--textsize',dest='textsize', action="store", default=10, help='Modify the '
+	                'text size in the plot. Default=10')
+	opts.add_option('-e','--ellipses',dest='ellipses', action="store_false", default=True, help='Turn off '\
+	                'the ellipses drawing.')	
+	opts.add_option('-i','--interactive',dest='interactive', action="store_true", default=False, 
+	                help='Whether or not to do interactive plotting in cuch a way that the trajectory'\
+	                ' can be seen. This can be really slow if too many points are being drawn. Default = False')		
 	
 	options, args = opts.parse_args()
+	
 	if options.type == 'All' and not options.mem:
 		print 'You choose to use all the functions but did not provide a membership file.'
 		sys.exit()
 	if options.mem:
 		membership = np.array(open(options.mem).read().strip().split())
-	O = ORD(args[0], args[1])
-	if options.type == 'All':
-		PCoA = O.MDS(MD=options.MD)
-		nMDS = O.MDS(typeof='non-metric',MD=options.MD)
-		PCA = O.PCA(MD=options.MD)
-		O.LDA(membership)
-		O.QDA(membership)
-	elif options.type == 'PCoA':
-		PCoA = O.MDS(MD=options.MD)
-		
-	elif options.type == 'nMDS':
-		nMDS = O.MDS(typeof='non-metric',MD=options.MD)
-		
-	elif options.type == 'PCA':
-		PCA = O.PCA(MD=options.MD)
-		
-	elif options.type == 'LDA':
-		O.LDA(membership)
+	if options.groups:
+		groups = np.array(open(options.groups).read().strip().split())
 	else:
-		O.QDA(membership)		
+		groups=None
+	
+	if not G('*.pckl'):
+		O = ORD(args[0], args[1])
+		if options.type == 'All' or options.type == 'PCoA': O.MDS(options,groups=groups)
+		if options.type == 'All' or options.type == 'nMDS': O.MDS(options,typeof='non-metric',groups=groups)
+		if options.type == 'All' or options.type == 'PCA' : O.PCA(options,groups=groups)
+		if options.type == 'All' or options.type == 'LDA' : O.LDA(membership,options,group_labels=groups)
+		if options.type == 'All' or options.type == 'QDA' : O.QDA(membership,options,group_labels=groups)
+	else:
+		for i in G('*.pckl'):
+			O = pickle.load(open(i))
+			if 'DA' in i:	
+				O.PlotXDA(membership,options)
+			else:
+				O.Plot(options)
 	
 	

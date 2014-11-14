@@ -398,15 +398,6 @@ def startPymol():
     '''
     pymol.finish_launching()
 
-def getAverageCorrelationCoefficient(len_struct):
-    '''
-    Gets the average correlation coefficient for
-    randomly related structure pairs given the
-    length of a structure. See Betancourt and Skolnick.
-    '''
-    L_N, e = len_struct-1, math.e
-    return 0.42-0.05*L_N*e**(-L_N/4.7)+0.63*e**(-L_N/37)
-
 def radiusOfGyration(pdbFile,chain,pdb=None):
     '''
     Returns the approximate radius of gyration
