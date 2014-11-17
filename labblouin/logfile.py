@@ -99,10 +99,11 @@ class logfile():
         if (m >= 1): out += '%dm' % m
         if (s >= 1): out += '%ds' % s
         return out
-    def writeTemporary(self,msg):
-        self._write(msg,temp=True)
-    def _write(self,msg,temp=False):
-        if self.silent and not self.enabled: return
+    def writeTemporary(self,msg,silent=None):
+        self._write(msg,temp=True,silent=silent)
+    def _write(self,msg,temp=False,silent=None):
+        if silent == None: silent = self.silent
+        if silent and not self.enabled: return
         numat = self.numat+1
         totnum = self.totalnum+1
         tim = timer.estimateRemainingTime(self.stime,numat,totnum) # time remaining
@@ -111,15 +112,16 @@ class logfile():
         if temp: suff = '\r'
         else:    suff = ''
         out = '[%s | %3d%% | rem %10s] %s' % (cur,perc,self.__fs__(tim),msg)
-        stdout.write('\033[K' + out + suff)
-        stdout.flush()
+        if not silent:
+            stdout.write('\033[K' + out + suff)
+            stdout.flush()
         if not self.enabled: return
         else:
             fout = open(self.logfile,'a')
             fout.write(out.strip('\n') + '\n')
             fout.close()        
-    def write(self,msg):
-        self._write(msg + '\n')
+    def write(self,msg,silent=None):
+        self._write(msg + '\n',silent=silent)
     def writeElapsedTime(self):
         t = timer.getTime()
         self.write('Elapsed: %s' % (self.__fs__(t-self.stime)))
