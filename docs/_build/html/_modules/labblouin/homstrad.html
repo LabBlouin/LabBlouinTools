@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.homstrad &mdash; LabBlouinTools 0.3.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for labblouin.homstrad</h1><div class="highlight"><pre>
+<span class="c">#!/bin/python</span>
+
+<span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">A library to manage interfacing with the Homstrad database raw files.</span>
+
+<span class="sd">homstrad Python Library / May 22, 2013 / Alex Safatli</span>
+
+<span class="sd">This program is free software: you can redistribute it and/or modify</span>
+<span class="sd">it under the terms of the GNU General Public License as published by</span>
+<span class="sd">the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">(at your option) any later version.</span>
+
+<span class="sd">This program is distributed in the hope that it will be useful,</span>
+<span class="sd">but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">GNU General Public License for more details.</span>
+
+<span class="sd">You should have received a copy of the GNU General Public License</span>
+<span class="sd">along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">E-mail: safatli@cs.dal.ca</span>
+<span class="sd">Dependencies: IO (LabBlouinTools)</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">glob</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">IO</span>
+<span class="kn">import</span> <span class="nn">re</span> <span class="kn">as</span> <span class="nn">R</span>
+
+<div class="viewcode-block" id="hasNoFolders"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.hasNoFolders">[docs]</a><span class="k">def</span> <span class="nf">hasNoFolders</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s">&#39;*&#39;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">fi</span><span class="p">):</span> <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="homstradFolder"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder">[docs]</a><span class="k">class</span> <span class="nc">homstradFolder</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39; Model a single Homstrad folder or set. &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">foldrname</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">foldrname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">IO</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="n">foldrname</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">foldrname</span><span class="p">,</span><span class="s">&#39;*&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pdb</span>  <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__manifest__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__manifest__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c"># Find PIR file.</span>
+        <span class="n">pirfile</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">pdbfile</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pirfile</span> <span class="ow">and</span> <span class="n">fi</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.pir&#39;</span><span class="p">):</span> <span class="n">pirfile</span> <span class="o">=</span> <span class="n">fi</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pdbfile</span> <span class="ow">and</span> <span class="n">fi</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.pdb&#39;</span><span class="p">):</span> <span class="n">pdbfile</span> <span class="o">=</span> <span class="n">fi</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pirfile</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> did not possess PIR file.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pdbfile</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> did not possess PDB file.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pdb</span> <span class="o">=</span> <span class="n">pdbfile</span>
+        <span class="c"># Parse PIR file for sequences.</span>
+        <span class="n">pirhandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">pirfile</span><span class="p">)</span>
+        <span class="n">struct</span><span class="p">,</span> <span class="n">seq</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">pirhandle</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">struct</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">struct</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">[</span><span class="n">struct</span><span class="p">]</span> <span class="o">=</span> <span class="n">seq</span>
+                    <span class="n">struct</span> <span class="o">=</span> <span class="bp">None</span>
+                    <span class="n">seq</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+                <span class="n">struct</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;;&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;structure&#39;</span><span class="p">):</span> <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">line</span> <span class="o">==</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">:</span> <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span> <span class="n">seq</span> <span class="o">+=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;*&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">struct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">[</span><span class="n">struct</span><span class="p">]</span> <span class="o">=</span> <span class="n">seq</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">struct</span><span class="p">)</span>
+        <span class="n">pirhandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c"># Parse PDB file for name sequence. Ensure consistency.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">pdbhandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">pdbhandle</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">while</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;REMARK&#39;</span><span class="p">):</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">pdbhandle</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">mols</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;\S*\s*chain&#39;</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="n">mols</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> 
+            <span class="n">pdbhandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span> <span class="o">=</span> <span class="n">tmp</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;PDB file did not match PIR structure series for </span><span class="si">%s</span><span class="s">.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>        
+
+<div class="viewcode-block" id="homstradFolder.getNames"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getNames">[docs]</a>    <span class="k">def</span> <span class="nf">getNames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span></div>
+<div class="viewcode-block" id="homstradFolder.getNumSequences"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getNumSequences">[docs]</a>    <span class="k">def</span> <span class="nf">getNumSequences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getSequences</span><span class="p">())</span></div>
+<div class="viewcode-block" id="homstradFolder.getSequences"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getSequences">[docs]</a>    <span class="k">def</span> <span class="nf">getSequences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span></div>
+<div class="viewcode-block" id="homstradFolder.getFiles"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getFiles">[docs]</a>    <span class="k">def</span> <span class="nf">getFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span></div>
+<div class="viewcode-block" id="homstradFolder.getPath"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getPath">[docs]</a>    <span class="k">def</span> <span class="nf">getPath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span></div>
+<div class="viewcode-block" id="homstradFolder.getFASTA"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getFASTA">[docs]</a>    <span class="k">def</span> <span class="nf">getFASTA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFASTAfor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">)</span></div>
+<div class="viewcode-block" id="homstradFolder.writeFASTA"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.writeFASTA">[docs]</a>    <span class="k">def</span> <span class="nf">writeFASTA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fi</span><span class="p">,</span><span class="n">names</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">names</span><span class="p">:</span> <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fi</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getFASTAfor</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fi</span></div>
+<div class="viewcode-block" id="homstradFolder.getFASTAfor"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getFASTAfor">[docs]</a>    <span class="k">def</span> <span class="nf">getFASTAfor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">names</span><span class="p">):</span>
+        <span class="n">sequ</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="n">sequ</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="n">seq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">),</span><span class="mi">70</span><span class="p">):</span> <span class="n">sequ</span> <span class="o">+=</span> <span class="n">seq</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">70</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="s">&#39;&gt;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">sequ</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+<div class="viewcode-block" id="homstradFolder.getAlignedPDB"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getAlignedPDB">[docs]</a>    <span class="k">def</span> <span class="nf">getAlignedPDB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdb</span></div>
+<div class="viewcode-block" id="homstradFolder.getPDBs"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getPDBs">[docs]</a>    <span class="k">def</span> <span class="nf">getPDBs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.atm&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mol</span><span class="p">))</span></div>
+<div class="viewcode-block" id="homstradFolder.getPDBfor"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getPDBfor">[docs]</a>    <span class="k">def</span> <span class="nf">getPDBfor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.atm&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span></div>
+<div class="viewcode-block" id="homstradFolder.getSequenceLength"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getSequenceLength">[docs]</a>    <span class="k">def</span> <span class="nf">getSequenceLength</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAlignmentLength</span><span class="p">()</span></div>
+<div class="viewcode-block" id="homstradFolder.getAlignmentLength"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradFolder.getAlignmentLength">[docs]</a>    <span class="k">def</span> <span class="nf">getAlignmentLength</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]])</span>
+    
+    </div></div>
+<div class="viewcode-block" id="homstradDatabase"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradDatabase">[docs]</a><span class="k">class</span> <span class="nc">homstradDatabase</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dbpath</span><span class="p">,</span><span class="n">traverse</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span>      <span class="o">=</span> <span class="n">dbpath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">folders</span>   <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">failed</span>    <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">succeeded</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">traverse</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">traverse</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">folders</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">folders</span><span class="p">[</span><span class="n">it</span><span class="p">]</span>
+<div class="viewcode-block" id="homstradDatabase.traverse"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradDatabase.traverse">[docs]</a>    <span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folders</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">folders</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="s">&#39;*&#39;</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">folders</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span> <span class="ow">and</span> <span class="n">hasNoFolders</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">f</span> <span class="o">=</span> <span class="n">homstradFolder</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">folders</span><span class="p">[</span><span class="n">folder</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">succeeded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">failed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span></div>
+<div class="viewcode-block" id="homstradDatabase.getPath"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradDatabase.getPath">[docs]</a>    <span class="k">def</span> <span class="nf">getPath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span></div>
+<div class="viewcode-block" id="homstradDatabase.getFolders"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradDatabase.getFolders">[docs]</a>    <span class="k">def</span> <span class="nf">getFolders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folders</span></div>
+<div class="viewcode-block" id="homstradDatabase.getFailedCount"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradDatabase.getFailedCount">[docs]</a>    <span class="k">def</span> <span class="nf">getFailedCount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">failed</span><span class="p">)</span></div>
+<div class="viewcode-block" id="homstradDatabase.getSucceededCount"><a class="viewcode-back" href="../../labblouin.homstrad.html#labblouin.homstrad.homstradDatabase.getSucceededCount">[docs]</a>    <span class="k">def</span> <span class="nf">getSucceededCount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">succeeded</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

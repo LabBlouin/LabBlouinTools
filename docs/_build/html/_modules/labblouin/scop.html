@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.scop &mdash; LabBlouinTools 0.3.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for labblouin.scop</h1><div class="highlight"><pre>
+<span class="c"># scop.py</span>
+<span class="c"># -------------------------</span>
+<span class="c"># May 28, 2013; Alex Safatli</span>
+<span class="c"># -------------------------</span>
+<span class="c"># SCOP Database API</span>
+
+<span class="kn">import</span> <span class="nn">glob</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">urllib</span><span class="o">,</span> <span class="nn">pickle</span><span class="o">,</span> <span class="nn">random</span>
+
+<span class="n">SCOP_VERSION</span> <span class="o">=</span> <span class="s">&#39;1.75&#39;</span>
+<span class="n">SCOP_PARSE_FILE</span> <span class="o">=</span> <span class="s">&#39;http://scop.mrc-lmb.cam.ac.uk&#39;</span><span class="o">+</span>\
+    <span class="s">&#39;/scop/parse/dir.</span><span class="si">%s</span><span class="s">.scop.txt_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;des&#39;</span><span class="p">,</span><span class="n">SCOP_VERSION</span><span class="p">)</span>
+<span class="n">SCOP_PDBDB_FILE</span> <span class="o">=</span> <span class="s">&#39;http://scop.mrc-lmb.cam.ac.uk&#39;</span><span class="o">+</span>\
+    <span class="s">&#39;/scop/parse/dir.</span><span class="si">%s</span><span class="s">.scop.txt_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;cla&#39;</span><span class="p">,</span><span class="n">SCOP_VERSION</span><span class="p">)</span>
+<span class="n">LOCAL_PARSE_FILE</span> <span class="o">=</span> <span class="s">&#39;directory.scop&#39;</span>
+<span class="n">LOCAL_PDBDB_FILE</span> <span class="o">=</span> <span class="s">&#39;pdbdb.scop&#39;</span>
+<span class="n">LOCAL_FLAT_FILE</span>  <span class="o">=</span> <span class="s">&#39;scop.pickl&#39;</span> 
+
+<div class="viewcode-block" id="scopHierarchy"><a class="viewcode-back" href="../../labblouin.scop.html#labblouin.scop.scopHierarchy">[docs]</a><span class="k">class</span> <span class="nc">scopHierarchy</span><span class="p">:</span>
+    <span class="n">classes</span>       <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">folds</span>         <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">superfamilies</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">families</span>      <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">domains</span>       <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">species</span>       <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">entries</span>       <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cacheloc</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="n">cacheloc</span>
+    <span class="k">def</span> <span class="nf">__downloadparse__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span><span class="n">LOCAL_PARSE_FILE</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span> <span class="n">dest</span><span class="p">,</span> <span class="n">hdrs</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">SCOP_PARSE_FILE</span><span class="p">,</span><span class="n">dest</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;Could not download &lt;</span><span class="si">%r</span><span class="s">&gt;.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">SCOP_PARSE_FILE</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">__downloadpdbdb__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span><span class="n">LOCAL_PDBDB_FILE</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span> <span class="n">dest</span><span class="p">,</span> <span class="n">hdrs</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">SCOP_PDBDB_FILE</span><span class="p">,</span><span class="n">dest</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;Could not download &lt;</span><span class="si">%r</span><span class="s">&gt;.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">SCOP_PDBDB_FILE</span><span class="p">))</span>        
+    <span class="k">def</span> <span class="nf">__parsefile__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fi</span><span class="p">):</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fi</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">):</span> <span class="k">continue</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">5</span><span class="p">:</span> <span class="k">continue</span>
+            <span class="n">sunid</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">sccs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">desc</span> <span class="o">=</span> <span class="n">l</span>
+            <span class="n">it</span> <span class="o">=</span> <span class="n">scopItem</span><span class="p">(</span><span class="n">sunid</span><span class="p">,</span><span class="n">sccs</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">desc</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">entry</span> <span class="o">==</span> <span class="s">&#39;cl&#39;</span><span class="p">):</span>   <span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">[</span><span class="n">sunid</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">entry</span> <span class="o">==</span> <span class="s">&#39;cf&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">folds</span><span class="p">[</span><span class="n">sunid</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">entry</span> <span class="o">==</span> <span class="s">&#39;sf&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span><span class="p">[</span><span class="n">sunid</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">entry</span> <span class="o">==</span> <span class="s">&#39;fa&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">families</span><span class="p">[</span><span class="n">sunid</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">entry</span> <span class="o">==</span> <span class="s">&#39;dm&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">[</span><span class="n">sunid</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">entry</span> <span class="o">==</span> <span class="s">&#39;sp&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">species</span><span class="p">[</span><span class="n">sunid</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">entry</span> <span class="o">==</span> <span class="s">&#39;px&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="n">sunid</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">__pdbdbfile__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fi</span><span class="p">):</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fi</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">):</span> <span class="k">continue</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">6</span><span class="p">:</span> <span class="k">continue</span>
+            <span class="n">sid</span><span class="p">,</span> <span class="n">pdb</span><span class="p">,</span> <span class="n">dom</span><span class="p">,</span> <span class="n">sccs</span><span class="p">,</span> <span class="n">sunidpx</span><span class="p">,</span> <span class="n">sunidli</span> <span class="o">=</span> <span class="n">l</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">sunidli</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;cl&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;cl=&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">addPDB</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;cf&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">folds</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;cf=&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">addPDB</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;sf&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;sf=&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">addPDB</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;fa&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">families</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;fa=&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">addPDB</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;dm&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;dm=&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">addPDB</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;sp&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">species</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;sp=&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">addPDB</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;px&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;px=&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">addPDB</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">print</span> <span class="s">&#39;sunid </span><span class="si">%s</span><span class="s"> did not correspond to a parsed directory item.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>    
+    <span class="k">def</span> <span class="nf">__readpickle__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fi</span><span class="p">):</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">folds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span><span class="p">,</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">families</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">species</span><span class="p">,</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">__writepickle__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fi</span><span class="p">):</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fi</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">cl</span><span class="p">,</span> <span class="n">fo</span><span class="p">,</span> <span class="n">sf</span><span class="p">,</span> <span class="n">ff</span><span class="p">,</span> <span class="n">do</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">ee</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">folds</span><span class="p">,</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">families</span><span class="p">,</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">domains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">((</span><span class="n">cl</span><span class="p">,</span> <span class="n">fo</span><span class="p">,</span> <span class="n">sf</span><span class="p">,</span> <span class="n">ff</span><span class="p">,</span> <span class="n">do</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">ee</span><span class="p">),</span><span class="n">fh</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<div class="viewcode-block" id="scopHierarchy.populateHierarchy"><a class="viewcode-back" href="../../labblouin.scop.html#labblouin.scop.scopHierarchy.populateHierarchy">[docs]</a>    <span class="k">def</span> <span class="nf">populateHierarchy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fiflat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span><span class="n">LOCAL_FLAT_FILE</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fiflat</span><span class="p">):</span>
+            <span class="n">fiparse</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span><span class="n">LOCAL_PARSE_FILE</span><span class="p">)</span>
+            <span class="n">fipdbdb</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span><span class="n">LOCAL_PDBDB_FILE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fiparse</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__downloadparse__</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fipdbdb</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__downloadpdbdb__</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__parsefile__</span><span class="p">(</span><span class="n">fiparse</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__pdbdbfile__</span><span class="p">(</span><span class="n">fipdbdb</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__writepickle__</span><span class="p">(</span><span class="n">fiflat</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__readpickle__</span><span class="p">(</span><span class="n">fiflat</span><span class="p">)</span></div>
+<div class="viewcode-block" id="scopHierarchy.getDissimilar"><a class="viewcode-back" href="../../labblouin.scop.html#labblouin.scop.scopHierarchy.getDissimilar">[docs]</a>    <span class="k">def</span> <span class="nf">getDissimilar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">suprfquery</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="c"># Given a superfamily, grab a set of PDB files</span>
+        <span class="c"># from other superfamilies (1 random ambassador</span>
+        <span class="c"># from each).</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span><span class="p">,</span><span class="n">suprfquery</span><span class="p">)</span>
+        <span class="n">pdbs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+        <span class="n">oth</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">key</span><span class="p">]</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">oth</span><span class="p">)</span>
+        <span class="n">oth</span> <span class="o">=</span> <span class="n">oth</span><span class="p">[:</span><span class="n">num</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">oth</span><span class="p">:</span>
+            <span class="n">pdbli</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">it</span><span class="o">.</span><span class="n">pdbs</span><span class="p">]</span>
+            <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">pdbli</span><span class="p">)</span>
+            <span class="n">pdbs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdbli</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c"># Get the PDB for the superfamily query.</span>
+        <span class="n">it</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">pdbli</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">it</span><span class="o">.</span><span class="n">pdbs</span><span class="p">]</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">pdbli</span><span class="p">)</span>
+        <span class="n">sfpdb</span> <span class="o">=</span> <span class="n">pdbli</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">sfpdb</span><span class="p">,</span> <span class="n">pdbs</span></div>
+<div class="viewcode-block" id="scopHierarchy.query"><a class="viewcode-back" href="../../labblouin.scop.html#labblouin.scop.scopHierarchy.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dicti</span><span class="p">,</span><span class="n">q</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">dicti</span><span class="p">:</span> <span class="n">key</span> <span class="o">=</span> <span class="n">q</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dicti</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="p">[</span><span class="n">dicti</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">sccs</span><span class="p">,</span> 
+                           <span class="n">dicti</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">shortname</span><span class="p">,</span> 
+                           <span class="n">dicti</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">desc</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">it</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="n">x</span>
+                        <span class="k">break</span>
+        <span class="k">return</span> <span class="n">key</span>       </div>
+<div class="viewcode-block" id="scopHierarchy.getSimilar"><a class="viewcode-back" href="../../labblouin.scop.html#labblouin.scop.scopHierarchy.getSimilar">[docs]</a>    <span class="k">def</span> <span class="nf">getSimilar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">suprfquery</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="c"># Given a superfamily, grab a set of PDB files</span>
+        <span class="c"># from that superfamilies.</span>
+        <span class="n">pdbs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span><span class="p">,</span><span class="n">suprfquery</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+        <span class="n">sf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">pdbli</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sf</span><span class="o">.</span><span class="n">pdbs</span><span class="p">]</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">pdbli</span><span class="p">)</span>
+        <span class="n">pdbs</span> <span class="o">=</span> <span class="n">pdbli</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">num</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pdbs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">num</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">sfpdb</span> <span class="o">=</span> <span class="n">pdbli</span><span class="p">[</span><span class="n">num</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">sfpdb</span><span class="p">,</span> <span class="n">pdbs</span>
+        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="n">pdbs</span></div>
+<div class="viewcode-block" id="scopHierarchy.getFamilies"><a class="viewcode-back" href="../../labblouin.scop.html#labblouin.scop.scopHierarchy.getFamilies">[docs]</a>    <span class="k">def</span> <span class="nf">getFamilies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">suprfquery</span><span class="p">):</span>
+        <span class="c"># Given a superfamily, grab a set of all associated</span>
+        <span class="c"># families.</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span><span class="p">,</span><span class="n">suprfquery</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="p">:</span> <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">sf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">superfamilies</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">sfpdbs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sf</span><span class="o">.</span><span class="n">pdbs</span><span class="p">]</span>
+        <span class="n">families</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">fam</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">families</span><span class="p">:</span>
+            <span class="n">fpdbs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">families</span><span class="p">[</span><span class="n">fam</span><span class="p">]</span><span class="o">.</span><span class="n">pdbs</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fpdbs</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">sfpdbs</span><span class="p">)))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">fpdbs</span><span class="p">):</span>
+                <span class="n">families</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">families</span><span class="p">[</span><span class="n">fam</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">families</span>
+    </div></div>
+<div class="viewcode-block" id="scopItem"><a class="viewcode-back" href="../../labblouin.scop.html#labblouin.scop.scopItem">[docs]</a><span class="k">class</span> <span class="nc">scopItem</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sunid</span><span class="p">,</span><span class="n">sccs</span><span class="p">,</span><span class="n">shortname</span><span class="p">,</span><span class="n">desc</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sunid</span> <span class="o">=</span> <span class="n">sunid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sccs</span> <span class="o">=</span> <span class="n">sccs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortname</span> <span class="o">=</span> <span class="n">shortname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">desc</span> <span class="o">=</span> <span class="n">desc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdbs</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="viewcode-block" id="scopItem.addPDB"><a class="viewcode-back" href="../../labblouin.scop.html#labblouin.scop.scopItem.addPDB">[docs]</a>    <span class="k">def</span> <span class="nf">addPDB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pdb</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pdb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdbs</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdbs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span></div>
+<div class="viewcode-block" id="scopItem.getPDBs"><a class="viewcode-back" href="../../labblouin.scop.html#labblouin.scop.scopItem.getPDBs">[docs]</a>    <span class="k">def</span> <span class="nf">getPDBs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdbs</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

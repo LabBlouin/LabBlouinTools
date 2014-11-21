@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.SeqMask module &mdash; LabBlouinTools 0.3.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.1 documentation" href="index.html" />
+    <link rel="up" title="labblouin package" href="labblouin.html" />
+    <link rel="next" title="labblouin.expresso module" href="labblouin.expresso.html" />
+    <link rel="prev" title="labblouin.RegExpress module" href="labblouin.RegExpress.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.expresso.html" title="labblouin.expresso module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.RegExpress.html" title="labblouin.RegExpress module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.1 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" accesskey="U">labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-labblouin.SeqMask">
+<span id="labblouin-seqmask-module"></span><h1>labblouin.SeqMask module<a class="headerlink" href="#module-labblouin.SeqMask" title="Permalink to this headline">¶</a></h1>
+<p>Get the amino acid sequence from a landmark file, align this profile to more sequences if required
+using muscle, and mask the membership vector into this alignment.</p>
+<dl class="function">
+<dt id="labblouin.SeqMask.InferSeqs_landmarks">
+<tt class="descclassname">labblouin.SeqMask.</tt><tt class="descname">InferSeqs_landmarks</tt><big>(</big><em>prefix</em><big>)</big><a class="reference internal" href="_modules/labblouin/SeqMask.html#InferSeqs_landmarks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.SeqMask.InferSeqs_landmarks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a landmark file, return a dictionary with the name as key and the
+sequence as value</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.SeqMask.InferSingleLettterCode">
+<tt class="descclassname">labblouin.SeqMask.</tt><tt class="descname">InferSingleLettterCode</tt><big>(</big><em>threlettercode</em><big>)</big><a class="reference internal" href="_modules/labblouin/SeqMask.html#InferSingleLettterCode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.SeqMask.InferSingleLettterCode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the amino acid three letter code, into a single letter code</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.SeqMask.MaskAln">
+<tt class="descclassname">labblouin.SeqMask.</tt><tt class="descname">MaskAln</tt><big>(</big><em>fastafilename</em>, <em>modulename</em>, <em>mem</em>, <em>tuples</em><big>)</big><a class="reference internal" href="_modules/labblouin/SeqMask.html#MaskAln"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.SeqMask.MaskAln" title="Permalink to this definition">¶</a></dt>
+<dd><p>Strip the module in an alignment (fasta) file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.SeqMask.Mem2List2tuple">
+<tt class="descclassname">labblouin.SeqMask.</tt><tt class="descname">Mem2List2tuple</tt><big>(</big><em>prefix</em><big>)</big><a class="reference internal" href="_modules/labblouin/SeqMask.html#Mem2List2tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.SeqMask.Mem2List2tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the membership vector, and returns a list and a dictionary with tupples for
+each module, indicating the indexes</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.SeqMask.dict2fasta">
+<tt class="descclassname">labblouin.SeqMask.</tt><tt class="descname">dict2fasta</tt><big>(</big><em>outfilename</em>, <em>dic</em><big>)</big><a class="reference internal" href="_modules/labblouin/SeqMask.html#dict2fasta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.SeqMask.dict2fasta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the dictionary return by InferSeqs_landmarks fuction
+and writes a fasta file. The dictionary should have the seq name as
+key and a string as value containing the sequence</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.SeqMask.fasta2dict">
+<tt class="descclassname">labblouin.SeqMask.</tt><tt class="descname">fasta2dict</tt><big>(</big><em>fastafilename</em><big>)</big><a class="reference internal" href="_modules/labblouin/SeqMask.html#fasta2dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.SeqMask.fasta2dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert a fasta file into a python dictionary, being the keys the name of the sequence
+and the values the sequence itself, in a list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.SeqMask.modseq2Fasta">
+<tt class="descclassname">labblouin.SeqMask.</tt><tt class="descname">modseq2Fasta</tt><big>(</big><em>prefix</em>, <em>modseq</em>, <em>names</em><big>)</big><a class="reference internal" href="_modules/labblouin/SeqMask.html#modseq2Fasta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.SeqMask.modseq2Fasta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="labblouin.SeqMask.str2list">
+<tt class="descclassname">labblouin.SeqMask.</tt><tt class="descname">str2list</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/labblouin/SeqMask.html#str2list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.SeqMask.str2list" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a list of a string that have no spaces between elements</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="labblouin.RegExpress.html"
+                        title="previous chapter">labblouin.RegExpress module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="labblouin.expresso.html"
+                        title="next chapter">labblouin.expresso module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/labblouin.SeqMask.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.expresso.html" title="labblouin.expresso module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.RegExpress.html" title="labblouin.RegExpress module"
+             >previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.1 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" >labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
