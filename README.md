@@ -6,4 +6,4 @@ Bioinformatic python utilities modules, and libraries for use with Lab Blouin ap
 Documentation
 --------------
 
-Documentation is now found at [this page](http://http://labblouintools.readthedocs.org/ "Documentation").
+Documentation is now found at [this page](http://http://labblouin.github.io/LabBlouinTools/ "Documentation").
