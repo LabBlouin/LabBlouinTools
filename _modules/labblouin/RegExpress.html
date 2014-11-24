@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.RegExpress &mdash; LabBlouinTools 0.3.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.3 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for labblouin.RegExpress</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Prosite pattern generator. Will turn an alignment into a regular expression</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c">#importing bit####################################################################################################</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c"># End importing###################################################################################################</span>
+
+<span class="c">#some constants####################################################################################################</span>
+<span class="n">aa</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;A&#39;</span><span class="p">:</span><span class="s">&#39;Ala&#39;</span><span class="p">,</span><span class="s">&#39;C&#39;</span><span class="p">:</span><span class="s">&#39;Cys&#39;</span><span class="p">,</span><span class="s">&#39;D&#39;</span><span class="p">:</span><span class="s">&#39;Asp&#39;</span><span class="p">,</span><span class="s">&#39;E&#39;</span><span class="p">:</span><span class="s">&#39;Glu&#39;</span><span class="p">,</span><span class="s">&#39;F&#39;</span><span class="p">:</span><span class="s">&#39;Phe&#39;</span><span class="p">,</span><span class="s">&#39;G&#39;</span><span class="p">:</span><span class="s">&#39;Gly&#39;</span><span class="p">,</span><span class="s">&#39;H&#39;</span><span class="p">:</span><span class="s">&#39;His&#39;</span><span class="p">,</span><span class="s">&#39;I&#39;</span><span class="p">:</span><span class="s">&#39;Ile&#39;</span><span class="p">,</span><span class="s">&#39;K&#39;</span><span class="p">:</span><span class="s">&#39;Lys&#39;</span><span class="p">,</span><span class="s">&#39;L&#39;</span><span class="p">:</span><span class="s">&#39;Leu&#39;</span><span class="p">,</span><span class="s">&#39;M&#39;</span><span class="p">:</span><span class="s">&#39;Met&#39;</span><span class="p">,</span>\
+      <span class="s">&#39;N&#39;</span><span class="p">:</span><span class="s">&#39;Asn&#39;</span><span class="p">,</span><span class="s">&#39;P&#39;</span><span class="p">:</span><span class="s">&#39;Pro&#39;</span><span class="p">,</span><span class="s">&#39;Q&#39;</span><span class="p">:</span><span class="s">&#39;Gln&#39;</span><span class="p">,</span><span class="s">&#39;R&#39;</span><span class="p">:</span><span class="s">&#39;Arg&#39;</span><span class="p">,</span><span class="s">&#39;S&#39;</span><span class="p">:</span><span class="s">&#39;Ser&#39;</span><span class="p">,</span><span class="s">&#39;T&#39;</span><span class="p">:</span><span class="s">&#39;Thr&#39;</span><span class="p">,</span><span class="s">&#39;V&#39;</span><span class="p">:</span><span class="s">&#39;Val&#39;</span><span class="p">,</span><span class="s">&#39;W&#39;</span><span class="p">:</span><span class="s">&#39;Trp&#39;</span><span class="p">,</span><span class="s">&#39;Y&#39;</span><span class="p">:</span><span class="s">&#39;Tyr&#39;</span><span class="p">}</span>
+<span class="n">allaa</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="s">&#39;ACDEFGHIKLMNPQRSTVWY&#39;</span><span class="p">)</span>
+<span class="c">#Some definitions##################################################################################################</span>
+
+<div class="viewcode-block" id="check_if_is_align"><a class="viewcode-back" href="../../labblouin.RegExpress.html#labblouin.RegExpress.check_if_is_align">[docs]</a><span class="k">def</span> <span class="nf">check_if_is_align</span><span class="p">(</span><span class="n">dictionary_fasta</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	will check the read fasta to see if is an alignment</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">lenght</span><span class="o">=</span><span class="p">[]</span>
+	<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">dictionary_fasta</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+		<span class="n">lenght</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+		
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">lenght</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="k">print</span> <span class="s">&#39;Sequences not of the same lenght. An alignment should be provided.&#39;</span>
+		<span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">l</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">l</span></div>
+<div class="viewcode-block" id="read_fasta"><a class="viewcode-back" href="../../labblouin.RegExpress.html#labblouin.RegExpress.read_fasta">[docs]</a><span class="k">def</span> <span class="nf">read_fasta</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	Wll read the fasta, place sequences in a dictionary. Will break if not an alignment</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">fastas</span><span class="o">=</span><span class="p">{}</span>
+	<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span><span class="o">+</span><span class="s">&#39;.fasta&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&gt;&#39;</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">e</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+			<span class="k">continue</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">name</span><span class="o">=</span><span class="n">e</span><span class="p">[:</span><span class="n">e</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)]</span>
+			<span class="n">seq</span><span class="o">=</span><span class="n">e</span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+			<span class="n">fastas</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">=</span><span class="n">seq</span>
+	<span class="n">l</span><span class="o">=</span> <span class="n">check_if_is_align</span><span class="p">(</span><span class="n">fastas</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">fastas</span><span class="p">,</span> <span class="n">l</span>
+</div>
+<div class="viewcode-block" id="strip_gaps"><a class="viewcode-back" href="../../labblouin.RegExpress.html#labblouin.RegExpress.strip_gaps">[docs]</a><span class="k">def</span> <span class="nf">strip_gaps</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	given an alignment matrix, strip out the gap columns</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">gapc</span><span class="o">=</span><span class="p">[]</span>
+	<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">matrix</span><span class="p">:</span>
+		<span class="k">if</span> <span class="s">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">gapc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+	<span class="k">return</span> <span class="n">gapc</span>
+</div>
+<div class="viewcode-block" id="reg_express_col"><a class="viewcode-back" href="../../labblouin.RegExpress.html#labblouin.RegExpress.reg_express_col">[docs]</a><span class="k">def</span> <span class="nf">reg_express_col</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	given a column of an alignment, return the string corresponding to the regular expression of such column</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">s</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">allaa</span><span class="p">:</span>
+		<span class="n">re</span><span class="o">=</span><span class="s">&#39;x&#39;</span>
+	<span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">10</span> <span class="ow">and</span> <span class="n">s</span> <span class="o">!=</span> <span class="n">allaa</span><span class="p">:</span>
+		<span class="n">ts</span><span class="o">=</span><span class="n">allaa</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+		<span class="n">re</span><span class="o">=</span><span class="s">&#39;{&#39;</span>
+		<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ts</span><span class="p">:</span>
+			<span class="n">re</span><span class="o">+=</span><span class="n">e</span>
+		<span class="n">re</span><span class="o">+=</span><span class="s">&#39;}&#39;</span>
+	<span class="k">elif</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>
+		<span class="n">re</span><span class="o">=</span><span class="s">&#39;[&#39;</span>
+		<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+			<span class="n">re</span><span class="o">+=</span><span class="n">e</span>
+		<span class="n">re</span><span class="o">+=</span><span class="s">&#39;]&#39;</span>
+	<span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+			<span class="n">re</span><span class="o">=</span><span class="n">e</span>
+	<span class="k">return</span> <span class="n">re</span>
+		
+		</div>
+<div class="viewcode-block" id="reg_express"><a class="viewcode-back" href="../../labblouin.RegExpress.html#labblouin.RegExpress.reg_express">[docs]</a><span class="k">def</span> <span class="nf">reg_express</span><span class="p">(</span><span class="n">fastas</span><span class="p">,</span><span class="n">l</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	will create a matrix with the alignment, discard columns with gaps, and create a regular expression similar to prosite</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">m</span><span class="o">=</span><span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+		<span class="n">m</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+	<span class="n">seqn</span><span class="o">=</span><span class="mi">0</span>
+	<span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fastas</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+		<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)):</span>
+			<span class="n">m</span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">e</span><span class="p">])</span>
+	<span class="c">#gapc = strip_gaps(m)</span>
+	
+	<span class="n">RE</span><span class="o">=</span><span class="s">&#39;&#39;</span>
+	<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">m</span><span class="p">:</span>
+		<span class="n">re</span> <span class="o">=</span> <span class="n">reg_express_col</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+		<span class="k">if</span> <span class="s">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">re</span><span class="p">:</span>
+			<span class="k">continue</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">RE</span><span class="o">+=</span><span class="n">re</span><span class="o">+</span><span class="s">&#39;-&#39;</span>
+	<span class="n">RE</span> <span class="o">=</span> <span class="n">RE</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	
+	<span class="k">return</span> <span class="n">RE</span>	
+			
+<span class="c"># End of definitions###############################################################################################</span>
+
+<span class="c"># Aplication of the code ##########################################################################################		</span></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s">&#39;-help&#39;</span> <span class="ow">or</span> <span class="s">&#39;-h&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">:</span>
+		<span class="k">print</span> <span class="s">&#39;Usage: RegExpress.py prefix&#39;</span>
+	
+	<span class="n">prefix</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+	<span class="n">fastas</span> <span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">read_fasta</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+	<span class="n">RE</span> <span class="o">=</span> <span class="n">reg_express</span><span class="p">(</span> <span class="n">fastas</span> <span class="p">,</span> <span class="n">l</span> <span class="p">)</span>
+	<span class="k">print</span> <span class="n">RE</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.homology &mdash; LabBlouinTools 0.3.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.3 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for labblouin.homology</h1><div class="highlight"><pre>
+<span class="c"># homology.py</span>
+<span class="c"># -------------------------</span>
+<span class="c"># May 4, 2012; Alex Safatli</span>
+<span class="c"># -------------------------</span>
+<span class="c"># Homology Modelling utilities.</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">glob</span><span class="o">,</span> <span class="nn">tempfile</span><span class="o">,</span> <span class="nn">random</span><span class="o">,</span> <span class="nn">subprocess</span><span class="o">,</span> <span class="nn">warnings</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">cStringIO</span>
+<span class="kn">import</span> <span class="nn">PDBnet</span> <span class="kn">as</span> <span class="nn">PDBnet</span>
+<span class="kn">from</span> <span class="nn">pfam</span> <span class="kn">import</span> <span class="n">extractPDBChain</span>
+<span class="kn">import</span> <span class="nn">__main__</span>
+<span class="n">__main__</span><span class="o">.</span><span class="n">pymol_argv</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;pymol&#39;</span><span class="p">,</span> <span class="s">&#39;-qc&#39;</span><span class="p">]</span> <span class="c"># Quiet, no GUI for Pymol.</span>
+<span class="kn">from</span> <span class="nn">IO</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pymol</span>
+    <span class="kn">from</span> <span class="nn">modeller</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">modeller.scripts</span> <span class="kn">import</span> <span class="n">complete_pdb</span>
+<span class="k">except</span><span class="p">:</span> <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Could not locate Pymol or Modeller.&quot;</span><span class="p">,</span><span class="ne">ImportWarning</span><span class="p">)</span>
+
+<span class="c"># ------------ MANUAL MODELLING -------------- #</span>
+
+<div class="viewcode-block" id="manualModeller"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.manualModeller">[docs]</a><span class="k">class</span> <span class="nc">manualModeller</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Set up and run Modeller using a given</span>
+<span class="sd">    folder of PDB files and a target FASTA</span>
+<span class="sd">    sequence.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfolder</span><span class="p">,</span> <span class="n">targetfile</span><span class="p">,</span> <span class="n">templatefldr</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outFolder</span> <span class="o">=</span> <span class="n">outfolder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">targetFile</span> <span class="o">=</span> <span class="n">targetfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">templateFolder</span> <span class="o">=</span> <span class="n">templatefldr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">templateFiles</span> <span class="o">=</span> <span class="n">getFilesInFolder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">templateFolder</span><span class="p">,</span><span class="s">&#39;pdb&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__prepare__</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">__buildList__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build a string list of all PDB files.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">templateFiles</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span> <span class="n">out</span> <span class="o">+=</span> <span class="s">&quot;, &#39;&quot;</span> <span class="o">+</span> <span class="n">getFileName</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;&#39; &quot;</span>
+            <span class="k">else</span><span class="p">:</span> <span class="n">out</span> <span class="o">+=</span> <span class="s">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="n">getFileName</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;&#39; &quot;</span>
+        <span class="k">return</span> <span class="n">out</span>
+    
+    <span class="k">def</span> <span class="nf">__prepare__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Prepare input for Modeller.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c"># Make modeller folder.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outFolder</span><span class="p">):</span>
+            <span class="n">makeFolder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outFolder</span><span class="p">)</span>
+            
+        <span class="c"># Setup path for alignment PIR file.</span>
+        <span class="n">alnfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outFolder</span><span class="p">,</span><span class="s">&#39;alignment.seg&#39;</span><span class="p">)</span>
+            
+        <span class="c"># Setup modeller python script.</span>
+        <span class="n">scriptDir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scriptDir</span><span class="p">,</span><span class="s">&#39;manual_model&#39;</span><span class="p">)</span>
+        <span class="n">modscript</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">template</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">modscript</span> <span class="o">=</span> <span class="n">modscript</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;@@PDBDIR@@&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">templateFolder</span><span class="p">)</span>
+        <span class="n">modscript</span> <span class="o">=</span> <span class="n">modscript</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;@@ALNFILE@@&#39;</span><span class="p">,</span> <span class="s">&#39;alignment.seg&#39;</span><span class="p">)</span>
+        <span class="n">modscript</span> <span class="o">=</span> <span class="n">modscript</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;@@KNOWN@@&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__buildList__</span><span class="p">())</span>
+        <span class="n">modscript</span> <span class="o">=</span> <span class="n">modscript</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;@@SEQUENCE@@&#39;</span><span class="p">,</span> <span class="s">&#39;target&#39;</span><span class="p">)</span>
+        
+        <span class="c"># Write modeller python script.</span>
+        <span class="n">modout</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outFolder</span><span class="p">,</span><span class="s">&#39;manual_model.py&#39;</span><span class="p">)</span>
+        <span class="n">modfout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">modout</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">modfout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">modscript</span><span class="p">)</span>
+        <span class="n">modfout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="c"># Write alignment PIR file.</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">writeModellerPIR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">templateFiles</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">targetFile</span><span class="p">,</span><span class="n">alnfile</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="k">return</span>
+        
+<div class="viewcode-block" id="manualModeller.run"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.manualModeller.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Run, call Modeller.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">orig</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outFolder</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;python manual_model.py&#39;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">orig</span><span class="p">)</span>
+            </div>
+<div class="viewcode-block" id="manualModeller.postProcess"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.manualModeller.postProcess">[docs]</a>    <span class="k">def</span> <span class="nf">postProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Make a copy of all found models and rename.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c"># Ideally this should rename on basis of some sort of scoring.</span>
+        <span class="c"># However, the actual implementation of this scoring by Biskit</span>
+        <span class="c"># still needs to be looked at to keep this consistent. For now,</span>
+        <span class="c"># renames sequentially.</span>
+        <span class="n">templatePDBs</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outFolder</span><span class="p">,</span><span class="s">&#39;target*.pdb&#39;</span><span class="p">))</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">pdb</span> <span class="ow">in</span> <span class="n">templatePDBs</span><span class="p">:</span>
+            <span class="n">copyFile</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outFolder</span><span class="p">,</span><span class="s">&#39;model_</span><span class="si">%.2d</span><span class="s">.pdb&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c"># ----------------- FASTA -------------------- #</span>
+</div></div>
+<div class="viewcode-block" id="fasta"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.fasta">[docs]</a><span class="k">class</span> <span class="nc">fasta</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Open, read, and organize a FASTA file as an</span>
+<span class="sd">    object.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">removeGaps</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">allUpper</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fileName</span> <span class="o">=</span> <span class="n">fname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">removeGaps</span><span class="p">,</span> <span class="n">allUpper</span><span class="p">)</span>
+<div class="viewcode-block" id="fasta.read"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.fasta.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rgaps</span><span class="p">,</span> <span class="n">allup</span><span class="p">):</span>
+        <span class="c"># Reads Fasta file.</span>
+        <span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileName</span><span class="p">)</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fin</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;&gt;&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">temp</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">toAdd</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">rgaps</span><span class="p">:</span> <span class="n">toAdd</span> <span class="o">=</span> <span class="n">toAdd</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">allup</span><span class="p">:</span> <span class="n">toAdd</span> <span class="o">=</span> <span class="n">toAdd</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="n">temp</span> <span class="o">+=</span> <span class="n">toAdd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+        <span class="n">fin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div></div>
+<div class="viewcode-block" id="cleanFastaFile"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.cleanFastaFile">[docs]</a><span class="k">def</span> <span class="nf">cleanFastaFile</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">targetfolder</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Removes gaps from target FASTA file.</span>
+<span class="sd">    Allows for BLAST input using this file.</span>
+<span class="sd">    Creates new files for every sequence entry.</span>
+<span class="sd">    Returns the filename(s) of the new file(s).</span>
+<span class="sd">    &#39;&#39;&#39;</span>    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span> <span class="k">return</span> <span class="bp">None</span>    
+
+    <span class="c"># Collect sequences.</span>
+
+    <span class="n">fastaIn</span> <span class="o">=</span> <span class="n">fasta</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+
+    <span class="c"># Open new file to write to.</span>
+
+    <span class="n">numFiles</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">fileNames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">seqs</span> <span class="o">=</span> <span class="n">fastaIn</span><span class="o">.</span><span class="n">sequences</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">fastaIn</span><span class="o">.</span><span class="n">names</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c"># Ensures a new file is not made if only</span>
+        <span class="c"># one sequence in given FASTA file.</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">fname</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">)):</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">names</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">if</span> \
+                        <span class="n">s</span><span class="o">.</span><span class="n">isalpha</span><span class="p">()</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()])</span> <span class="c"># Ensures valid filename.</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="c"># Ensure less than 10 chars.</span>
+        <span class="n">newfilename</span> <span class="o">=</span> <span class="n">checkForFileCollision</span><span class="p">(</span>\
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">targetfolder</span><span class="p">,</span> <span class="n">temp</span> <span class="o">+</span> <span class="s">&#39;.fasta&#39;</span><span class="p">),</span><span class="s">&#39;fasta&#39;</span><span class="p">)</span>
+        <span class="n">fileNames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">newfilename</span><span class="p">)</span>
+        <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">newfilename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&gt;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span> <span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="n">x</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">[</span><span class="n">x</span><span class="p">]),</span> <span class="mi">80</span><span class="p">):</span>
+            <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">seqs</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">:</span><span class="n">y</span><span class="o">+</span><span class="mi">80</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c"># Return list of filenames.</span>
+
+    <span class="k">return</span> <span class="n">fileNames</span>
+</div>
+<div class="viewcode-block" id="writeModellerPIR"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.writeModellerPIR">[docs]</a><span class="k">def</span> <span class="nf">writeModellerPIR</span><span class="p">(</span><span class="n">pdb_files</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="n">dest_file</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">pdb</span> <span class="ow">in</span> <span class="n">pdb_files</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="s">&quot;&gt;P1;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">getFileName</span><span class="p">(</span><span class="n">pdb</span><span class="p">))</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="s">&quot;structure:</span><span class="si">%s</span><span class="s">:FIRST    :@:END  :: :  : :  </span><span class="se">\n</span><span class="s">*</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> \
+            <span class="p">(</span><span class="n">getFileName</span><span class="p">(</span><span class="n">pdb</span><span class="p">))</span>
+    <span class="n">seqfile</span> <span class="o">=</span> <span class="n">fasta</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span><span class="bp">False</span><span class="p">,</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">firstseq</span> <span class="o">=</span> <span class="n">seqfile</span><span class="o">.</span><span class="n">sequences</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">out</span> <span class="o">+=</span> <span class="s">&quot;&gt;P1;target</span><span class="se">\n</span><span class="s">sequence: : : : : : : : :</span><span class="se">\n</span><span class="si">%s</span><span class="s">*</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">firstseq</span><span class="p">)</span>
+    <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest_file</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="writeAlignmentFromFasta"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.writeAlignmentFromFasta">[docs]</a><span class="k">def</span> <span class="nf">writeAlignmentFromFasta</span><span class="p">(</span><span class="n">fasta_file</span><span class="p">,</span> <span class="n">dest_file</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Reads a FASTA file and outputs it to a</span>
+<span class="sd">    Clustal-like alignment.</span>
+<span class="sd">    &#39;&#39;&#39;</span>    
+    <span class="n">fastaIn</span> <span class="o">=</span> <span class="n">fasta</span><span class="p">(</span><span class="n">fasta_file</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">fseqs</span> <span class="o">=</span> <span class="n">fastaIn</span><span class="o">.</span><span class="n">sequences</span>
+    <span class="n">fnames</span> <span class="o">=</span> <span class="n">fastaIn</span><span class="o">.</span><span class="n">names</span>
+    <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest_file</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;align1</span><span class="se">\n</span><span class="s">------</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fseqs</span><span class="p">)):</span>
+        <span class="n">seqout</span> <span class="o">=</span> <span class="n">fseqs</span><span class="p">[</span><span class="n">seq</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fnames</span><span class="p">[</span><span class="n">seq</span><span class="p">],</span> <span class="n">seqout</span><span class="p">))</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">dest_file</span>
+</div>
+<div class="viewcode-block" id="writeSOAPSSAlignment"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.writeSOAPSSAlignment">[docs]</a><span class="k">def</span> <span class="nf">writeSOAPSSAlignment</span><span class="p">(</span><span class="n">fasta_file</span><span class="p">,</span> <span class="n">pdb1</span><span class="p">,</span> <span class="n">pdb2</span><span class="p">,</span> <span class="n">dest_file</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Reads a FASTA file and outputs to a SOAPSS</span>
+<span class="sd">    alignment file.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c"># Determine what residue numbers the PDBs start at.</span>
+    <span class="n">resnum</span> <span class="o">=</span> <span class="p">[</span><span class="n">getFirstResidueNumber</span><span class="p">(</span><span class="n">pdb1</span><span class="p">),</span> <span class="n">getFirstResidueNumber</span><span class="p">(</span><span class="n">pdb2</span><span class="p">)]</span>
+    <span class="c"># Write the alignment file from the FASTA.</span>
+    <span class="n">fastaIn</span> <span class="o">=</span> <span class="n">fasta</span><span class="p">(</span><span class="n">fasta_file</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+    <span class="n">fseqs</span> <span class="o">=</span> <span class="n">fastaIn</span><span class="o">.</span><span class="n">sequences</span>
+    <span class="n">fnames</span> <span class="o">=</span> <span class="n">fastaIn</span><span class="o">.</span><span class="n">names</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fseqs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&#39;Require FASTA length = 2 for alignment.&#39;</span><span class="p">)</span>
+    <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest_file</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">seq1</span> <span class="o">=</span> <span class="n">fseqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+    <span class="n">seq2</span> <span class="o">=</span> <span class="n">fseqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+    <span class="n">seq1out</span><span class="p">,</span> <span class="n">seq2out</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&#39;Need same length sequences in FASTA.&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">seq1</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;-&#39;</span> <span class="ow">or</span> <span class="n">seq2</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;-&#39;</span><span class="p">:</span>
+            <span class="n">seq1out</span> <span class="o">+=</span> <span class="n">seq1</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">seq2out</span> <span class="o">+=</span> <span class="n">seq2</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">seq1</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;-&#39;</span> <span class="ow">and</span> <span class="n">seq2</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;-&#39;</span><span class="p">:</span>
+            <span class="n">seq1out</span> <span class="o">+=</span> <span class="n">seq1</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+            <span class="n">seq2out</span> <span class="o">+=</span> <span class="n">seq2</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%d</span><span class="s"> </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">resnum</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">seq1out</span><span class="p">))</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%d</span><span class="s"> </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">resnum</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">seq2out</span><span class="p">))</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span>
+</div>
+<div class="viewcode-block" id="writeFirstFromFasta"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.writeFirstFromFasta">[docs]</a><span class="k">def</span> <span class="nf">writeFirstFromFasta</span><span class="p">(</span><span class="n">fasta_file</span><span class="p">,</span> <span class="n">dest_file</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extracts first sequence from a FASTA and</span>
+<span class="sd">    writes to a new one.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">fastaIn</span> <span class="o">=</span> <span class="n">fasta</span><span class="p">(</span><span class="n">fasta_file</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">fseq</span> <span class="o">=</span> <span class="n">fastaIn</span><span class="o">.</span><span class="n">sequences</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="n">fastaIn</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest_file</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&gt;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span> <span class="p">(</span><span class="n">fname</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">fseq</span><span class="p">),</span> <span class="mi">80</span><span class="p">):</span>
+        <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fseq</span><span class="p">[</span><span class="n">y</span><span class="p">:</span><span class="n">y</span><span class="o">+</span><span class="mi">80</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>    
+</div>
+<div class="viewcode-block" id="extractRandomFasta"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.extractRandomFasta">[docs]</a><span class="k">def</span> <span class="nf">extractRandomFasta</span><span class="p">(</span><span class="n">fasta_file</span><span class="p">,</span> <span class="n">numRandom</span><span class="p">,</span> <span class="n">dest_file</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extracts a random number of sequences</span>
+<span class="sd">    from a FASTA file. Writes to new FASTA.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fasta_file</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="c"># Collects sequences.</span>
+
+    <span class="n">fastaIn</span> <span class="o">=</span> <span class="n">fasta</span><span class="p">(</span><span class="n">fasta_file</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+
+    <span class="c"># Extract random sequences.</span>
+
+    <span class="n">fseqs</span> <span class="o">=</span> <span class="n">fastaIn</span><span class="o">.</span><span class="n">sequences</span>
+    <span class="n">fnames</span> <span class="o">=</span> <span class="n">fastaIn</span><span class="o">.</span><span class="n">names</span>
+    
+    <span class="n">numSeqs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fseqs</span><span class="p">)</span>
+    <span class="n">seqs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">indexMap</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">numSeqs</span><span class="p">)</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">indexMap</span><span class="p">)</span>
+    <span class="n">randMap</span> <span class="o">=</span> <span class="n">indexMap</span><span class="p">[:</span><span class="n">numRandom</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">randMap</span><span class="p">:</span>
+        <span class="n">seqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fseqs</span><span class="p">[</span><span class="n">num</span><span class="p">])</span>
+        <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fnames</span><span class="p">[</span><span class="n">num</span><span class="p">])</span>
+
+    <span class="c"># Write to file.</span>
+
+    <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest_file</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">)):</span>
+        <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&gt;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span> <span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="n">x</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">[</span><span class="n">x</span><span class="p">]),</span> <span class="mi">80</span><span class="p">):</span>
+            <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">seqs</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">:</span><span class="n">y</span><span class="o">+</span><span class="mi">80</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>        
+
+<span class="c"># -------------------------------------------- #</span>
+</div>
+<div class="viewcode-block" id="completePDB"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.completePDB">[docs]</a><span class="k">def</span> <span class="nf">completePDB</span><span class="p">(</span><span class="n">pdbin</span><span class="p">,</span><span class="n">pdbout</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given a PDB, clean/complete the PDB using</span>
+<span class="sd">    Modeller&#39;s complete_pdb function.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c"># Squelch stdout.</span>
+    <span class="n">save_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+    <span class="c"># Perform PDB completion.</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">environ</span><span class="p">()</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">libs</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;${LIB}/top_heav.lib&#39;</span><span class="p">)</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">libs</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;${LIB}/par.lib&#39;</span><span class="p">)</span>    
+    <span class="n">m</span> <span class="o">=</span> <span class="n">complete_pdb</span><span class="p">(</span><span class="n">env</span><span class="p">,</span><span class="n">pdbin</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">pdbout</span><span class="p">)</span>
+    <span class="c"># Reclaim stdout.</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">save_</span>
+</div>
+<div class="viewcode-block" id="getRandomPDBFragment"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.getRandomPDBFragment">[docs]</a><span class="k">def</span> <span class="nf">getRandomPDBFragment</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given a PDB, get a random fragment of length k.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">pdb</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
+    <span class="n">dat</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pdb</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;ATOM&#39;</span><span class="p">)]</span>
+    <span class="n">pdb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">k</span><span class="p">:</span> <span class="k">return</span> <span class="p">[]</span>
+    <span class="n">dat</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">iter</span><span class="p">(</span><span class="n">dat</span><span class="p">)]</span><span class="o">*</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="getFirstResidueNumber"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.getFirstResidueNumber">[docs]</a><span class="k">def</span> <span class="nf">getFirstResidueNumber</span><span class="p">(</span><span class="n">pdb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Gets the FASTA residue number of the first</span>
+<span class="sd">    ATOM in a PDB file.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">pdb</span> <span class="o">=</span> <span class="n">PDBnet</span><span class="o">.</span><span class="n">PDBstructure</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">chains</span>
+    <span class="n">firstchain</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">firstchain</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="checkForFileCollision"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.checkForFileCollision">[docs]</a><span class="k">def</span> <span class="nf">checkForFileCollision</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Ensures a file is not being overwritten.</span>
+<span class="sd">    Will recursively keep adding a &#39;0&#39; to end of</span>
+<span class="sd">    base filename until a unique filename is found.</span>
+<span class="sd">    Returns the path.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">newpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">getFolderName</span><span class="p">(</span><span class="n">path</span><span class="p">),</span><span class="n">getFileName</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;0.&#39;</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">checkForFileCollision</span><span class="p">(</span><span class="n">newpath</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">path</span>
+    </div>
+<div class="viewcode-block" id="system"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.system">[docs]</a><span class="k">def</span> <span class="nf">system</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Executes a system command line instruction. Returns</span>
+<span class="sd">    list of stdout, stderr.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">sproc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">instruction</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> 
+                                     <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  
+    <span class="k">return</span> <span class="n">sproc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="cleanModellerFolder"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.cleanModellerFolder">[docs]</a><span class="k">def</span> <span class="nf">cleanModellerFolder</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Moves intermediate PDBs to another subfolder in the</span>
+<span class="sd">    Modeller folder output from Biskit.</span>
+<span class="sd">    &#39;&#39;&#39;</span>        
+    <span class="n">templatePDBs</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s">&#39;target*.pdb&#39;</span><span class="p">))</span>
+    <span class="n">targetFolder</span> <span class="o">=</span> <span class="n">makeFolder</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s">&#39;intermediates&#39;</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">pdb</span> <span class="ow">in</span> <span class="n">templatePDBs</span><span class="p">:</span>
+        <span class="n">moveFile</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span><span class="n">targetFolder</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="getModellerPDB"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.getModellerPDB">[docs]</a><span class="k">def</span> <span class="nf">getModellerPDB</span><span class="p">(</span><span class="n">workflowfolder</span><span class="p">,</span> <span class="n">targetfile</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Copies the model_00.pdb file from Modeller if present</span>
+<span class="sd">    in given workflow directory from homologyWorkflow.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">modeller_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workflowfolder</span><span class="p">,</span> <span class="s">&#39;modeller&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">modeller_folder</span><span class="p">):</span>
+        <span class="n">modeller_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">modeller_folder</span><span class="p">,</span> <span class="s">&#39;model_00.pdb&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">modeller_file</span><span class="p">):</span>
+            <span class="n">copyFile</span><span class="p">(</span><span class="n">modeller_file</span><span class="p">,</span> <span class="n">targetfile</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="compareStructures"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.compareStructures">[docs]</a><span class="k">def</span> <span class="nf">compareStructures</span><span class="p">(</span><span class="n">foldername1</span><span class="p">,</span> <span class="n">foldername2</span><span class="p">,</span> <span class="n">outpath</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given 2 folders with PDB files, calculates the RMSDs</span>
+<span class="sd">    with all possible pairwise combinations of PDBs; writes</span>
+<span class="sd">    to file located at path determined by outpath.</span>
+<span class="sd">    &#39;&#39;&#39;</span> 
+    <span class="c"># Running list to ensure no redundant checks.</span>
+    <span class="n">crosscheck</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c"># File to write scores to.</span>
+    <span class="n">scoreFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span><span class="s">&quot;structcomparisons.list&quot;</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">scoreFile</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+
+    <span class="c"># Do the actual RMSDs.</span>
+    <span class="k">for</span> <span class="n">filesA</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">foldername1</span><span class="p">,</span> <span class="s">&#39;*.pdb&#39;</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">filesB</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">foldername2</span><span class="p">,</span> <span class="s">&#39;*.pdb&#39;</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">getFileName</span><span class="p">(</span><span class="n">filesB</span><span class="p">),</span> <span class="n">getFileName</span><span class="p">(</span><span class="n">filesA</span><span class="p">))</span> <span class="ow">in</span> <span class="n">crosscheck</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span> <span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">getFileName</span><span class="p">(</span><span class="n">filesA</span><span class="p">),</span> <span class="n">getFileName</span><span class="p">(</span><span class="n">filesB</span><span class="p">))</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="se">\t</span><span class="si">%f</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">getFileName</span><span class="p">(</span><span class="n">filesA</span><span class="p">),</span> <span class="n">getFileName</span><span class="p">(</span><span class="n">filesB</span><span class="p">),</span> <span class="n">rmsd</span><span class="p">(</span><span class="n">filesA</span><span class="p">,</span><span class="n">filesB</span><span class="p">))</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">crosscheck</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">getFileName</span><span class="p">(</span><span class="n">filesA</span><span class="p">),</span> <span class="n">getFileName</span><span class="p">(</span><span class="n">filesB</span><span class="p">)))</span>
+
+    <span class="c"># Sorts output RMSDs in descending order.</span>
+    <span class="n">sortInstr</span> <span class="o">=</span> <span class="s">&#39;cat &#39;</span> <span class="o">+</span> <span class="n">outpath</span> <span class="o">+</span> <span class="s">&#39;/structcomparisons.list | sort -k 3 &gt;&gt; &#39;</span> \
+        <span class="o">+</span> <span class="n">outpath</span> <span class="o">+</span> <span class="s">&#39;/structcomparisons.sorted&#39;</span>
+    <span class="n">system</span><span class="p">(</span><span class="n">sortInstr</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span><span class="s">&quot;structcomparisons.sorted&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="startPymol"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.startPymol">[docs]</a><span class="k">def</span> <span class="nf">startPymol</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Ensures Pymol has been launched.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">pymol</span><span class="o">.</span><span class="n">finish_launching</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="radiusOfGyration"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.radiusOfGyration">[docs]</a><span class="k">def</span> <span class="nf">radiusOfGyration</span><span class="p">(</span><span class="n">pdbFile</span><span class="p">,</span><span class="n">chain</span><span class="p">,</span><span class="n">pdb</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the approximate radius of gyration</span>
+<span class="sd">    of a given PDB molecule. Deprecated; now in PDBnet.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pdb</span><span class="p">:</span> <span class="n">pdb</span> <span class="o">=</span> <span class="n">PDBnet</span><span class="o">.</span><span class="n">PDBstructure</span><span class="p">(</span><span class="n">pdbFile</span><span class="p">)</span>
+    <span class="c"># Get centre of mass of entire molecule.</span>
+    <span class="n">mol_centroid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">num_atoms</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">chain</span><span class="p">]:</span>
+        <span class="n">resid</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">chain</span><span class="p">][</span><span class="n">r</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">resid</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">resid</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">at</span><span class="p">]</span>
+            <span class="n">mol_centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a</span><span class="o">.</span><span class="n">x</span>
+            <span class="n">mol_centroid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">mol_centroid</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a</span><span class="o">.</span><span class="n">z</span>
+            <span class="n">num_atoms</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">m_x</span><span class="p">,</span> <span class="n">m_y</span><span class="p">,</span> <span class="n">m_z</span> <span class="o">=</span> <span class="n">mol_centroid</span>
+    <span class="n">mol_centroid</span> <span class="o">=</span> <span class="p">[</span><span class="n">m_x</span><span class="o">/</span><span class="n">num_atoms</span><span class="p">,</span><span class="n">m_y</span><span class="o">/</span><span class="n">num_atoms</span><span class="p">,</span><span class="n">m_z</span><span class="o">/</span><span class="n">num_atoms</span><span class="p">]</span>
+    <span class="c"># Sum all of the distances squared vs. centre of mass.</span>
+    <span class="n">distsqr</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">m_x</span><span class="p">,</span> <span class="n">m_y</span><span class="p">,</span> <span class="n">m_z</span> <span class="o">=</span> <span class="n">mol_centroid</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">chain</span><span class="p">]:</span>
+        <span class="n">resid</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">chain</span><span class="p">][</span><span class="n">r</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">resid</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">resid</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">at</span><span class="p">]</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="n">m_x</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="n">m_y</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="n">m_z</span><span class="p">)</span>
+            <span class="n">distsqr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c"># Return the summation of all distance squared divided by</span>
+    <span class="c"># the number of atoms, square rooted.</span>
+    <span class="n">sumdistratio</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">distsqr</span><span class="p">)</span><span class="o">/</span><span class="n">num_atoms</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sumdistratio</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="tmscore"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.tmscore">[docs]</a><span class="k">def</span> <span class="nf">tmscore</span><span class="p">(</span><span class="n">alignPDB</span><span class="p">,</span><span class="n">alignFASTA</span><span class="p">):</span>
+    
+    <span class="sd">&#39;&#39;&#39; Returns the TMscore and associated P-value. See Xu &amp;</span>
+<span class="sd">    Zhang, &quot;How significant is a protein structure similarity with</span>
+<span class="sd">    TM-score = 0.5?&quot;. &#39;&#39;&#39;</span>
+    
+    <span class="n">pdb</span> <span class="o">=</span> <span class="n">PDBnet</span><span class="o">.</span><span class="n">PDBstructure</span><span class="p">(</span><span class="n">alignPDB</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;Alignment PDB chain length != 2&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">chains</span><span class="p">:</span> <span class="n">chains</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">tmsc</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">tmscore</span><span class="p">(</span><span class="n">alignFASTA</span><span class="p">,</span><span class="n">chains</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tmsc</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="mf">0.1512</span><span class="o">-</span><span class="n">tmsc</span><span class="p">)</span><span class="o">/</span><span class="mf">0.0242</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="rrmsd"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.rrmsd">[docs]</a><span class="k">def</span> <span class="nf">rrmsd</span><span class="p">(</span><span class="n">alignPDB</span><span class="p">,</span><span class="n">alignFASTA</span><span class="p">,</span><span class="n">rmsd</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    
+    <span class="sd">&#39;&#39;&#39; Returns the rRMSD of an aligned pairwise PDB and </span>
+<span class="sd">    FASTA file. See Betancourt &amp; Skolnick, &quot;Universal Similarity </span>
+<span class="sd">    Measure for Comparison Protein Structures&quot;. Deprecated. &#39;&#39;&#39;</span>
+    
+    <span class="n">pdb</span> <span class="o">=</span> <span class="n">PDBnet</span><span class="o">.</span><span class="n">PDBstructure</span><span class="p">(</span><span class="n">alignPDB</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;Alignment PDB chain length &lt; 2&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">chains</span><span class="p">:</span>
+        <span class="n">chains</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">rr</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">rrmsd</span><span class="p">(</span><span class="n">alignFASTA</span><span class="p">,</span><span class="n">chains</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rmsd</span><span class="p">:</span> <span class="k">return</span> <span class="n">rr</span><span class="p">,</span> <span class="n">pdb</span><span class="o">.</span><span class="n">rmsd</span><span class="p">(</span><span class="n">alignFASTA</span><span class="p">,</span><span class="n">chains</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rr</span>
+</div>
+<div class="viewcode-block" id="rmsd"><a class="viewcode-back" href="../../labblouin.homology.html#labblouin.homology.rmsd">[docs]</a><span class="k">def</span> <span class="nf">rmsd</span><span class="p">(</span><span class="n">pdbFile1</span><span class="p">,</span> <span class="n">pdbFile2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the RMSD of two PDB files.</span>
+<span class="sd">    Requires: Pymol.</span>
+<span class="sd">    &#39;&#39;&#39;</span>        
+    <span class="n">pymol</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pdbFile1</span><span class="p">,</span> <span class="s">&#39;pdb1&#39;</span><span class="p">)</span>
+    <span class="n">pymol</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pdbFile2</span><span class="p">,</span> <span class="s">&#39;pdb2&#39;</span><span class="p">)</span>
+    <span class="n">rmsdOut</span> <span class="o">=</span> <span class="n">pymol</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">super</span><span class="p">(</span><span class="s">&#39;pdb1&#39;</span><span class="p">,</span> <span class="s">&#39;pdb2&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pymol</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s">&#39;all&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rmsdOut</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

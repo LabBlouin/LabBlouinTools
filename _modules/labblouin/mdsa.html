@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.mdsa &mdash; LabBlouinTools 0.3.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.3 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for labblouin.mdsa</h1><div class="highlight"><pre>
+<span class="c">#!/bin/python</span>
+
+<span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">A library to manage interfacing with the MDSA database raw files (http://dna.cs.byu.edu/mdsas/index.shtml).</span>
+
+<span class="sd">mdsa Python Library / Oct 8, 2014 / Alex Safatli</span>
+
+<span class="sd">This program is free software: you can redistribute it and/or modify</span>
+<span class="sd">it under the terms of the GNU General Public License as published by</span>
+<span class="sd">the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">(at your option) any later version.</span>
+
+<span class="sd">This program is distributed in the hope that it will be useful,</span>
+<span class="sd">but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">GNU General Public License for more details.</span>
+
+<span class="sd">You should have received a copy of the GNU General Public License</span>
+<span class="sd">along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">E-mail: safatli@cs.dal.ca</span>
+<span class="sd">Dependencies: IO, FASTAnet (LabBlouinTools)</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">FASTAnet</span><span class="o">,</span> <span class="nn">IO</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span> <span class="k">as</span> <span class="n">files</span>
+
+<span class="n">mdsaTypes</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;smart&#39;</span><span class="p">,</span><span class="s">&#39;balibase&#39;</span><span class="p">,</span><span class="s">&#39;oxbench&#39;</span><span class="p">,</span><span class="s">&#39;prefab&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="mdsaAlignment"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaAlignment">[docs]</a><span class="k">class</span> <span class="nc">mdsaAlignment</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39; Model a single MDSA alignment. &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">finame</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span>      <span class="o">=</span> <span class="n">finame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span>      <span class="o">=</span> <span class="n">IO</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="n">finame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fasta</span>     <span class="o">=</span> <span class="n">FASTAnet</span><span class="o">.</span><span class="n">FASTAstructure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="n">uniqueOnly</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="mdsaAlignment.getObject"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaAlignment.getObject">[docs]</a>    <span class="k">def</span> <span class="nf">getObject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fasta</span></div>
+<div class="viewcode-block" id="mdsaAlignment.getNames"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaAlignment.getNames">[docs]</a>    <span class="k">def</span> <span class="nf">getNames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fasta</span><span class="o">.</span><span class="n">getSequenceNames</span><span class="p">()</span></div>
+<div class="viewcode-block" id="mdsaAlignment.getNumSequences"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaAlignment.getNumSequences">[docs]</a>    <span class="k">def</span> <span class="nf">getNumSequences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getSequences</span><span class="p">())</span></div>
+<div class="viewcode-block" id="mdsaAlignment.getSequences"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaAlignment.getSequences">[docs]</a>    <span class="k">def</span> <span class="nf">getSequences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fasta</span><span class="o">.</span><span class="n">getSequences</span><span class="p">()</span></div>
+<div class="viewcode-block" id="mdsaAlignment.getPath"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaAlignment.getPath">[docs]</a>    <span class="k">def</span> <span class="nf">getPath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+    </div>
+<div class="viewcode-block" id="mdsaAlignment.writeFASTA"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaAlignment.writeFASTA">[docs]</a>    <span class="k">def</span> <span class="nf">writeFASTA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fi</span><span class="p">,</span><span class="n">names</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fasta</span><span class="o">.</span><span class="n">writeFile</span><span class="p">(</span><span class="n">fi</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">fi</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fi</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getFASTAfor</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fi</span>
+    </div>
+<div class="viewcode-block" id="mdsaAlignment.getFASTAfor"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaAlignment.getFASTAfor">[docs]</a>    <span class="k">def</span> <span class="nf">getFASTAfor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">names</span><span class="p">):</span>
+        <span class="n">sequ</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="n">sequ</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="n">seq</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fasta</span><span class="o">.</span><span class="n">getSequenceByName</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">),</span><span class="mi">70</span><span class="p">):</span> <span class="n">sequ</span> <span class="o">+=</span> <span class="n">seq</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">70</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="s">&#39;&gt;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">sequ</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+    </div>
+<div class="viewcode-block" id="mdsaAlignment.getSequenceLength"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaAlignment.getSequenceLength">[docs]</a>    <span class="k">def</span> <span class="nf">getSequenceLength</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAlignmentLength</span><span class="p">()</span></div>
+<div class="viewcode-block" id="mdsaAlignment.getAlignmentLength"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaAlignment.getAlignmentLength">[docs]</a>    <span class="k">def</span> <span class="nf">getAlignmentLength</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fasta</span><span class="o">.</span><span class="n">sequences</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fasta</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]])</span>
+    </div></div>
+<div class="viewcode-block" id="mdsaDatabase"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaDatabase">[docs]</a><span class="k">class</span> <span class="nc">mdsaDatabase</span><span class="p">:</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dbpath</span><span class="p">,</span><span class="n">traverse</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span>      <span class="o">=</span> <span class="n">dbpath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span>     <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">traverse</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">traverse</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">it</span><span class="p">]</span>
+            
+<div class="viewcode-block" id="mdsaDatabase.traverse"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaDatabase.traverse">[docs]</a>    <span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fis</span> <span class="o">=</span> <span class="n">files</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="s">&#39;*&#39;</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="n">fis</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">mdsaAlignment</span><span class="p">(</span><span class="n">fi</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">fi</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span>
+                    </div>
+<div class="viewcode-block" id="mdsaDatabase.getPath"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaDatabase.getPath">[docs]</a>    <span class="k">def</span> <span class="nf">getPath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span></div>
+<div class="viewcode-block" id="mdsaDatabase.getFiles"><a class="viewcode-back" href="../../labblouin.mdsa.html#labblouin.mdsa.mdsaDatabase.getFiles">[docs]</a>    <span class="k">def</span> <span class="nf">getFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

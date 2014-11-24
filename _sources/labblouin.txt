@@ -1,0 +1,38 @@
+labblouin package
+=================
+
+Submodules
+----------
+
+.. toctree::
+
+   labblouin.FASTAnet
+   labblouin.IO
+   labblouin.Ordination
+   labblouin.PDBnet
+   labblouin.RegExpress
+   labblouin.SeqMask
+   labblouin.expresso
+   labblouin.homology
+   labblouin.homstrad
+   labblouin.loadingBar
+   labblouin.logfile
+   labblouin.mdsa
+   labblouin.memEfficient
+   labblouin.passToqsub
+   labblouin.pdbCompare
+   labblouin.pfam
+   labblouin.plotGM
+   labblouin.psub
+   labblouin.sabmark
+   labblouin.scop
+   labblouin.svm
+   labblouin.timer
+
+Module contents
+---------------
+
+.. automodule:: labblouin
+    :members:
+    :undoc-members:
+    :show-inheritance:
