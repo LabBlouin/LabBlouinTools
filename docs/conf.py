@@ -1,13 +1,13 @@
 '''Allow compilation of C code on readthedocs.'''
 
-import mock
+import mock,sys
  
 MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'scipy.interpolate']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()# -*- coding: utf-8 -*-
 #
 # LabBlouinTools documentation build configuration file, created by
-# sphinx-quickstart on Mon Nov 24 10:40:25 2014.
+# sphinx-quickstart on Mon Nov 24 10:46:29 2014.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.

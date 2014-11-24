@@ -1,6 +1,6 @@
 '''Allow compilation of C code on readthedocs.'''
 
-import mock
+import mock,sys
  
 MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'scipy.interpolate']
 for mod_name in MOCK_MODULES:
