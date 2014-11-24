@@ -2,12 +2,12 @@
 
 import mock,sys
  
-MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'scipy.interpolate']
+MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'scipy.interpolate','scipy.spatial.distance','biopython']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()# -*- coding: utf-8 -*-
 #
 # LabBlouinTools documentation build configuration file, created by
-# sphinx-quickstart on Mon Nov 24 10:46:29 2014.
+# sphinx-quickstart on Mon Nov 24 10:52:42 2014.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
