@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.FASTAnet module &mdash; LabBlouinTools 0.3.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.3 documentation" href="index.html" />
+    <link rel="up" title="labblouin package" href="labblouin.html" />
+    <link rel="next" title="labblouin.IO module" href="labblouin.IO.html" />
+    <link rel="prev" title="labblouin package" href="labblouin.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.IO.html" title="labblouin.IO module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.html" title="labblouin package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" accesskey="U">labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-labblouin.FASTAnet">
+<span id="labblouin-fastanet-module"></span><h1>labblouin.FASTAnet module<a class="headerlink" href="#module-labblouin.FASTAnet" title="Permalink to this headline">¶</a></h1>
+<p>A simple parser and writer for FASTA sequence files that uses a rich object hierarchy.</p>
+<dl class="class">
+<dt id="labblouin.FASTAnet.FASTAsequence">
+<em class="property">class </em><tt class="descclassname">labblouin.FASTAnet.</tt><tt class="descname">FASTAsequence</tt><big>(</big><em>name</em>, <em>seq</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAsequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAsequence" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="labblouin.FASTAnet.FASTAsequence.count">
+<tt class="descname">count</tt><big>(</big><em>item</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAsequence.count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAsequence.count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of characters in the sequence equal to input string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAsequence.removeGaps">
+<tt class="descname">removeGaps</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAsequence.removeGaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAsequence.removeGaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify the sequence so gaps are removed and return it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAsequence.toLower">
+<tt class="descname">toLower</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAsequence.toLower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAsequence.toLower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a lowercase version of the sequence, also changing it
+in the structure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAsequence.toUpper">
+<tt class="descname">toUpper</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAsequence.toUpper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAsequence.toUpper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify the sequence so it is uppercase and return it.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="labblouin.FASTAnet.FASTAstructure">
+<em class="property">class </em><tt class="descclassname">labblouin.FASTAnet.</tt><tt class="descname">FASTAstructure</tt><big>(</big><em>filein=''</em>, <em>uniqueOnly=True</em>, <em>curate=False</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.addSequence">
+<tt class="descname">addSequence</tt><big>(</big><em>name</em>, <em>seq</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.addSequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.addSequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a sequence to the FASTA object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.allLower">
+<tt class="descname">allLower</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.allLower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.allLower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change all sequences to lowercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.allUpper">
+<tt class="descname">allUpper</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.allUpper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.allUpper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change all sequences to uppercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.getSequenceByName">
+<tt class="descname">getSequenceByName</tt><big>(</big><em>n</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.getSequenceByName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.getSequenceByName" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.getSequenceNames">
+<tt class="descname">getSequenceNames</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.getSequenceNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.getSequenceNames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.getSequences">
+<tt class="descname">getSequences</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.getSequences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.getSequences" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.getStrictlyUngappedPositions">
+<tt class="descname">getStrictlyUngappedPositions</tt><big>(</big><em>seqInds=None</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.getStrictlyUngappedPositions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.getStrictlyUngappedPositions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire the positions of all strictly ungapped sites. If parameter
+is set, expects a list of what sequences (by index) you are checking. 
+Defaults to all sequences.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.read">
+<tt class="descname">read</tt><big>(</big><em>fast</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the contents of a FASTA file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.readFile">
+<tt class="descname">readFile</tt><big>(</big><em>fin</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.readFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.readFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a file in. Return this FASTA object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.removeGaps">
+<tt class="descname">removeGaps</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.removeGaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.removeGaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the gaps for all sequences.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.removeSequence">
+<tt class="descname">removeSequence</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.removeSequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.removeSequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a sequence from the FASTA object and
+return it; or return None if it was not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.renameSequence">
+<tt class="descname">renameSequence</tt><big>(</big><em>oldname</em>, <em>newname</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.renameSequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.renameSequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renames a given sequence.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.reorderSequences">
+<tt class="descname">reorderSequences</tt><big>(</big><em>iterable</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.reorderSequences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.reorderSequences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reorder all sequences by an iterable sequence
+of their names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.FASTAnet.FASTAstructure.writeFile">
+<tt class="descname">writeFile</tt><big>(</big><em>fout</em><big>)</big><a class="reference internal" href="_modules/labblouin/FASTAnet.html#FASTAstructure.writeFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.FASTAnet.FASTAstructure.writeFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the information currently contained in the
+FASTAstructure to a file as a FASTA-formatted file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="labblouin.html"
+                        title="previous chapter">labblouin package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="labblouin.IO.html"
+                        title="next chapter">labblouin.IO module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/labblouin.FASTAnet.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.IO.html" title="labblouin.IO module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.html" title="labblouin package"
+             >previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" >labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

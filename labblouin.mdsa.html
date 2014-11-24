@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.mdsa module &mdash; LabBlouinTools 0.3.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.3 documentation" href="index.html" />
+    <link rel="up" title="labblouin package" href="labblouin.html" />
+    <link rel="next" title="labblouin.memEfficient module" href="labblouin.memEfficient.html" />
+    <link rel="prev" title="labblouin.logfile module" href="labblouin.logfile.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.memEfficient.html" title="labblouin.memEfficient module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.logfile.html" title="labblouin.logfile module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" accesskey="U">labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-labblouin.mdsa">
+<span id="labblouin-mdsa-module"></span><h1>labblouin.mdsa module<a class="headerlink" href="#module-labblouin.mdsa" title="Permalink to this headline">¶</a></h1>
+<p>A library to manage interfacing with the MDSA database raw files (<a class="reference external" href="http://dna.cs.byu.edu/mdsas/index.shtml">http://dna.cs.byu.edu/mdsas/index.shtml</a>).</p>
+<p>mdsa Python Library / Oct 8, 2014 / Alex Safatli</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<p>E-mail: <a class="reference external" href="mailto:safatli&#37;&#52;&#48;cs&#46;dal&#46;ca">safatli<span>&#64;</span>cs<span>&#46;</span>dal<span>&#46;</span>ca</a>
+Dependencies: IO, FASTAnet (LabBlouinTools)</p>
+<dl class="class">
+<dt id="labblouin.mdsa.mdsaAlignment">
+<em class="property">class </em><tt class="descclassname">labblouin.mdsa.</tt><tt class="descname">mdsaAlignment</tt><big>(</big><em>finame</em><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaAlignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaAlignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model a single MDSA alignment.</p>
+<dl class="method">
+<dt id="labblouin.mdsa.mdsaAlignment.getAlignmentLength">
+<tt class="descname">getAlignmentLength</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaAlignment.getAlignmentLength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaAlignment.getAlignmentLength" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.mdsa.mdsaAlignment.getFASTAfor">
+<tt class="descname">getFASTAfor</tt><big>(</big><em>names</em><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaAlignment.getFASTAfor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaAlignment.getFASTAfor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.mdsa.mdsaAlignment.getNames">
+<tt class="descname">getNames</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaAlignment.getNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaAlignment.getNames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.mdsa.mdsaAlignment.getNumSequences">
+<tt class="descname">getNumSequences</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaAlignment.getNumSequences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaAlignment.getNumSequences" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.mdsa.mdsaAlignment.getObject">
+<tt class="descname">getObject</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaAlignment.getObject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaAlignment.getObject" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.mdsa.mdsaAlignment.getPath">
+<tt class="descname">getPath</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaAlignment.getPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaAlignment.getPath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.mdsa.mdsaAlignment.getSequenceLength">
+<tt class="descname">getSequenceLength</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaAlignment.getSequenceLength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaAlignment.getSequenceLength" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.mdsa.mdsaAlignment.getSequences">
+<tt class="descname">getSequences</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaAlignment.getSequences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaAlignment.getSequences" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.mdsa.mdsaAlignment.writeFASTA">
+<tt class="descname">writeFASTA</tt><big>(</big><em>fi</em>, <em>names=None</em><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaAlignment.writeFASTA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaAlignment.writeFASTA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="labblouin.mdsa.mdsaDatabase">
+<em class="property">class </em><tt class="descclassname">labblouin.mdsa.</tt><tt class="descname">mdsaDatabase</tt><big>(</big><em>dbpath</em>, <em>traverse=True</em><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaDatabase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaDatabase" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="labblouin.mdsa.mdsaDatabase.getFiles">
+<tt class="descname">getFiles</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaDatabase.getFiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaDatabase.getFiles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.mdsa.mdsaDatabase.getPath">
+<tt class="descname">getPath</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaDatabase.getPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaDatabase.getPath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.mdsa.mdsaDatabase.traverse">
+<tt class="descname">traverse</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/mdsa.html#mdsaDatabase.traverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.mdsa.mdsaDatabase.traverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="labblouin.logfile.html"
+                        title="previous chapter">labblouin.logfile module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="labblouin.memEfficient.html"
+                        title="next chapter">labblouin.memEfficient module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/labblouin.mdsa.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.memEfficient.html" title="labblouin.memEfficient module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.logfile.html" title="labblouin.logfile module"
+             >previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" >labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.Ordination module &mdash; LabBlouinTools 0.3.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.3 documentation" href="index.html" />
+    <link rel="up" title="labblouin package" href="labblouin.html" />
+    <link rel="next" title="labblouin.PDBnet module" href="labblouin.PDBnet.html" />
+    <link rel="prev" title="labblouin.IO module" href="labblouin.IO.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.PDBnet.html" title="labblouin.PDBnet module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.IO.html" title="labblouin.IO module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" accesskey="U">labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-labblouin.Ordination">
+<span id="labblouin-ordination-module"></span><h1>labblouin.Ordination module<a class="headerlink" href="#module-labblouin.Ordination" title="Permalink to this headline">¶</a></h1>
+<p>Ordination is a class designed to compute and plot ordination methods such as PCA and MDS.
+It is intended as a helper function to PDBnet, but have the functionality to work with 
+gm files.</p>
+<p>This file is based on Nelle Varoquaux &lt;<a class="reference external" href="mailto:nelle&#46;varoquaux&#37;&#52;&#48;gmail&#46;com">nelle<span>&#46;</span>varoquaux<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt; code plotmds.py, available
+at <a class="reference external" href="http://scikit-learn.org/stable/auto_examples/manifold/plot_mds.html">http://scikit-learn.org/stable/auto_examples/manifold/plot_mds.html</a>, and recomendations in
+stackoverflow by Jaime Fernandez (<a class="reference external" href="http://numericalrecipes.wordpress.com/">http://numericalrecipes.wordpress.com/</a>)</p>
+<p>Dependencies: SKlearn, PDBnet</p>
+<p>Author: Jose Sergio Hleap
+email: <a class="reference external" href="mailto:jshleap&#37;&#52;&#48;dal&#46;ca">jshleap<span>&#64;</span>dal<span>&#46;</span>ca</a></p>
+<dl class="class">
+<dt id="labblouin.Ordination.ORD">
+<em class="property">class </em><tt class="descclassname">labblouin.Ordination.</tt><tt class="descname">ORD</tt><big>(</big><em>prefix</em>, <em>data</em>, <em>fastafile=None</em>, <em>n_comp=2</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for the most popular ordination methods using PDBnet instaces or gm files.</p>
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.LDA">
+<tt class="descname">LDA</tt><big>(</big><em>membership</em>, <em>options</em>, <em>group_labels=None</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.LDA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.LDA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a Linear discriminant analysis of the data and plot it. Membership must be an array
+of integers of the same lenght of the number of observations in the data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.LoadDataGMfile">
+<tt class="descname">LoadDataGMfile</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.LoadDataGMfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.LoadDataGMfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the data to the class assuming is a GM file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.MDS">
+<tt class="descname">MDS</tt><big>(</big><em>options</em>, <em>typeof='classic'</em>, <em>dist=False</em>, <em>groups=None</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.MDS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.MDS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Multidimensional Scaling wither classic (PCoA) or non-metric.
+If you have the upper triangle of a distance matrix as a dictionary,
+pass the dictionary as dist.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.PCA">
+<tt class="descname">PCA</tt><big>(</big><em>options</em>, <em>groups=None</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.PCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.PCA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a principal coordinate analysis of the data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.Plot">
+<tt class="descname">Plot</tt><big>(</big><em>options</em>, <em>groups=None</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.Plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.Plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the components from an ordination method of the class ORD. If the number of components
+is greater than 3, it will plot the first three components. Components has to be a n x k 
+numpy array of eigenvectors, where n is the observations/individuals and k the components.
+The option groups allow to pass a list (of the same lenght of the arrar, that is a lenght of n).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.PlotXDA">
+<tt class="descname">PlotXDA</tt><big>(</big><em>membership</em>, <em>options</em>, <em>group_labels=None</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.PlotXDA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.PlotXDA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a Linear Discriminant Analysis (LDA) or a Quadratic Discriminan Analysis (QDA) with
+confidence ellipses at std (standard deviations)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.PrepData4PDBnet">
+<tt class="descname">PrepData4PDBnet</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.PrepData4PDBnet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.PrepData4PDBnet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the data to the class assuming is a PDBnet instance file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.QDA">
+<tt class="descname">QDA</tt><big>(</big><em>membership</em>, <em>options</em>, <em>group_labels=None</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.QDA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.QDA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.Store">
+<tt class="descname">Store</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.Store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.Store" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.dict2array2matrix">
+<tt class="descname">dict2array2matrix</tt><big>(</big><em>dict</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.dict2array2matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.dict2array2matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Giving an upper-triangle distance matrix in a dictionary, returns a distance-like array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.ellipse">
+<tt class="descname">ellipse</tt><big>(</big><em>singlegroupx</em>, <em>singlegroupy</em>, <em>std=2</em>, <em>color='k'</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.ellipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.ellipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an ellipse given points with x coordinates in singlegroupx and singlegroupy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.getEllipses">
+<tt class="descname">getEllipses</tt><big>(</big><em>stds</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.getEllipses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.getEllipses" title="Permalink to this definition">¶</a></dt>
+<dd><p>will populate the ellipses attribute</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.Ordination.ORD.pointsInEllipse">
+<tt class="descname">pointsInEllipse</tt><big>(</big><em>Xs</em>, <em>Ys</em>, <em>ellipse</em><big>)</big><a class="reference internal" href="_modules/labblouin/Ordination.html#ORD.pointsInEllipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.Ordination.ORD.pointsInEllipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests which set of points are within the boundaries defined by the ellipse. The set of points
+are defined in two arrays Xs and Ys for the x-coordinates and y-coordinates respectively</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="labblouin.IO.html"
+                        title="previous chapter">labblouin.IO module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="labblouin.PDBnet.html"
+                        title="next chapter">labblouin.PDBnet module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/labblouin.Ordination.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.PDBnet.html" title="labblouin.PDBnet module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.IO.html" title="labblouin.IO module"
+             >previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" >labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

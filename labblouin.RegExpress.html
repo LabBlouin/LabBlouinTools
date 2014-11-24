@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.RegExpress module &mdash; LabBlouinTools 0.3.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.3 documentation" href="index.html" />
+    <link rel="up" title="labblouin package" href="labblouin.html" />
+    <link rel="next" title="labblouin.SeqMask module" href="labblouin.SeqMask.html" />
+    <link rel="prev" title="labblouin.PDBnet module" href="labblouin.PDBnet.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.SeqMask.html" title="labblouin.SeqMask module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.PDBnet.html" title="labblouin.PDBnet module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" accesskey="U">labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-labblouin.RegExpress">
+<span id="labblouin-regexpress-module"></span><h1>labblouin.RegExpress module<a class="headerlink" href="#module-labblouin.RegExpress" title="Permalink to this headline">¶</a></h1>
+<p>Prosite pattern generator. Will turn an alignment into a regular expression</p>
+<dl class="function">
+<dt id="labblouin.RegExpress.check_if_is_align">
+<tt class="descclassname">labblouin.RegExpress.</tt><tt class="descname">check_if_is_align</tt><big>(</big><em>dictionary_fasta</em><big>)</big><a class="reference internal" href="_modules/labblouin/RegExpress.html#check_if_is_align"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.RegExpress.check_if_is_align" title="Permalink to this definition">¶</a></dt>
+<dd><p>will check the read fasta to see if is an alignment</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.RegExpress.read_fasta">
+<tt class="descclassname">labblouin.RegExpress.</tt><tt class="descname">read_fasta</tt><big>(</big><em>prefix</em><big>)</big><a class="reference internal" href="_modules/labblouin/RegExpress.html#read_fasta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.RegExpress.read_fasta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wll read the fasta, place sequences in a dictionary. Will break if not an alignment</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.RegExpress.reg_express">
+<tt class="descclassname">labblouin.RegExpress.</tt><tt class="descname">reg_express</tt><big>(</big><em>fastas</em>, <em>l</em><big>)</big><a class="reference internal" href="_modules/labblouin/RegExpress.html#reg_express"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.RegExpress.reg_express" title="Permalink to this definition">¶</a></dt>
+<dd><p>will create a matrix with the alignment, discard columns with gaps, and create a regular expression similar to prosite</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.RegExpress.reg_express_col">
+<tt class="descclassname">labblouin.RegExpress.</tt><tt class="descname">reg_express_col</tt><big>(</big><em>col</em><big>)</big><a class="reference internal" href="_modules/labblouin/RegExpress.html#reg_express_col"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.RegExpress.reg_express_col" title="Permalink to this definition">¶</a></dt>
+<dd><p>given a column of an alignment, return the string corresponding to the regular expression of such column</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.RegExpress.strip_gaps">
+<tt class="descclassname">labblouin.RegExpress.</tt><tt class="descname">strip_gaps</tt><big>(</big><em>matrix</em><big>)</big><a class="reference internal" href="_modules/labblouin/RegExpress.html#strip_gaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.RegExpress.strip_gaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>given an alignment matrix, strip out the gap columns</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="labblouin.PDBnet.html"
+                        title="previous chapter">labblouin.PDBnet module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="labblouin.SeqMask.html"
+                        title="next chapter">labblouin.SeqMask module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/labblouin.RegExpress.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.SeqMask.html" title="labblouin.SeqMask module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.PDBnet.html" title="labblouin.PDBnet module"
+             >previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" >labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

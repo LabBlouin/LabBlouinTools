@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.IO module &mdash; LabBlouinTools 0.3.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.3 documentation" href="index.html" />
+    <link rel="up" title="labblouin package" href="labblouin.html" />
+    <link rel="next" title="labblouin.Ordination module" href="labblouin.Ordination.html" />
+    <link rel="prev" title="labblouin.FASTAnet module" href="labblouin.FASTAnet.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.Ordination.html" title="labblouin.Ordination module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.FASTAnet.html" title="labblouin.FASTAnet module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" accesskey="U">labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-labblouin.IO">
+<span id="labblouin-io-module"></span><h1>labblouin.IO module<a class="headerlink" href="#module-labblouin.IO" title="Permalink to this headline">¶</a></h1>
+<p>Different shortcut functions for dealing with file systems.</p>
+<p>IO Python Library / 2012 / Alex Safatli</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<p>E-mail: <a class="reference external" href="mailto:safatli&#37;&#52;&#48;cs&#46;dal&#46;ca">safatli<span>&#64;</span>cs<span>&#46;</span>dal<span>&#46;</span>ca</a>
+Dependencies: -</p>
+<dl class="function">
+<dt id="labblouin.IO.copyFile">
+<tt class="descclassname">labblouin.IO.</tt><tt class="descname">copyFile</tt><big>(</big><em>origin</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/labblouin/IO.html#copyFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.IO.copyFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies a file. Returns path.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.IO.getFileName">
+<tt class="descclassname">labblouin.IO.</tt><tt class="descname">getFileName</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/labblouin/IO.html#getFileName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.IO.getFileName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a filename of a given path.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.IO.getFilesInFolder">
+<tt class="descclassname">labblouin.IO.</tt><tt class="descname">getFilesInFolder</tt><big>(</big><em>folder</em>, <em>ext</em><big>)</big><a class="reference internal" href="_modules/labblouin/IO.html#getFilesInFolder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.IO.getFilesInFolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all full file paths
+for a given extension in a given folder.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.IO.getFolderName">
+<tt class="descclassname">labblouin.IO.</tt><tt class="descname">getFolderName</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/labblouin/IO.html#getFolderName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.IO.getFolderName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the directory name of a given path.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.IO.makeFolder">
+<tt class="descclassname">labblouin.IO.</tt><tt class="descname">makeFolder</tt><big>(</big><em>folder_name</em><big>)</big><a class="reference internal" href="_modules/labblouin/IO.html#makeFolder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.IO.makeFolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a folder (if does not already exist). Returns path.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.IO.moveFile">
+<tt class="descclassname">labblouin.IO.</tt><tt class="descname">moveFile</tt><big>(</big><em>origin</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/labblouin/IO.html#moveFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.IO.moveFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves a file. Returns path.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="labblouin.IO.removeFile">
+<tt class="descclassname">labblouin.IO.</tt><tt class="descname">removeFile</tt><big>(</big><em>origin</em><big>)</big><a class="reference internal" href="_modules/labblouin/IO.html#removeFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.IO.removeFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a file.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="labblouin.FASTAnet.html"
+                        title="previous chapter">labblouin.FASTAnet module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="labblouin.Ordination.html"
+                        title="next chapter">labblouin.Ordination module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/labblouin.IO.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.Ordination.html" title="labblouin.Ordination module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.FASTAnet.html" title="labblouin.FASTAnet module"
+             >previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" >labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

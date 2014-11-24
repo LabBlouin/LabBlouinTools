@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.svm module &mdash; LabBlouinTools 0.3.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.3 documentation" href="index.html" />
+    <link rel="up" title="labblouin package" href="labblouin.html" />
+    <link rel="next" title="labblouin.timer module" href="labblouin.timer.html" />
+    <link rel="prev" title="labblouin.scop module" href="labblouin.scop.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.timer.html" title="labblouin.timer module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.scop.html" title="labblouin.scop module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" accesskey="U">labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-labblouin.svm">
+<span id="labblouin-svm-module"></span><h1>labblouin.svm module<a class="headerlink" href="#module-labblouin.svm" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="labblouin.svm.cross_validate">
+<em class="property">class </em><tt class="descclassname">labblouin.svm.</tt><tt class="descname">cross_validate</tt><big>(</big><em>model</em>, <em>test=[]</em><big>)</big><a class="reference internal" href="_modules/labblouin/svm.html#cross_validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.svm.cross_validate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="labblouin.svm.cross_validate.perform">
+<tt class="descname">perform</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/svm.html#cross_validate.perform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.svm.cross_validate.perform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the cross-validation.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="labblouin.svm.svm_model">
+<em class="property">class </em><tt class="descclassname">labblouin.svm.</tt><tt class="descname">svm_model</tt><big>(</big><em>data=[]</em>, <em>labels=[]</em>, <em>kernel=2</em>, <em>c=10</em><big>)</big><a class="reference internal" href="_modules/labblouin/svm.html#svm_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.svm.svm_model" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="labblouin.svm.svm_model.load">
+<tt class="descname">load</tt><big>(</big><em>fin</em><big>)</big><a class="reference internal" href="_modules/labblouin/svm.html#svm_model.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.svm.svm_model.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.svm.svm_model.optimize">
+<tt class="descname">optimize</tt><big>(</big><em>low=1</em>, <em>up=50</em>, <em>steps=5</em>, <em>by='proportions'</em><big>)</big><a class="reference internal" href="_modules/labblouin/svm.html#svm_model.optimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.svm.svm_model.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optimize c-value on the basis of by (default:proportions of correct classifications).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.svm.svm_model.predict">
+<tt class="descname">predict</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/labblouin/svm.html#svm_model.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.svm.svm_model.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.svm.svm_model.save">
+<tt class="descname">save</tt><big>(</big><em>fin</em><big>)</big><a class="reference internal" href="_modules/labblouin/svm.html#svm_model.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.svm.svm_model.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="labblouin.scop.html"
+                        title="previous chapter">labblouin.scop module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="labblouin.timer.html"
+                        title="next chapter">labblouin.timer module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/labblouin.svm.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.timer.html" title="labblouin.timer module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.scop.html" title="labblouin.scop module"
+             >previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" >labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

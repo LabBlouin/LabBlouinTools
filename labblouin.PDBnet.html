@@ -1,0 +1,966 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.PDBnet module &mdash; LabBlouinTools 0.3.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.3 documentation" href="index.html" />
+    <link rel="up" title="labblouin package" href="labblouin.html" />
+    <link rel="next" title="labblouin.RegExpress module" href="labblouin.RegExpress.html" />
+    <link rel="prev" title="labblouin.Ordination module" href="labblouin.Ordination.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.RegExpress.html" title="labblouin.RegExpress module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.Ordination.html" title="labblouin.Ordination module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" accesskey="U">labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-labblouin.PDBnet">
+<span id="labblouin-pdbnet-module"></span><h1>labblouin.PDBnet module<a class="headerlink" href="#module-labblouin.PDBnet" title="Permalink to this headline">¶</a></h1>
+<p>PDBnet is a collection of Python objects intended to model and contain
+PDB protein data.</p>
+<p>PDBnet Copyright (C) 2012 Christian Blouin
+Contributions by Alex Safatli and Jose Sergio Hleap
+Major Refactoring (2014) done by Alex Safatli and Jose Sergio Hleap</p>
+<p>E-mail: <a class="reference external" href="mailto:cblouin&#37;&#52;&#48;cs&#46;dal&#46;ca">cblouin<span>&#64;</span>cs<span>&#46;</span>dal<span>&#46;</span>ca</a>, <a class="reference external" href="mailto:safatli&#37;&#52;&#48;cs&#46;dal&#46;ca">safatli<span>&#64;</span>cs<span>&#46;</span>dal<span>&#46;</span>ca</a>, <a class="reference external" href="mailto:jshleap&#37;&#52;&#48;dal&#46;ca">jshleap<span>&#64;</span>dal<span>&#46;</span>ca</a>
+Dependencies: Scipy, BioPython, FASTAnet (contained in LabBlouinTools)</p>
+<dl class="class">
+<dt id="labblouin.PDBnet.PDBatom">
+<em class="property">class </em><tt class="descclassname">labblouin.PDBnet.</tt><tt class="descname">PDBatom</tt><big>(</big><em>serial</em>, <em>name</em>, <em>x</em>, <em>y</em>, <em>z</em>, <em>oc</em>, <em>b</em>, <em>symbol</em>, <em>charge</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBatom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBatom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ATOM in a PDB protein structure.</p>
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBatom.DistanceTo">
+<tt class="descname">DistanceTo</tt><big>(</big><em>atom</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBatom.DistanceTo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBatom.DistanceTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire the distance from this atom to another atom.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBatom.GetPosition">
+<tt class="descname">GetPosition</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBatom.GetPosition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBatom.GetPosition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the 3-dimensional coordinate of this atom in space.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBatom.charge">
+<tt class="descname">charge</tt><a class="headerlink" href="#labblouin.PDBnet.PDBatom.charge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBatom.fixname">
+<tt class="descname">fixname</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBatom.fixname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBatom.fixname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensures the name of this atom fits within 4 characters.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBatom.name">
+<tt class="descname">name</tt><a class="headerlink" href="#labblouin.PDBnet.PDBatom.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBatom.occupancy">
+<tt class="descname">occupancy</tt><a class="headerlink" href="#labblouin.PDBnet.PDBatom.occupancy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBatom.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#labblouin.PDBnet.PDBatom.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBatom.serial">
+<tt class="descname">serial</tt><a class="headerlink" href="#labblouin.PDBnet.PDBatom.serial" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBatom.symbol">
+<tt class="descname">symbol</tt><a class="headerlink" href="#labblouin.PDBnet.PDBatom.symbol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBatom.tempFactor">
+<tt class="descname">tempFactor</tt><a class="headerlink" href="#labblouin.PDBnet.PDBatom.tempFactor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBatom.x">
+<tt class="descname">x</tt><a class="headerlink" href="#labblouin.PDBnet.PDBatom.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBatom.y">
+<tt class="descname">y</tt><a class="headerlink" href="#labblouin.PDBnet.PDBatom.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBatom.z">
+<tt class="descname">z</tt><a class="headerlink" href="#labblouin.PDBnet.PDBatom.z" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="labblouin.PDBnet.PDBchain">
+<em class="property">class </em><tt class="descclassname">labblouin.PDBnet.</tt><tt class="descname">PDBchain</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A PDB chain (collection of protein residues).</p>
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.AddIndexOfResidue">
+<tt class="descname">AddIndexOfResidue</tt><big>(</big><em>index</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.AddIndexOfResidue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.AddIndexOfResidue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an index for a residue to this chain. Will generate own residue
+information if called upon (forces lazy evaluation).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.AddResidue">
+<tt class="descname">AddResidue</tt><big>(</big><em>resid</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.AddResidue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.AddResidue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a residue to this chain.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.AddResidueByIndex">
+<tt class="descname">AddResidueByIndex</tt><big>(</big><em>index</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.AddResidueByIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.AddResidueByIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a residue to this chain by its index in the PDB. The residue
+object will automatically be constructed from the file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.AsFASTA">
+<tt class="descname">AsFASTA</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.AsFASTA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.AsFASTA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the string representing this chain&#8217;s FASTA sequence.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.GetAtoms">
+<tt class="descname">GetAtoms</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.GetAtoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.GetAtoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all comprising atoms in this chain in order of residues.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.GetIndices">
+<tt class="descname">GetIndices</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.GetIndices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.GetIndices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire all of the indices for residues present in this chain.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.GetPrimaryPropertiesFromBioPython">
+<tt class="descname">GetPrimaryPropertiesFromBioPython</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.GetPrimaryPropertiesFromBioPython"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.GetPrimaryPropertiesFromBioPython" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use BioPython to populate this class with attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.GetResidueByIndex">
+<tt class="descname">GetResidueByIndex</tt><big>(</big><em>index</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.GetResidueByIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.GetResidueByIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for acquiring a residue from this instance using [] operator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.GetResidues">
+<tt class="descname">GetResidues</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.GetResidues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.GetResidues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire all of the residues in this chain. Note that if this
+is a large file, this will force the object to load all of these
+residues into memory from the file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.IterResidues">
+<tt class="descname">IterResidues</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.IterResidues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.IterResidues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iteratively yield all of the residues in this chain. Note that if this
+is a large file, this will force the object to load all of these
+residues into memory from the file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.RemoveResidue">
+<tt class="descname">RemoveResidue</tt><big>(</big><em>resid</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.RemoveResidue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.RemoveResidue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a residue from this chain.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.SortByNumericalIndices">
+<tt class="descname">SortByNumericalIndices</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.SortByNumericalIndices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.SortByNumericalIndices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort all internal items by a numerical index.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.WriteAsPDB">
+<tt class="descname">WriteAsPDB</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.WriteAsPDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.WriteAsPDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write this single chain to a file as a PDB.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBchain.indices">
+<tt class="descname">indices</tt><a class="headerlink" href="#labblouin.PDBnet.PDBchain.indices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBchain.name">
+<tt class="descname">name</tt><a class="headerlink" href="#labblouin.PDBnet.PDBchain.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBchain.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#labblouin.PDBnet.PDBchain.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.pop">
+<tt class="descname">pop</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.pop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop a residue.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBchain.residues">
+<tt class="descname">residues</tt><a class="headerlink" href="#labblouin.PDBnet.PDBchain.residues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBchain.structure">
+<tt class="descname">structure</tt><a class="headerlink" href="#labblouin.PDBnet.PDBchain.structure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBchain.update">
+<tt class="descname">update</tt><big>(</big><em>o</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBchain.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBchain.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add residues from another chain.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="labblouin.PDBnet.PDBfile">
+<em class="property">class </em><tt class="descclassname">labblouin.PDBnet.</tt><tt class="descname">PDBfile</tt><big>(</big><em>fi</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBfile.chains">
+<tt class="descname">chains</tt><a class="headerlink" href="#labblouin.PDBnet.PDBfile.chains" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBfile.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBfile.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBfile.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the file.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBfile.fileHandle">
+<tt class="descname">fileHandle</tt><a class="headerlink" href="#labblouin.PDBnet.PDBfile.fileHandle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBfile.filePath">
+<tt class="descname">filePath</tt><a class="headerlink" href="#labblouin.PDBnet.PDBfile.filePath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBfile.getChainNames">
+<tt class="descname">getChainNames</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBfile.getChainNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBfile.getChainNames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBfile.getModelNames">
+<tt class="descname">getModelNames</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBfile.getModelNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBfile.getModelNames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBfile.getResidueNamesInChain">
+<tt class="descname">getResidueNamesInChain</tt><big>(</big><em>ch</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBfile.getResidueNamesInChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBfile.getResidueNamesInChain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBfile.hasModels">
+<tt class="descname">hasModels</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBfile.hasModels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBfile.hasModels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBfile.isLargeFile">
+<tt class="descname">isLargeFile</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBfile.isLargeFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBfile.isLargeFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or on the PDB file this object represents is incredibly large.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBfile.iterResidueData">
+<tt class="descname">iterResidueData</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBfile.iterResidueData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBfile.iterResidueData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yield the model number, chain name, and residue number 
+for all residues present in this PDB file, not necessarily 
+in order.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBfile.memHandle">
+<tt class="descname">memHandle</tt><a class="headerlink" href="#labblouin.PDBnet.PDBfile.memHandle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBfile.modelIndices">
+<tt class="descname">modelIndices</tt><a class="headerlink" href="#labblouin.PDBnet.PDBfile.modelIndices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBfile.read">
+<tt class="descname">read</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBfile.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBfile.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire all remarks, and the indices of all models and residues. Returns
+remarks, and biological source information as a tuple (remarks, organism, 
+taxid, mutant).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBfile.readResidue">
+<tt class="descname">readResidue</tt><big>(</big><em>chain</em>, <em>res</em>, <em>model=-1</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBfile.readResidue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBfile.readResidue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a residue from the PDB file and return a PDBresidue.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBfile.residueIndices">
+<tt class="descname">residueIndices</tt><a class="headerlink" href="#labblouin.PDBnet.PDBfile.residueIndices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBfile.size">
+<tt class="descname">size</tt><a class="headerlink" href="#labblouin.PDBnet.PDBfile.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="labblouin.PDBnet.PDBmodel">
+<em class="property">class </em><tt class="descclassname">labblouin.PDBnet.</tt><tt class="descname">PDBmodel</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBmodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#labblouin.PDBnet.PDBchain" title="labblouin.PDBnet.PDBchain"><tt class="xref py py-class docutils literal"><span class="pre">labblouin.PDBnet.PDBchain</span></tt></a></p>
+<p>A PDB model (a special kind of chain).</p>
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBmodel.AddChain">
+<tt class="descname">AddChain</tt><big>(</big><em>chain</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBmodel.AddChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.AddChain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a PDBchain (chain) to this model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBmodel.AddResidue">
+<tt class="descname">AddResidue</tt><big>(</big><em>resid</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBmodel.AddResidue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.AddResidue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a residue to this model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBmodel.GetChain">
+<tt class="descname">GetChain</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBmodel.GetChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.GetChain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBmodel.GetChainByName">
+<tt class="descname">GetChainByName</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBmodel.GetChainByName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.GetChainByName" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBmodel.GetChainNames">
+<tt class="descname">GetChainNames</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBmodel.GetChainNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.GetChainNames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBmodel.GetChains">
+<tt class="descname">GetChains</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBmodel.GetChains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.GetChains" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBmodel.GetResidues">
+<tt class="descname">GetResidues</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBmodel.GetResidues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.GetResidues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire all of the residues in this model. Note that if this
+is a large file, this will force the object to load all of these
+residues into memory from the file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBmodel.IterResidues">
+<tt class="descname">IterResidues</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBmodel.IterResidues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.IterResidues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iteratively yield all of the residues in this model. Note that if this
+is a large file, this will force the object to load all of these
+residues into memory from the file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBmodel.NewChain">
+<tt class="descname">NewChain</tt><big>(</big><em>ch</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBmodel.NewChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.NewChain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new PDBchain, add it to this model, and return it.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBmodel.chainNames">
+<tt class="descname">chainNames</tt><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.chainNames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBmodel.chains">
+<tt class="descname">chains</tt><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.chains" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBmodel.indices">
+<tt class="descname">indices</tt><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.indices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBmodel.name">
+<tt class="descname">name</tt><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBmodel.residues">
+<tt class="descname">residues</tt><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.residues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBmodel.structure">
+<tt class="descname">structure</tt><a class="headerlink" href="#labblouin.PDBnet.PDBmodel.structure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="labblouin.PDBnet.PDBresidue">
+<em class="property">class </em><tt class="descclassname">labblouin.PDBnet.</tt><tt class="descname">PDBresidue</tt><big>(</big><em>index=None</em>, <em>name=''</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBresidue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBresidue" title="Permalink to this definition">¶</a></dt>
+<dd><p>A residue (collection of ATOM fields) in a PDB protein structure.</p>
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBresidue.AddAtom">
+<tt class="descname">AddAtom</tt><big>(</big><em>atom</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBresidue.AddAtom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBresidue.AddAtom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a PDBatom structure to this residue.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBresidue.Centroid">
+<tt class="descname">Centroid</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBresidue.Centroid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBresidue.Centroid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the centroid of this residue. Return this as a PDBatom.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBresidue.GetAtoms">
+<tt class="descname">GetAtoms</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBresidue.GetAtoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBresidue.GetAtoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBresidue.GetCA">
+<tt class="descname">GetCA</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBresidue.GetCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBresidue.GetCA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the alpha-carbon found in this residue as a PDBatom.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBresidue.InContactWith">
+<tt class="descname">InContactWith</tt><big>(</big><em>other</em>, <em>thres=4.5</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBresidue.InContactWith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBresidue.InContactWith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if in contact with another residue.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="labblouin.PDBnet.PDBstructure">
+<em class="property">class </em><tt class="descclassname">labblouin.PDBnet.</tt><tt class="descname">PDBstructure</tt><big>(</big><em>filein=''</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A PDB protein structure (a collection of chains/models).</p>
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.AddChain">
+<tt class="descname">AddChain</tt><big>(</big><em>chainname</em>, <em>chain</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.AddChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.AddChain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a chain as a list of residues to the PDB.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.AddModel">
+<tt class="descname">AddModel</tt><big>(</big><em>modelname</em>, <em>model</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.AddModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.AddModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a model as a list of residues to the PDB.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.AddRemark">
+<tt class="descname">AddRemark</tt><big>(</big><em>remark</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.AddRemark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.AddRemark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a remark (note/comment) to the structure/PDB file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.AddResidueToChain">
+<tt class="descname">AddResidueToChain</tt><big>(</big><em>chain</em>, <em>res</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.AddResidueToChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.AddResidueToChain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a residue to a chain. Deprecated; use chain class function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.AddResidueToModel">
+<tt class="descname">AddResidueToModel</tt><big>(</big><em>model</em>, <em>res</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.AddResidueToModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.AddResidueToModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a residue to a model. Deprecated; use model class function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.ChainAsFASTA">
+<tt class="descname">ChainAsFASTA</tt><big>(</big><em>chain</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.ChainAsFASTA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.ChainAsFASTA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the chain as a FASTA. Deprecated; use chain class function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.CheckComplete">
+<tt class="descname">CheckComplete</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.CheckComplete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.CheckComplete" title="Permalink to this definition">¶</a></dt>
+<dd><p>For every chain, check to see if every residue is complete (see 
+aa_list dictionary).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.Contacts">
+<tt class="descname">Contacts</tt><big>(</big><em>chain='ALL'</em>, <em>thres=4.5</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.Contacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.Contacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the contact map of all chains or a chain.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.FDmatrix">
+<tt class="descname">FDmatrix</tt><big>(</big><em>fasta</em>, <em>chains=None</em>, <em>scaled=True</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.FDmatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.FDmatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the form difference matrix (FDM) as explained in Claude 2008. It relates to
+the identification of the most influential residue, with respect to the overall
+shape/structure. If the scaled option is True, will return an scaled list 
+(from -1 to 1) of the of lenght equal to the number of residues. Otherwise will return
+the raw FDM, rounded so it can be included in a PDB. The scaled version is better for
+vizualization. By default the FDM is computed far all chains, but a subset can be passed
+to the chains option.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.GetAllCentroid">
+<tt class="descname">GetAllCentroid</tt><big>(</big><em>chain</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.GetAllCentroid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.GetAllCentroid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populates the centroids of all residues.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.GetAverage">
+<tt class="descname">GetAverage</tt><big>(</big><em>chains=None</em>, <em>newname=None</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.GetAverage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.GetAverage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire a new chain or model corresponding to an average of all present
+chains or models specified.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.GetChain">
+<tt class="descname">GetChain</tt><big>(</big><em>ch</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.GetChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.GetChain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a chain by name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.GetChainNames">
+<tt class="descname">GetChainNames</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.GetChainNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.GetChainNames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.GetFASTAIndices">
+<tt class="descname">GetFASTAIndices</tt><big>(</big><em>thing</em>, <em>fst</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.GetFASTAIndices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.GetFASTAIndices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a PDBchain, find 1-to-1 correspondances between
+it and a FASTA sequence.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.GetModel">
+<tt class="descname">GetModel</tt><big>(</big><em>mod</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.GetModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.GetModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a model by name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.GetModelNames">
+<tt class="descname">GetModelNames</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.GetModelNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.GetModelNames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.GetRemarks">
+<tt class="descname">GetRemarks</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.GetRemarks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.GetRemarks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all remarks from the PDB as a list of strings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.IndexSeq">
+<tt class="descname">IndexSeq</tt><big>(</big><em>chain</em>, <em>fst</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.IndexSeq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.IndexSeq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store in residues the correct index to the fasta.
+Requires a 1-to-1 correspondance at least a portion
+of the way through. Deprecated; use GetFASTAIndices().</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.IterAllResidues">
+<tt class="descname">IterAllResidues</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.IterAllResidues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.IterAllResidues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce an iterator to allow one to iterate over all possible residues.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.Map2Protein">
+<tt class="descname">Map2Protein</tt><big>(</big><em>outname</em>, <em>lis</em>, <em>chain</em>, <em>fasta</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.Map2Protein"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.Map2Protein" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map a list of values (lis), that must have a lenght equal to that of the number
+of residues in the PDB to be mapped (chain). If a list of list is provided, the 
+first list will be mapped as the beta factor and the second as occupancy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.ModelAsFASTA">
+<tt class="descname">ModelAsFASTA</tt><big>(</big><em>model</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.ModelAsFASTA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.ModelAsFASTA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the model as a FASTA. Deprecated; use chain class function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.NewChain">
+<tt class="descname">NewChain</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.NewChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.NewChain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct and add a new chain by name to the PDB. Returns the chain.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.NewModel">
+<tt class="descname">NewModel</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.NewModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.NewModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct and add a new model by name to the PDB. Returns the model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.RadiusOfGyration">
+<tt class="descname">RadiusOfGyration</tt><big>(</big><em>chains=None</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.RadiusOfGyration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.RadiusOfGyration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire the radius of the gyration of the entire, or a portion of, the
+PDB protein molecule.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.ReadFile">
+<tt class="descname">ReadFile</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.ReadFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.ReadFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a PDB file. Populate this PDBstructure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.RemoveChain">
+<tt class="descname">RemoveChain</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.RemoveChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.RemoveChain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a chain from the structure (by name). Returns the chain.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.RemoveModel">
+<tt class="descname">RemoveModel</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.RemoveModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.RemoveModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a model from the structure (by name). Returns the chain.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.ViewStructure">
+<tt class="descname">ViewStructure</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.ViewStructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.ViewStructure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.WriteContacts">
+<tt class="descname">WriteContacts</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.WriteContacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.WriteContacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write contact map.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.WriteFile">
+<tt class="descname">WriteFile</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.WriteFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.WriteFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write this PDB structure as a single PDB file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.WriteGM">
+<tt class="descname">WriteGM</tt><big>(</big><em>fasta</em>, <em>gm</em>, <em>chains=None</em>, <em>CA=False</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.WriteGM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.WriteGM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the information present in this PDB between multiple
+chains as a Geometric Morphometric text file. This file will be
+formatted such that individual lines correspond to chains and semi-colons
+separate the (x,y,z) coordinates between all homologous residue positions. 
+Requires a FASTA alignment. Options include using alpha-carbon positions.
+By default, uses centroids of residues.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.WriteLandmarks">
+<tt class="descname">WriteLandmarks</tt><big>(</big><em>fasta</em>, <em>lm</em>, <em>chains=None</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.WriteLandmarks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.WriteLandmarks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the information present in this PDB between multiple
+chains as a landmark text file. This file will be formatted such that 
+the file is partitioned in sections starting with chain names and individual 
+lines in these correspond to homologous residue positions denoted by
+homologous position, residue number, and residue name tab-delimited. Requires
+a FASTA file.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.chains">
+<tt class="descname">chains</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.chains" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.contactmap">
+<tt class="descname">contactmap</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.contactmap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.filepath">
+<tt class="descname">filepath</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.filepath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.gdt">
+<tt class="descname">gdt</tt><big>(</big><em>fasta, chains=None, distcutoffs=[1, 2, 4, 8], CA=True</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.gdt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.gdt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the GDT score between two chains. Requires a
+FASTA alignment.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.gm">
+<tt class="descname">gm</tt><big>(</big><em>fasta</em>, <em>chains=None</em>, <em>CA=False</em>, <em>typeof='str'</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.gm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.gm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire Geometric Morphometric data corresponding to the
+(x,y,z) coordinates between all homologous residue positions.
+Requires a FASTA alignment. Options include using alpha-carbon
+positions. By default, uses centroids of residues. Returns a list
+of labels and a list of coordinates as raw GM data. The typeof</p>
+<blockquote>
+<div>option provides an option for coordinate output; they are returned 
+as a semicolon-delimited string (str) or as a numpy 2d array (matrix).</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.handle">
+<tt class="descname">handle</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.handle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.ismodel">
+<tt class="descname">ismodel</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.ismodel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.models">
+<tt class="descname">models</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.models" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.mutation">
+<tt class="descname">mutation</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.mutation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.orderofchains">
+<tt class="descname">orderofchains</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.orderofchains" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.orderofmodels">
+<tt class="descname">orderofmodels</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.orderofmodels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.organism">
+<tt class="descname">organism</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.organism" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.read">
+<tt class="descname">read</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for ReadFile().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.remarks">
+<tt class="descname">remarks</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.remarks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.rmsd">
+<tt class="descname">rmsd</tt><big>(</big><em>fasta</em>, <em>chains=None</em>, <em>CA=True</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.rmsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.rmsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the RMSD between chains. Requires a FASTA alignment.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.rrmsd">
+<tt class="descname">rrmsd</tt><big>(</big><em>fasta</em>, <em>chains=None</em>, <em>CA=True</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.rrmsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.rrmsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the RRMSD between chains. Requires a FASTA alignment. 
+See Betancourt &amp; Skolnick, &#8220;Universal Similarity Measure for
+Comparison Protein Structures&#8221;.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBstructure.taxid">
+<tt class="descname">taxid</tt><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.taxid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.tmscore">
+<tt class="descname">tmscore</tt><big>(</big><em>fasta</em>, <em>chains=None</em>, <em>native=None</em>, <em>CA=True</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.tmscore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.tmscore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the TMscore between two chains. Requires a 
+FASTA alignment and a value for the length of the
+native structure (e.g., for a pairwise alignment,
+the length of the structure used as a reference
+before alignment was done). The latter is computed
+by assuming the first of both provided chains is the
+native structure; otherwise, uses a provided chain
+name (native input).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="labblouin.PDBnet.PDBstructure.view">
+<tt class="descname">view</tt><big>(</big><em>istrajectory=False</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.view" title="Permalink to this definition">¶</a></dt>
+<dd><p>View the structure in a Pymol window. Requires an installation of Pymol.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="labblouin.PDBnet.PDBterminator">
+<em class="property">class </em><tt class="descclassname">labblouin.PDBnet.</tt><tt class="descname">PDBterminator</tt><big>(</big><em>chaininst</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBterminator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBterminator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#labblouin.PDBnet.PDBatom" title="labblouin.PDBnet.PDBatom"><tt class="xref py py-class docutils literal"><span class="pre">labblouin.PDBnet.PDBatom</span></tt></a></p>
+<p>A placeholder class that represents a terminating ATOM-like line in the PDB file.</p>
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.charge">
+<tt class="descname">charge</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.charge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.lastatom">
+<tt class="descname">lastatom</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.lastatom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.lastreschain">
+<tt class="descname">lastreschain</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.lastreschain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.lastresind">
+<tt class="descname">lastresind</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.lastresind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.lastresname">
+<tt class="descname">lastresname</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.lastresname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.name">
+<tt class="descname">name</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.occupancy">
+<tt class="descname">occupancy</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.occupancy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.serial">
+<tt class="descname">serial</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.serial" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.symbol">
+<tt class="descname">symbol</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.symbol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.tempFactor">
+<tt class="descname">tempFactor</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.tempFactor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.x">
+<tt class="descname">x</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.y">
+<tt class="descname">y</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="labblouin.PDBnet.PDBterminator.z">
+<tt class="descname">z</tt><a class="headerlink" href="#labblouin.PDBnet.PDBterminator.z" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="labblouin.Ordination.html"
+                        title="previous chapter">labblouin.Ordination module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="labblouin.RegExpress.html"
+                        title="next chapter">labblouin.RegExpress module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/labblouin.PDBnet.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="labblouin.RegExpress.html" title="labblouin.RegExpress module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="labblouin.Ordination.html" title="labblouin.Ordination module"
+             >previous</a> |</li>
+        <li><a href="index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+          <li><a href="labblouin.html" >labblouin package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
