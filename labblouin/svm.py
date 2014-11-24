@@ -8,7 +8,7 @@
 # SVM Managing, Cross-Validation #
 # ------------------------------ #
 
-import svmutil, random, os
+import random, os, svmutil
 from numpy import arange
 #from collections import Counter as C 
 
