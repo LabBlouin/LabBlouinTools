@@ -4,22 +4,22 @@
 PDB protein data.
 
 PDBnet Copyright (C) 2012 Christian Blouin
-Minor Contributions by Alex Safatli and Jose Sergio Hleap
+Contributions by Alex Safatli and Jose Sergio Hleap
 Major Refactoring (2014) done by Alex Safatli and Jose Sergio Hleap
 
-E-mail: cblouin@cs.dal.ca, safatli@cs.dal.ca
+E-mail: cblouin@cs.dal.ca, safatli@cs.dal.ca, jshleap@dal.ca
 Dependencies: Scipy, BioPython, FASTAnet (contained in LabBlouinTools) '''
 
 from mmap import mmap as memoryMappedFile
-from scipy import matrix
+import numpy as np
 import sys, FASTAnet, math
 from math import sqrt
 from os.path import getsize as sizeOfFile
 from Bio.SeqUtils.ProtParam import ProteinAnalysis as PA
-
+from scipy.spatial.distance import cdist
 # Metadata
 
-__author__  = 'Christian Blouin'
+__author__  = ['Christian Blouin','Jose Sergio Hleap','Alexander Safatli']
 __version__ = '1.0.2'
 
 # Constants
@@ -443,7 +443,8 @@ class PDBstructure(object):
 	''' A PDB protein structure (a collection of chains/models). '''
 
 	__slots__ = ('chains','orderofchains','models','orderofmodels','remarks',
-	             'filepath','organism','taxid','mutation','contactmap','handle')
+	             'filepath','organism','taxid','mutation','contactmap','handle',
+	             'ismodel')
 
 	def __init__(self, filein=''):
 
@@ -652,6 +653,7 @@ class PDBstructure(object):
 		
 		# Start creating high-level structures for models/chains.
 		if p.hasModels():
+			self.ismodel = True
 			map(self.NewModel,p.getModelNames())		
 			for mo, ch, re in p.iterResidueData():
 				model = self.GetModel(mo)
@@ -670,6 +672,7 @@ class PDBstructure(object):
 				for chain in model.GetChains():
 					chain.SortByNumericalIndices()		
 		else:
+			self.ismodel = False
 			map(self.NewChain,p.getChainNames())			
 			for _, ch, re in p.iterResidueData():
 				chain = self.GetChain(ch)
@@ -702,13 +705,14 @@ class PDBstructure(object):
 
 	# Scoring Functionality
 
-	def _iterResidueAssociations(self,fasta,chains=None,ismodel=False,fast=None):
+	def _iterResidueAssociations(self,fasta,chains=None,fast=None):
 
 		''' PRIVATE: Use an input FASTA file to determine associations
         between residues as they exist between 2+ chains. Constructs a
 		mapping between chain and sequence and yields all strictly
 		homologous positions as residues, chain-by-chain.'''
-
+		
+		ismodel=self.ismodel
 		if ismodel:
 			orderofthings = self.orderofmodels
 			things = self.models
@@ -741,7 +745,7 @@ class PDBstructure(object):
 			for pos in posv: # Go position by position.
 				yield pos, ch, residueList.pop(0) # Yield position, chain name, and residue.
 				
-	def tmscore(self,fasta,chains=None,ismodel=False,native=None,CA=True):
+	def tmscore(self,fasta,chains=None,native=None,CA=True):
 
 		''' Get the TMscore between two chains. Requires a 
         FASTA alignment and a value for the length of the
@@ -751,7 +755,8 @@ class PDBstructure(object):
         by assuming the first of both provided chains is the
         native structure; otherwise, uses a provided chain
         name (native input). '''
-
+		
+		ismodel=self.ismodel
 		if ismodel:
 			orderofthings = self.orderofmodels
 			things = self.models
@@ -764,7 +769,7 @@ class PDBstructure(object):
 			raise ValueError('Need exactly two chains to score.')
 		fas     = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
 		posvect = fas.getStrictlyUngappedPositions()
-		items   = self._iterResidueAssociations(fasta,chains,ismodel,fas)
+		items   = self._iterResidueAssociations(fasta,chains,fas)
 
 		# Get the lengths of the respective chains.
 		if native == None: leN = len(things[chains[0]]) 
@@ -796,10 +801,12 @@ class PDBstructure(object):
 		# Return the TMscore.
 		return (1./leN) * sumportion
 
-	def gdt(self,fasta,chains=None,distcutoffs=[1,2,4,8],ismodel=False,CA=True):
+	def gdt(self,fasta,chains=None,distcutoffs=[1,2,4,8],CA=True):
 
 		''' Get the GDT score between two chains. Requires a
         FASTA alignment. '''
+		
+		ismodel=self.ismodel
 
 		if ismodel:
 			orderofthings = self.orderofmodels
@@ -813,7 +820,7 @@ class PDBstructure(object):
 		if not chains: chains = orderofthings
 		if len(chains) != 2:
 			raise ValueError('Need exactly two chains to score.')
-		items = self._iterResidueAssociations(fasta,chains,ismodel)
+		items = self._iterResidueAssociations(fasta,chains)
 
 		# Get all relevant atoms.
 		posmask = {}
@@ -850,11 +857,11 @@ class PDBstructure(object):
 		GDT_P4 = counts[3]/poslen
 		return (GDT_P1+GDT_P2+GDT_P3+GDT_P4)/4.0
 
-	def rmsd(self,fasta,chains=None,ismodel=False,CA=True):
+	def rmsd(self,fasta,chains=None,CA=True):
 
 		'''Get the RMSD between chains. Requires a FASTA alignment.'''
-
-		items = self._iterResidueAssociations(fasta,chains,ismodel)
+		
+		items = self._iterResidueAssociations(fasta,chains)
 		# Get all relevant atoms.
 		posmask = {}
 		for pos,_,residue in items:
@@ -884,13 +891,13 @@ class PDBstructure(object):
 		rmsd /= len(distsqs)
 		return rmsd
 
-	def rrmsd(self,fasta,chains=None,ismodel=False,CA=True):
+	def rrmsd(self,fasta,chains=None,CA=True):
 
 		''' Get the RRMSD between chains. Requires a FASTA alignment. 
         See Betancourt & Skolnick, "Universal Similarity Measure for
         Comparison Protein Structures". '''
-
-		if ismodel:
+		
+		if self.ismodel:
 			orderofthings = self.orderofmodels
 			things = self.models
 		else:
@@ -901,27 +908,24 @@ class PDBstructure(object):
 		if len(chains) != 2:
 			raise ValueError('Need exactly two chains to score.')        
 
-		def getAverageCorrelationCoefficient(len_struct):
-			L_N, e = len_struct-1, math.e
-			return 0.42-0.05*L_N*e**(-L_N/4.7)+0.63*e**(-L_N/37)        
-
-		R_A = self.RadiusOfGyration([chains[0]],ismodel)
-		R_B = self.RadiusOfGyration([chains[1]],ismodel)
+		R_A = self.RadiusOfGyration([chains[0]])
+		R_B = self.RadiusOfGyration([chains[1]])
 		avglen = (len(things[chains[0]])+
 		          len(things[chains[1]]))/2
-		c = getAverageCorrelationCoefficient(avglen)
+		L_N, e = avglen-1, math.e
+		c = 0.42-0.05*L_N*e**(-L_N/4.7)+0.63*e**(-L_N/37)
 		denom = R_A**2+R_B**2-2*c*R_A*R_B
-		alignRMSD = self.rmsd(fasta,chains,ismodel,CA)
+		alignRMSD = self.rmsd(fasta,chains,CA)
 		return float(alignRMSD)/sqrt(denom)
 
 	# Other Functionality
 
-	def GetAverage(self,chains=None,ismodel=False,newname=None):
+	def GetAverage(self,chains=None,newname=None):
 
 		''' Acquire a new chain or model corresponding to an average of all present
         chains or models specified. '''
-
-		if ismodel:
+		
+		if self.ismodel:
 			orderofthings = self.orderofmodels
 			things        = self.models
 			if newname == None: newname = 1
@@ -979,12 +983,12 @@ class PDBstructure(object):
 
 		return output
 
-	def RadiusOfGyration(self,chains=None,ismodel=False):
+	def RadiusOfGyration(self,chains=None):
 
 		''' Acquire the radius of the gyration of the entire, or a portion of, the
         PDB protein molecule. '''
-
-		if ismodel:
+		
+		if self.ismodel:
 			orderofthings = self.orderofmodels
 			things = self.models
 		else:
@@ -1045,11 +1049,13 @@ class PDBstructure(object):
 
 		return out
 
-	def IndexSeq(self, chain, fst, ismodel=False):
+	def IndexSeq(self, chain, fst):
 
 		''' Store in residues the correct index to the fasta.
         Requires a 1-to-1 correspondance at least a portion
         of the way through. Deprecated; use GetFASTAIndices(). '''
+		
+		ismodel=self.ismodel
 
 		if ismodel: thing = self.GetModel(chain)
 		else: thing = self.GetChain(chain)
@@ -1091,7 +1097,7 @@ class PDBstructure(object):
 			model = self.GetModel(mo)
 			for res in model: yield model[res]
 
-	def gm(self,fasta,chains=None,ismodel=False,CA=False,typeof='str'):
+	def gm(self,fasta,chains=None,CA=False,typeof='str'):
 
 		''' Acquire Geometric Morphometric data corresponding to the
         (x,y,z) coordinates between all homologous residue positions.
@@ -1099,9 +1105,10 @@ class PDBstructure(object):
         positions. By default, uses centroids of residues. Returns a list
         of labels and a list of coordinates as raw GM data. The typeof 
 		option provides an option for coordinate output; they are returned 
-		as a semicolon-delimited string (str) or as a scipy matrix (matrix). '''
-
-		if ismodel:
+		as a semicolon-delimited string (str) or as a numpy 2d array (matrix). '''
+		
+		
+		if self.ismodel:
 			orderofthings = self.orderofmodels
 			things        = self.models
 		else:
@@ -1115,7 +1122,7 @@ class PDBstructure(object):
 		name = lambda d: f.orderedSequences[d].name 
 
 		# Acquire all homologous positions as defined in FASTA.
-		items = self._iterResidueAssociations(fasta,chains,ismodel,f)
+		items = self._iterResidueAssociations(fasta,chains,f)
 		
 		chainsSaw = []
 		if typeof == 'matrix': row = []
@@ -1136,10 +1143,10 @@ class PDBstructure(object):
 			elif isinstance(row,list): row.extend([atom.x,atom.y,atom.z])
 		coords.append(row) # Last chain.
 		
-		if typeof == 'matrix': coords = matrix(coords)
+		if typeof == 'matrix': coords = np.array(coords)
 		return labels,coords
 
-	def WriteGM(self,fasta,gm,chains=None,ismodel=False,CA=False):
+	def WriteGM(self,fasta,gm,chains=None,CA=False):
 
 		''' Write the information present in this PDB between multiple
         chains as a Geometric Morphometric text file. This file will be
@@ -1151,7 +1158,7 @@ class PDBstructure(object):
 		fgm = open(gm,'w')
 
 		# Get raw GM data.
-		labels,coords = self.gm(fasta,chains,ismodel,CA)
+		labels,coords = self.gm(fasta,chains,CA)
 
 		# Start writing.
 		for ind in xrange(len(labels)):
@@ -1160,7 +1167,7 @@ class PDBstructure(object):
 		# Done.
 		fgm.close()
 
-	def WriteLandmarks(self,fasta,lm,chains=None,ismodel=False):
+	def WriteLandmarks(self,fasta,lm,chains=None):
 
 		''' Write the information present in this PDB between multiple
         chains as a landmark text file. This file will be formatted such that 
@@ -1168,6 +1175,8 @@ class PDBstructure(object):
         lines in these correspond to homologous residue positions denoted by
         homologous position, residue number, and residue name tab-delimited. Requires
         a FASTA file. '''
+		
+		ismodel=self.ismodel
 
 		if ismodel:
 			orderofthings = self.orderofmodels
@@ -1184,7 +1193,7 @@ class PDBstructure(object):
 		name = lambda d: f.orderedSequences[d].name
 
 		# Acquire all homologous positions as defined in FASTA.
-		items = self._iterResidueAssociations(fasta,chains,ismodel,f)
+		items = self._iterResidueAssociations(fasta,chains,f)
 
 		# Start writing.
 		chainsSaw = []
@@ -1198,7 +1207,98 @@ class PDBstructure(object):
 				ind = 0
 			flm.write('%s\t%s\t%s\n' % (ind,res.index,res.name))
 			ind += 1
+	
+	
+	def FDmatrix(self,fasta,chains=None,scaled=True):
+		'''
+		Compute the form difference matrix (FDM) as explained in Claude 2008. It relates to
+		the identification of the most influential residue, with respect to the overall
+		shape/structure. If the scaled option is True, will return an scaled list 
+		(from -1 to 1) of the of lenght equal to the number of residues. Otherwise will return
+		the raw FDM, rounded so it can be included in a PDB. The scaled version is better for
+		vizualization. By default the FDM is computed far all chains, but a subset can be passed
+		to the chains option.
+		'''
+		names, data = self.gm(fasta,chains=chains,typeof='matrix')
+		#get dimensions
+		n_obs = data.shape[0]     # number observations/structures
+		n_res = data.shape[1]/3   # Number of residues		
+		# Re-sahpe data as a 3D array
+		data= data.reshape(n_obs,n_res,3)
+		# compute meanshape	
+		msh=data.mean(axis=0)
+		#compute the form matrix for the mean shape
+		FMmsh = cdist(msh,msh)
+		FMmsh = np.ma.masked_array(FMmsh,np.isnan(FMmsh))
+		#iterate over observations to compute the form difference matrix
+		vector=[]
+		for index in xrange(n_obs):
+			ndarray=data[index,:,:]
+			FM   = cdist(ndarray,ndarray)
+			FDM  = np.ma.masked_array(FM,np.isnan(FM))/FMmsh
+			utr  = FDM[np.triu_indices(FDM.shape[0],k=-1)]
+			mfdm = np.absolute(FDM - np.median(utr[~np.isnan(utr)]))
+			mdat = np.ma.masked_array(mfdm,np.isnan(mfdm))
+			s    = np.sum(mdat,axis=1).filled(np.nan)
+			vector.append(s)
+		
+		#compute FD and scaled if required
+		FD  = (np.array(vector).sum(axis=0))/n_obs
+		if not scaled:
+			return [round(x,2) for x in (FD)]
+		else:
+			return [round(x,3) for x in (2*(FD - min(FD))/(max(FD) - min(FD)) - 1)]
 
+	def Map2Protein(self,outname,lis,chain,fasta):
+		'''
+		Map a list of values (lis), that must have a lenght equal to that of the number
+		of residues in the PDB to be mapped (chain). If a list of list is provided, the 
+		first list will be mapped as the beta factor and the second as occupancy
+		'''
+		# Check if more than one thing need to be included
+		if len([lis]) == 1:
+			lis=[lis]
+		
+		# Construct empty PDBstructure.
+		dummy = PDBstructure()
+		
+		# Reset beta and ocuppancy
+		if self.models:
+			m = self.GetModel(chain)
+			newm = dummy.NewModel(m.name)
+			for r in m.IterResidues():
+				for a in r.GetAtoms():
+					a.tempFactor=0.00
+					if len(lis) > 1:
+						a.occupancy=0.00
+				newm.AddResidue(r)
+		else:
+			m = self.GetChain(chain)
+			newm = dummy.NewChain(m.GetName())
+			for r in m.IterResidues():
+				for a in r.GetAtoms():
+					a.tempFactor=0.00
+					if len(lis) > 1:
+						a.occupancy=0.00
+				newm.AddResidue(r)			
+
+		# Acquire all homologous positions as defined in FASTA.
+		items = self._iterResidueAssociations(fasta,None,None)		
+			
+		# populate new field
+		for pos,chainb,res in items:
+			if not chainb == chain:
+				continue
+			res = newm.GetResidueByIndex(res.index)
+			for a in res.GetAtoms():
+				a.tempFactor = lis[0][pos]
+				if len(lis) > 1:
+					a.occupancy = lis[1][pos]
+		
+		
+		newm.WriteAsPDB(outname)
+		
+	
 	def Contacts(self,chain='ALL',thres=4.5):
 
 		''' Compute the contact map of all chains or a chain. '''     
@@ -1448,6 +1548,8 @@ aa_lists = {'ALA':['N','CA','C','O','CB'],\
 
 if __name__ == "__main__":
 	mystructure = PDBstructure(sys.argv[1])
+	#lis = mystructure.FDmatrix("test.fasta") # for debugging purposes only
+	# mystructure.Map2Protein('test2.pdb',lis,0,'test.fasta')# for debugging purposes only
 	if len(sys.argv) > 2:
 		print 'RMSD',mystructure.rmsd(sys.argv[2])
 		print 'RRMSD',mystructure.rrmsd(sys.argv[2])

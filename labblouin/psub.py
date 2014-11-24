@@ -14,25 +14,27 @@ from multiprocessing.pool import Pool
 def call(instr):
     os.system(instr)
 
-# Get input.
-
-if len(sys.argv) != 3:
-    print 'Usage: %s file_with_instructions num_cores' % (sys.argv[0])
-    exit(2)
-fnst = sys.argv[1]
-ncrs = int(sys.argv[2])
-
-# Read all instructions.
-
-cmds = []
-o = open(fnst,'r')
-for line in o: cmds.append(line.strip('\n'))
-o.close()
-
-# Run jobs.
-
-if ncrs > os.cpu_count(): ncrs = os.cpu_count()
-pool = Pool(ncrs)
-results = [pool.apply_async(call,(cmd,)) for cmd in cmds]
-pool.close()
-for _ in results: _.get()
+if __name__ == '__main__':
+    
+    # Get input.
+    
+    if len(sys.argv) != 3:
+        print 'Usage: %s file_with_instructions num_cores' % (sys.argv[0])
+        sys.exit(2)
+    fnst = sys.argv[1]
+    ncrs = int(sys.argv[2])
+    
+    # Read all instructions.
+    
+    cmds = []
+    o = open(fnst,'r')
+    for line in o: cmds.append(line.strip('\n'))
+    o.close()
+    
+    # Run jobs.
+    
+    if ncrs > os.cpu_count(): ncrs = os.cpu_count()
+    pool = Pool(ncrs)
+    results = [pool.apply_async(call,(cmd,)) for cmd in cmds]
+    pool.close()
+    for _ in results: _.get()

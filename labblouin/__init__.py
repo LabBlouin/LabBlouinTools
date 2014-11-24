@@ -1,4 +1,4 @@
-# below is boilerplate code in order to recognize all python files in this directory
+'''Bioinformatic python utilities modules, and libraries for use with Lab Blouin applications.'''
 
 import os
 

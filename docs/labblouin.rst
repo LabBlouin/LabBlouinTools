@@ -8,7 +8,6 @@ Submodules
 
    labblouin.FASTAnet
    labblouin.IO
-   labblouin.MATT2GM
    labblouin.Ordination
    labblouin.PDBnet
    labblouin.RegExpress
