@@ -1,5 +1,5 @@
 .. LabBlouinTools documentation master file, created by
-   sphinx-quickstart on Mon Nov 24 09:46:40 2014.
+   sphinx-quickstart on Mon Nov 24 10:40:25 2014.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
