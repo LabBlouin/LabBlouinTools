@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>labblouin.PDBnet &mdash; LabBlouinTools 0.3.3 documentation</title>
+    <title>labblouin.PDBnet &mdash; LabBlouinTools 0.3.4 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.3',
+        VERSION:     '0.3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="LabBlouinTools 0.3.3 documentation" href="../../index.html" />
+    <link rel="top" title="LabBlouinTools 0.3.4 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.4 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -66,6 +66,7 @@
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">getsize</span> <span class="k">as</span> <span class="n">sizeOfFile</span>
 <span class="kn">from</span> <span class="nn">Bio.SeqUtils.ProtParam</span> <span class="kn">import</span> <span class="n">ProteinAnalysis</span> <span class="k">as</span> <span class="n">PA</span>
 <span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">cdist</span>
+
 <span class="c"># Metadata</span>
 
 <span class="n">__author__</span>  <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Christian Blouin&#39;</span><span class="p">,</span><span class="s">&#39;Jose Sergio Hleap&#39;</span><span class="p">,</span><span class="s">&#39;Alexander Safatli&#39;</span><span class="p">]</span>
@@ -317,6 +318,24 @@
         <span class="sd">&#39;&#39;&#39; Remove a residue from this chain. &#39;&#39;&#39;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">resid</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="PDBchain.ContactMap"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.ContactMap">[docs]</a>    <span class="k">def</span> <span class="nf">ContactMap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">thres</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
+        
+        <span class="sd">&#39;&#39;&#39; Compute the contact map of this chain. &#39;&#39;&#39;</span>
+        
+        <span class="n">done</span>       <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">contactmap</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">rA</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">rB</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="n">resA</span><span class="p">,</span><span class="n">resB</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">rA</span><span class="p">],</span><span class="bp">self</span><span class="p">[</span><span class="n">rB</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">resA</span> <span class="o">==</span> <span class="n">resB</span> <span class="ow">or</span> <span class="p">(</span><span class="n">resA</span><span class="p">,</span><span class="n">resB</span><span class="p">)</span> <span class="ow">in</span> <span class="n">done</span><span class="p">:</span> <span class="k">continue</span>  
+                <span class="k">elif</span> <span class="n">resA</span><span class="o">.</span><span class="n">InContactWith</span><span class="p">(</span><span class="n">resB</span><span class="p">,</span><span class="n">thres</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">resA</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">resB</span><span class="p">))</span> <span class="ow">in</span> <span class="n">contactmap</span><span class="p">:</span>
+                        <span class="n">contactmap</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">resA</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">resB</span><span class="p">)))</span>
+                        <span class="n">contactmap</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">resB</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">resA</span><span class="p">)))</span>
+                <span class="n">done</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">resA</span><span class="p">,</span><span class="n">resB</span><span class="p">))</span>
+                <span class="n">done</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">resB</span><span class="p">,</span><span class="n">resA</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">contactmap</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 </div>
 <div class="viewcode-block" id="PDBchain.GetPrimaryPropertiesFromBioPython"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.GetPrimaryPropertiesFromBioPython">[docs]</a>    <span class="k">def</span> <span class="nf">GetPrimaryPropertiesFromBioPython</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -1135,6 +1154,22 @@
                 <span class="n">i</span><span class="o">.</span><span class="n">fstindex</span> <span class="o">=</span> <span class="n">index</span>
                 <span class="k">yield</span> <span class="n">i</span>
 </div>
+<div class="viewcode-block" id="PDBstructure.IterResiduesFor"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.IterResiduesFor">[docs]</a>    <span class="k">def</span> <span class="nf">IterResiduesFor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        
+        <span class="sd">&#39;&#39;&#39; Produce an iterator to allow one to iterate over all residues for a subset of the structure. &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span><span class="p">:</span>
+            <span class="n">orderofthings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderofmodels</span>
+            <span class="n">things</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">orderofthings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderofchains</span>
+            <span class="n">things</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span>
+        <span class="k">if</span> <span class="n">chains</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span> <span class="n">chains</span> <span class="o">=</span> <span class="n">orderofthings</span>
+        
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
+            <span class="n">chain</span> <span class="o">=</span> <span class="n">things</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span> <span class="k">yield</span> <span class="n">chain</span><span class="p">[</span><span class="n">res</span><span class="p">]</span>
+</div>
 <div class="viewcode-block" id="PDBstructure.IterAllResidues"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.IterAllResidues">[docs]</a>    <span class="k">def</span> <span class="nf">IterAllResidues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="sd">&#39;&#39;&#39; Produce an iterator to allow one to iterate over all possible residues. &#39;&#39;&#39;</span>
@@ -1347,38 +1382,55 @@
         <span class="n">newm</span><span class="o">.</span><span class="n">WriteAsPDB</span><span class="p">(</span><span class="n">outname</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="PDBstructure.Contacts"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.Contacts">[docs]</a>    <span class="k">def</span> <span class="nf">Contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chain</span><span class="o">=</span><span class="s">&#39;ALL&#39;</span><span class="p">,</span><span class="n">thres</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
+<div class="viewcode-block" id="PDBstructure.Contacts"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.Contacts">[docs]</a>    <span class="k">def</span> <span class="nf">Contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chain</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">thres</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Compute the contact map of all chains or a chain. &#39;&#39;&#39;</span>     
+        <span class="sd">&#39;&#39;&#39; Compute the contact map of all chains or a chain.</span>
+<span class="sd">        :param chains: A list of chain or model names. By default, entire structure.</span>
+<span class="sd">        :param thres: A threshold for distinguishing contact in Angstroms.</span>
+<span class="sd">        :returns: A list of tuples of indices (integers) which correspond to</span>
+<span class="sd">        chains or models and their residues. &#39;&#39;&#39;</span>     
 
-        <span class="n">done</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">chain</span> <span class="o">!=</span> <span class="s">&#39;ALL&#39;</span><span class="p">:</span>
-            <span class="n">chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetChain</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">rA</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">rB</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
-                    <span class="n">resA</span><span class="p">,</span><span class="n">resB</span> <span class="o">=</span> <span class="n">chain</span><span class="p">[</span><span class="n">rA</span><span class="p">],</span><span class="n">chain</span><span class="p">[</span><span class="n">rB</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">resA</span> <span class="o">==</span> <span class="n">resB</span> <span class="ow">or</span> <span class="p">(</span><span class="n">resA</span><span class="p">,</span><span class="n">resB</span><span class="p">)</span> <span class="ow">in</span> <span class="n">done</span><span class="p">:</span> <span class="k">continue</span>  
-                    <span class="k">elif</span> <span class="n">resA</span><span class="o">.</span><span class="n">InContactWith</span><span class="p">(</span><span class="n">resB</span><span class="p">,</span><span class="n">thres</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">resA</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">resB</span><span class="p">))</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">resA</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">resB</span><span class="p">)))</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">resB</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">resA</span><span class="p">)))</span>
-                    <span class="n">done</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">resA</span><span class="p">,</span><span class="n">resB</span><span class="p">))</span>
-                    <span class="n">done</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">resB</span><span class="p">,</span><span class="n">resA</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span> <span class="c"># All chains.</span>
-            <span class="k">for</span> <span class="n">resA</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">IterAllResidues</span><span class="p">():</span>
-                <span class="k">for</span> <span class="n">resB</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">IterAllResidues</span><span class="p">():</span>
+        <span class="n">ismodel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span>
+        
+        <span class="k">if</span> <span class="n">ismodel</span><span class="p">:</span>
+            <span class="n">orderofthings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderofmodels</span>
+            <span class="n">things</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">orderofthings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderofchains</span>
+            <span class="n">things</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span>
+            
+        <span class="k">if</span> <span class="n">chain</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">chain</span> <span class="o">==</span> <span class="s">&#39;ALL&#39;</span><span class="p">:</span>
+            <span class="n">chain</span> <span class="o">=</span> <span class="n">orderofthings</span>
+
+        <span class="n">done</span>            <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">:</span>
+                <span class="n">chain</span> <span class="o">=</span> <span class="n">things</span><span class="p">[</span><span class="n">chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">things</span><span class="p">[</span><span class="n">chain</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">ContactMap</span><span class="p">(</span><span class="n">thres</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c"># A number of chains.</span>
+            <span class="n">iteratorA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IterResiduesFor</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+            <span class="n">iteratorB</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IterResiduesFor</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">resA</span> <span class="ow">in</span> <span class="n">iteratorA</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">resB</span> <span class="ow">in</span> <span class="n">iteratorB</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">resA</span> <span class="o">==</span> <span class="n">resB</span> <span class="ow">or</span> <span class="p">(</span><span class="n">resA</span><span class="p">,</span><span class="n">resB</span><span class="p">)</span> <span class="ow">in</span> <span class="n">done</span><span class="p">:</span> <span class="k">continue</span> 
                     <span class="k">elif</span> <span class="n">resA</span><span class="o">.</span><span class="n">InContactWith</span><span class="p">(</span><span class="n">resB</span><span class="p">,</span><span class="n">thres</span><span class="p">):</span>
-                        <span class="n">A</span> <span class="o">=</span> <span class="n">resA</span><span class="o">.</span><span class="n">index</span><span class="o">+</span><span class="n">resA</span><span class="o">.</span><span class="n">chain</span>
-                        <span class="n">B</span> <span class="o">=</span> <span class="n">resB</span><span class="o">.</span><span class="n">index</span><span class="o">+</span><span class="n">resB</span><span class="o">.</span><span class="n">chain</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">ismodel</span><span class="p">:</span>
+                            <span class="n">A</span> <span class="o">=</span> <span class="n">resA</span><span class="o">.</span><span class="n">index</span><span class="o">+</span><span class="n">resA</span><span class="o">.</span><span class="n">chain</span>
+                            <span class="n">B</span> <span class="o">=</span> <span class="n">resB</span><span class="o">.</span><span class="n">index</span><span class="o">+</span><span class="n">resB</span><span class="o">.</span><span class="n">chain</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">resA</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">resA</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+                            <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">resB</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">resB</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
                         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">))</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">B</span><span class="p">,</span><span class="n">A</span><span class="p">))</span>
                     <span class="n">done</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">resA</span><span class="p">,</span><span class="n">resB</span><span class="p">))</span>
                     <span class="n">done</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">resB</span><span class="p">,</span><span class="n">resA</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">element</span><span class="p">:</span> <span class="p">(</span>
-            <span class="n">element</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">element</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">element</span><span class="p">:</span> <span class="p">(</span>
+                <span class="n">element</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">element</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span>
 </div>
 <div class="viewcode-block" id="PDBstructure.WriteContacts"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.WriteContacts">[docs]</a>    <span class="k">def</span> <span class="nf">WriteContacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 
@@ -1639,7 +1691,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">LabBlouinTools 0.3.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.4 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
