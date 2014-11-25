@@ -17,6 +17,7 @@ from math import sqrt
 from os.path import getsize as sizeOfFile
 from Bio.SeqUtils.ProtParam import ProteinAnalysis as PA
 from scipy.spatial.distance import cdist
+
 # Metadata
 
 __author__  = ['Christian Blouin','Jose Sergio Hleap','Alexander Safatli']
@@ -268,6 +269,24 @@ class PDBchain(object):
         ''' Remove a residue from this chain. '''
 
         return self.pop(resid)
+
+    def ContactMap(self,thres=4.5):
+        
+        ''' Compute the contact map of this chain. '''
+        
+        done       = []
+        contactmap = []
+        for rA in self:
+            for rB in self:
+                resA,resB = self[rA],self[rB]
+                if resA == resB or (resA,resB) in done: continue  
+                elif resA.InContactWith(resB,thres):
+                    if not (int(resA),int(resB)) in contactmap:
+                        contactmap.append((int(resA),int(resB)))
+                        contactmap.append((int(resB),int(resA)))
+                done.append((resA,resB))
+                done.append((resB,resA))
+        return sorted(contactmap, key=lambda e: (e[0], e[1]))
 
     def GetPrimaryPropertiesFromBioPython(self):
 
@@ -1086,6 +1105,22 @@ class PDBstructure(object):
                 i.fstindex = index
                 yield i
 
+    def IterResiduesFor(self,chains=None):
+        
+        ''' Produce an iterator to allow one to iterate over all residues for a subset of the structure. '''
+
+        if self.ismodel:
+            orderofthings = self.orderofmodels
+            things        = self.models
+        else:
+            orderofthings = self.orderofchains
+            things        = self.chains
+        if chains == None: chains = orderofthings
+        
+        for ch in chains:
+            chain = things[ch]
+            for res in chain: yield chain[res]
+
     def IterAllResidues(self):
 
         ''' Produce an iterator to allow one to iterate over all possible residues. '''
@@ -1298,38 +1333,55 @@ class PDBstructure(object):
         newm.WriteAsPDB(outname)
 
 
-    def Contacts(self,chain='ALL',thres=4.5):
+    def Contacts(self,chain=None,thres=4.5):
 
-        ''' Compute the contact map of all chains or a chain. '''     
+        ''' Compute the contact map of all chains or a chain.
+        :param chains: A list of chain or model names. By default, entire structure.
+        :param thres: A threshold for distinguishing contact in Angstroms.
+        :returns: A list of tuples of indices (integers) which correspond to
+        chains or models and their residues. '''     
 
-        done = []
-        if chain != 'ALL':
-            chain = self.GetChain(chain)
-            for rA in chain:
-                for rB in chain:
-                    resA,resB = chain[rA],chain[rB]
-                    if resA == resB or (resA,resB) in done: continue  
-                    elif resA.InContactWith(resB,thres):
-                        if not (int(resA),int(resB)) in self.contactmap:
-                            self.contactmap.append((int(resA),int(resB)))
-                            self.contactmap.append((int(resB),int(resA)))
-                    done.append((resA,resB))
-                    done.append((resB,resA))
-        else: # All chains.
-            for resA in self.IterAllResidues():
-                for resB in self.IterAllResidues():
+        ismodel = self.ismodel
+        
+        if ismodel:
+            orderofthings = self.orderofmodels
+            things        = self.models
+        else:
+            orderofthings = self.orderofchains
+            things        = self.chains
+            
+        if chain == None or chain == 'ALL':
+            chain = orderofthings
+
+        done            = []
+        self.contactmap = []
+        if (type(chain) == int or type(chain) == str) or len(chain) == 1:
+            if type(chain) == list or type(chain) == tuple:
+                chain = things[chain[0]]
+            else: chain = things[chain]
+            self.contactmap = chain.ContactMap(thres)
+        else: # A number of chains.
+            iteratorA = self.IterResiduesFor(chain)
+            iteratorB = self.IterResiduesFor(chain)
+            for resA in iteratorA:
+                for resB in iteratorB:
                     if resA == resB or (resA,resB) in done: continue 
                     elif resA.InContactWith(resB,thres):
-                        A = resA.index+resA.chain
-                        B = resB.index+resB.chain
+                        if not ismodel:
+                            A = resA.index+resA.chain
+                            B = resB.index+resB.chain
+                        else:
+                            A = (resA.index,resA.model)
+                            B = (resB.index,resB.model)
                         if not (A,B) in self.contactmap:
                             self.contactmap.append((A,B))
                             self.contactmap.append((B,A))
                     done.append((resA,resB))
                     done.append((resB,resA))
-
-        self.contactmap = sorted(self.contactmap, key=lambda element: (
-            element[0], element[1]))
+            self.contactmap = sorted(self.contactmap, key=lambda element: (
+                element[0], element[1]))
+            
+        return self.contactmap
 
     def WriteContacts(self, filename):
 
