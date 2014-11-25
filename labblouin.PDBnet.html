@@ -545,7 +545,7 @@ aa_list dictionary).</p>
 <dt id="labblouin.PDBnet.PDBstructure.Contacts">
 <tt class="descname">Contacts</tt><big>(</big><em>chain=None</em>, <em>thres=4.5</em><big>)</big><a class="reference internal" href="_modules/labblouin/PDBnet.html#PDBstructure.Contacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#labblouin.PDBnet.PDBstructure.Contacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the contact map of all chains or a chain.
-:param chains: A list of chain or model names. By default, entire structure.
+:param chains: A list of chain or model names or a single string or integer. By default, entire structure.
 :param thres: A threshold for distinguishing contact in Angstroms.
 :returns: A list of tuples of indices (integers) which correspond to
 chains or models and their residues.</p>
@@ -750,10 +750,9 @@ FASTA alignment.</p>
 (x,y,z) coordinates between all homologous residue positions.
 Requires a FASTA alignment. Options include using alpha-carbon
 positions. By default, uses centroids of residues. Returns a list
-of labels and a list of coordinates as raw GM data. The typeof</p>
-<blockquote>
-<div>option provides an option for coordinate output; they are returned 
-as a semicolon-delimited string (str) or as a numpy 2d array (matrix).</div></blockquote>
+of labels and a list of coordinates as raw GM data. The typeof option 
+provides an option for coordinate output; they are returned 
+as a semicolon-delimited string (str) or as a numpy 2d array (matrix).</p>
 </dd></dl>
 
 <dl class="attribute">

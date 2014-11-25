@@ -49,7 +49,7 @@
   <h1>Source code for labblouin.PDBnet</h1><div class="highlight"><pre>
 <span class="c">#!/bin/python</span>
 
-<span class="sd">&#39;&#39;&#39; PDBnet is a collection of Python objects intended to model and contain</span>
+<span class="sd">&quot;&quot;&quot; PDBnet is a collection of Python objects intended to model and contain</span>
 <span class="sd">PDB protein data.</span>
 
 <span class="sd">PDBnet Copyright (C) 2012 Christian Blouin</span>
@@ -57,7 +57,7 @@
 <span class="sd">Major Refactoring (2014) done by Alex Safatli and Jose Sergio Hleap</span>
 
 <span class="sd">E-mail: cblouin@cs.dal.ca, safatli@cs.dal.ca, jshleap@dal.ca</span>
-<span class="sd">Dependencies: Scipy, BioPython, FASTAnet (contained in LabBlouinTools) &#39;&#39;&#39;</span>
+<span class="sd">Dependencies: Scipy, BioPython, FASTAnet (contained in LabBlouinTools) &quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">mmap</span> <span class="kn">import</span> <span class="n">mmap</span> <span class="k">as</span> <span class="n">memoryMappedFile</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -70,7 +70,7 @@
 <span class="c"># Metadata</span>
 
 <span class="n">__author__</span>  <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Christian Blouin&#39;</span><span class="p">,</span><span class="s">&#39;Jose Sergio Hleap&#39;</span><span class="p">,</span><span class="s">&#39;Alexander Safatli&#39;</span><span class="p">]</span>
-<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;1.0.3&#39;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;1.0.5&#39;</span>
 
 <span class="c"># Constants</span>
 
@@ -80,14 +80,14 @@
 
 <div class="viewcode-block" id="PDBatom"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBatom">[docs]</a><span class="k">class</span> <span class="nc">PDBatom</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="sd">&#39;&#39;&#39; ATOM in a PDB protein structure. &#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot; ATOM in a PDB protein structure. &quot;&quot;&quot;</span>
 
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="s">&#39;serial&#39;</span><span class="p">,</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="s">&#39;y&#39;</span><span class="p">,</span><span class="s">&#39;z&#39;</span><span class="p">,</span><span class="s">&#39;occupancy&#39;</span><span class="p">,</span><span class="s">&#39;tempFactor&#39;</span><span class="p">,</span>
                  <span class="s">&#39;charge&#39;</span><span class="p">,</span><span class="s">&#39;symbol&#39;</span><span class="p">,</span><span class="s">&#39;parent&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">serial</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">oc</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">symbol</span><span class="p">,</span><span class="n">charge</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Construct an atom in a PDB protein structure. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Construct an atom in a PDB protein structure. &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span>       <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">serial</span>     <span class="o">=</span> <span class="n">serial</span>
@@ -102,14 +102,14 @@
 
 <div class="viewcode-block" id="PDBatom.fixname"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBatom.fixname">[docs]</a>    <span class="k">def</span> <span class="nf">fixname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Ensures the name of this atom fits within 4 characters. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Ensures the name of this atom fits within 4 characters. &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="s">&#39; &#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Express this atom as a single line in a PDB file (see PDB format). &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Express this atom as a single line in a PDB file (see PDB format). &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="s">&quot;ATOM  </span><span class="si">%5s</span><span class="s"> </span><span class="si">%4s</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%1s%4s</span><span class="s">    </span><span class="si">%8.3f%8.3f%8.3f%6.2f%6.2f</span><span class="s">          </span><span class="si">%2s%2s</span><span class="s">&quot;</span> \
                <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serial</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">fixname</span><span class="p">(),</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">chain</span><span class="p">,</span>
@@ -118,19 +118,19 @@
 
 <div class="viewcode-block" id="PDBatom.GetPosition"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBatom.GetPosition">[docs]</a>    <span class="k">def</span> <span class="nf">GetPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
 
-        <span class="sd">&#39;&#39;&#39; Get the 3-dimensional coordinate of this atom in space. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Get the 3-dimensional coordinate of this atom in space. &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="PDBatom.DistanceTo"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBatom.DistanceTo">[docs]</a>    <span class="k">def</span> <span class="nf">DistanceTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Acquire the distance from this atom to another atom. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Acquire the distance from this atom to another atom. &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="n">atom</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="n">atom</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="n">atom</span><span class="o">.</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
 </div></div>
 <div class="viewcode-block" id="PDBterminator"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBterminator">[docs]</a><span class="k">class</span> <span class="nc">PDBterminator</span><span class="p">(</span><span class="n">PDBatom</span><span class="p">):</span>
 
-    <span class="sd">&#39;&#39;&#39; A placeholder class that represents a terminating ATOM-like line in the PDB file. &#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot; A placeholder class that represents a terminating ATOM-like line in the PDB file. &quot;&quot;&quot;</span>
 
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="s">&#39;serial&#39;</span><span class="p">,</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="s">&#39;y&#39;</span><span class="p">,</span><span class="s">&#39;z&#39;</span><span class="p">,</span><span class="s">&#39;occupancy&#39;</span><span class="p">,</span><span class="s">&#39;tempFactor&#39;</span><span class="p">,</span>
                  <span class="s">&#39;charge&#39;</span><span class="p">,</span><span class="s">&#39;symbol&#39;</span><span class="p">,</span><span class="s">&#39;parent&#39;</span><span class="p">,</span><span class="s">&#39;lastatom&#39;</span><span class="p">,</span><span class="s">&#39;lastresname&#39;</span><span class="p">,</span>
@@ -152,14 +152,14 @@
 </div>
 <div class="viewcode-block" id="PDBresidue"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBresidue">[docs]</a><span class="k">class</span> <span class="nc">PDBresidue</span><span class="p">:</span>
 
-    <span class="sd">&#39;&#39;&#39; A residue (collection of ATOM fields) in a PDB protein structure. &#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot; A residue (collection of ATOM fields) in a PDB protein structure. &quot;&quot;&quot;</span>
 
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;index&#39;</span><span class="p">,</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="s">&#39;atoms&#39;</span><span class="p">,</span><span class="s">&#39;atomsOrdered&#39;</span><span class="p">,</span><span class="s">&#39;contacts&#39;</span><span class="p">,</span><span class="s">&#39;centroid&#39;</span><span class="p">,</span>
                  <span class="s">&#39;chain&#39;</span><span class="p">,</span><span class="s">&#39;model&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Construct a residue (collection of atoms) in a PDB protein structure. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Construct a residue (collection of atoms) in a PDB protein structure. &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -174,7 +174,7 @@
 </div>
 <div class="viewcode-block" id="PDBresidue.AddAtom"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBresidue.AddAtom">[docs]</a>    <span class="k">def</span> <span class="nf">AddAtom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add a PDBatom structure to this residue. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add a PDBatom structure to this residue. &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span> <span class="o">=</span> <span class="n">atom</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomsOrdered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
@@ -182,13 +182,13 @@
 </div>
 <div class="viewcode-block" id="PDBresidue.GetCA"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBresidue.GetCA">[docs]</a>    <span class="k">def</span> <span class="nf">GetCA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Get the alpha-carbon found in this residue as a PDBatom. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Get the alpha-carbon found in this residue as a PDBatom. &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="s">&#39;CA&#39;</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="PDBresidue.Centroid"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBresidue.Centroid">[docs]</a>    <span class="k">def</span> <span class="nf">Centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Calculate the centroid of this residue. Return this as a PDBatom. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the centroid of this residue. Return this as a PDBatom. &quot;&quot;&quot;</span>
 
         <span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -212,7 +212,7 @@
 </div>
 <div class="viewcode-block" id="PDBresidue.InContactWith"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBresidue.InContactWith">[docs]</a>    <span class="k">def</span> <span class="nf">InContactWith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">,</span><span class="n">thres</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Determine if in contact with another residue. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Determine if in contact with another residue. &quot;&quot;&quot;</span>
 
         <span class="n">foundmatch</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">for</span> <span class="n">atomA</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
@@ -240,7 +240,7 @@
 </div>
 <div class="viewcode-block" id="PDBchain"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain">[docs]</a><span class="k">class</span> <span class="nc">PDBchain</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="sd">&#39;&#39;&#39; A PDB chain (collection of protein residues). &#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot; A PDB chain (collection of protein residues). &quot;&quot;&quot;</span>
 
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="s">&#39;structure&#39;</span><span class="p">,</span><span class="s">&#39;residues&#39;</span><span class="p">,</span><span class="s">&#39;indices&#39;</span><span class="p">,</span><span class="s">&#39;parent&#39;</span><span class="p">)</span>
 
@@ -254,29 +254,29 @@
 
 <div class="viewcode-block" id="PDBchain.GetResidues"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.GetResidues">[docs]</a>    <span class="k">def</span> <span class="nf">GetResidues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
 
-        <span class="sd">&#39;&#39;&#39; Acquire all of the residues in this chain. Note that if this</span>
+        <span class="sd">&quot;&quot;&quot; Acquire all of the residues in this chain. Note that if this</span>
 <span class="sd">		is a large file, this will force the object to load all of these</span>
-<span class="sd">		residues into memory from the file. &#39;&#39;&#39;</span>
+<span class="sd">		residues into memory from the file. &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GetResidueByIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetIndices</span><span class="p">()]</span>
 </div>
 <div class="viewcode-block" id="PDBchain.IterResidues"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.IterResidues">[docs]</a>    <span class="k">def</span> <span class="nf">IterResidues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Iteratively yield all of the residues in this chain. Note that if this</span>
+        <span class="sd">&quot;&quot;&quot; Iteratively yield all of the residues in this chain. Note that if this</span>
 <span class="sd">		is a large file, this will force the object to load all of these</span>
-<span class="sd">		residues into memory from the file. &#39;&#39;&#39;</span>
+<span class="sd">		residues into memory from the file. &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetIndices</span><span class="p">():</span> <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetResidueByIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="PDBchain.GetResidueByIndex"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.GetResidueByIndex">[docs]</a>    <span class="k">def</span> <span class="nf">GetResidueByIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index</span><span class="p">):</span> 
 
-        <span class="sd">&#39;&#39;&#39; Alias for acquiring a residue from this instance using [] operator. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Alias for acquiring a residue from this instance using [] operator. &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getitem__</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="PDBchain.GetAtoms"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.GetAtoms">[docs]</a>    <span class="k">def</span> <span class="nf">GetAtoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
 
-        <span class="sd">&#39;&#39;&#39; Get all comprising atoms in this chain in order of residues. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Get all comprising atoms in this chain in order of residues. &quot;&quot;&quot;</span>
 
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">IterResidues</span><span class="p">():</span>
@@ -285,20 +285,20 @@
 </div>
 <div class="viewcode-block" id="PDBchain.GetIndices"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.GetIndices">[docs]</a>    <span class="k">def</span> <span class="nf">GetIndices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
 
-        <span class="sd">&#39;&#39;&#39; Acquire all of the indices for residues present in this chain. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Acquire all of the indices for residues present in this chain. &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>    
 </div>
 <div class="viewcode-block" id="PDBchain.AddIndexOfResidue"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.AddIndexOfResidue">[docs]</a>    <span class="k">def</span> <span class="nf">AddIndexOfResidue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add an index for a residue to this chain. Will generate own residue</span>
-<span class="sd">		information if called upon (forces lazy evaluation). &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add an index for a residue to this chain. Will generate own residue</span>
+<span class="sd">		information if called upon (forces lazy evaluation). &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="PDBchain.AddResidue"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.AddResidue">[docs]</a>    <span class="k">def</span> <span class="nf">AddResidue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">resid</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add a residue to this chain. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add a residue to this chain. &quot;&quot;&quot;</span>
 
         <span class="n">resid</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resid</span><span class="p">)</span>
@@ -306,8 +306,8 @@
 </div>
 <div class="viewcode-block" id="PDBchain.AddResidueByIndex"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.AddResidueByIndex">[docs]</a>    <span class="k">def</span> <span class="nf">AddResidueByIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add a residue to this chain by its index in the PDB. The residue</span>
-<span class="sd">		object will automatically be constructed from the file. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add a residue to this chain by its index in the PDB. The residue</span>
+<span class="sd">		object will automatically be constructed from the file. &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
         <span class="n">resid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetResidueByIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
@@ -315,13 +315,13 @@
 </div>
 <div class="viewcode-block" id="PDBchain.RemoveResidue"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.RemoveResidue">[docs]</a>    <span class="k">def</span> <span class="nf">RemoveResidue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">resid</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Remove a residue from this chain. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Remove a residue from this chain. &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">resid</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="PDBchain.ContactMap"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.ContactMap">[docs]</a>    <span class="k">def</span> <span class="nf">ContactMap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">thres</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
         
-        <span class="sd">&#39;&#39;&#39; Compute the contact map of this chain. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Compute the contact map of this chain. &quot;&quot;&quot;</span>
         
         <span class="n">done</span>       <span class="o">=</span> <span class="p">[]</span>
         <span class="n">contactmap</span> <span class="o">=</span> <span class="p">[]</span>
@@ -339,7 +339,7 @@
 </div>
 <div class="viewcode-block" id="PDBchain.GetPrimaryPropertiesFromBioPython"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.GetPrimaryPropertiesFromBioPython">[docs]</a>    <span class="k">def</span> <span class="nf">GetPrimaryPropertiesFromBioPython</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Use BioPython to populate this class with attributes. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Use BioPython to populate this class with attributes. &quot;&quot;&quot;</span>
 
         <span class="n">props</span><span class="o">=</span><span class="n">PA</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AsFASTA</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">amino_acid_composition</span><span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get_amino_acids_percent</span><span class="p">()</span>
@@ -353,13 +353,13 @@
 </div>
 <div class="viewcode-block" id="PDBchain.AsFASTA"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.AsFASTA">[docs]</a>    <span class="k">def</span> <span class="nf">AsFASTA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Return the string representing this chain&#39;s FASTA sequence. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Return the string representing this chain&#39;s FASTA sequence. &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">aa</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">IterResidues</span><span class="p">()])</span>
 </div>
 <div class="viewcode-block" id="PDBchain.WriteAsPDB"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.WriteAsPDB">[docs]</a>    <span class="k">def</span> <span class="nf">WriteAsPDB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Write this single chain to a file as a PDB. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Write this single chain to a file as a PDB. &quot;&quot;&quot;</span>
 
         <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
         <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
@@ -367,7 +367,7 @@
 </div>
 <div class="viewcode-block" id="PDBchain.SortByNumericalIndices"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.SortByNumericalIndices">[docs]</a>    <span class="k">def</span> <span class="nf">SortByNumericalIndices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Sort all internal items by a numerical index. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Sort all internal items by a numerical index. &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">isLargeFile</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">residues</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">,</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
@@ -375,7 +375,7 @@
 </div>
 <div class="viewcode-block" id="PDBchain.pop"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Pop a residue. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Pop a residue. &quot;&quot;&quot;</span>
 
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetResidueByIndex</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">isLargeFile</span><span class="p">():</span>
@@ -385,7 +385,7 @@
 </div>
 <div class="viewcode-block" id="PDBchain.update"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBchain.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add residues from another chain. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add residues from another chain. &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">o</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">AddResidue</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </div>
@@ -398,8 +398,8 @@
 
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">i</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Force the object to load the residue if not present</span>
-<span class="sd">		in this structure. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Force the object to load the residue if not present</span>
+<span class="sd">		in this structure. &quot;&quot;&quot;</span>
 
         <span class="n">handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">handle</span>
         <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">:</span>
@@ -420,7 +420,7 @@
 </div>
 <div class="viewcode-block" id="PDBmodel"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBmodel">[docs]</a><span class="k">class</span> <span class="nc">PDBmodel</span><span class="p">(</span><span class="n">PDBchain</span><span class="p">):</span>
 
-    <span class="sd">&#39;&#39;&#39; A PDB model (a special kind of chain). &#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot; A PDB model (a special kind of chain). &quot;&quot;&quot;</span>
 
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="s">&#39;structure&#39;</span><span class="p">,</span><span class="s">&#39;residues&#39;</span><span class="p">,</span><span class="s">&#39;indices&#39;</span><span class="p">,</span><span class="s">&#39;chains&#39;</span><span class="p">,</span><span class="s">&#39;chainNames&#39;</span><span class="p">)</span>
 
@@ -434,9 +434,9 @@
 
 <div class="viewcode-block" id="PDBmodel.GetResidues"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBmodel.GetResidues">[docs]</a>    <span class="k">def</span> <span class="nf">GetResidues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
 
-        <span class="sd">&#39;&#39;&#39; Acquire all of the residues in this model. Note that if this</span>
+        <span class="sd">&quot;&quot;&quot; Acquire all of the residues in this model. Note that if this</span>
 <span class="sd">		is a large file, this will force the object to load all of these</span>
-<span class="sd">		residues into memory from the file. &#39;&#39;&#39;</span>
+<span class="sd">		residues into memory from the file. &quot;&quot;&quot;</span>
 
         <span class="n">this</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GetResidueByIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetIndices</span><span class="p">()]</span>
         <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span> <span class="n">this</span> <span class="o">+=</span> <span class="n">it</span><span class="o">.</span><span class="n">GetResidues</span><span class="p">()</span>
@@ -444,9 +444,9 @@
 </div>
 <div class="viewcode-block" id="PDBmodel.IterResidues"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBmodel.IterResidues">[docs]</a>    <span class="k">def</span> <span class="nf">IterResidues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Iteratively yield all of the residues in this model. Note that if this</span>
+        <span class="sd">&quot;&quot;&quot; Iteratively yield all of the residues in this model. Note that if this</span>
 <span class="sd">		is a large file, this will force the object to load all of these</span>
-<span class="sd">		residues into memory from the file. &#39;&#39;&#39;</span>
+<span class="sd">		residues into memory from the file. &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetIndices</span><span class="p">():</span> <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetResidueByIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span>
@@ -465,7 +465,7 @@
 </div>
 <div class="viewcode-block" id="PDBmodel.NewChain"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBmodel.NewChain">[docs]</a>    <span class="k">def</span> <span class="nf">NewChain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ch</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Create a new PDBchain, add it to this model, and return it. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Create a new PDBchain, add it to this model, and return it. &quot;&quot;&quot;</span>
 
         <span class="n">c</span> <span class="o">=</span> <span class="n">PDBchain</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">AddChain</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
@@ -473,7 +473,7 @@
 </div>
 <div class="viewcode-block" id="PDBmodel.AddChain"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBmodel.AddChain">[docs]</a>    <span class="k">def</span> <span class="nf">AddChain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chain</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add a PDBchain (chain) to this model. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add a PDBchain (chain) to this model. &quot;&quot;&quot;</span>
 
         <span class="n">chain</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span>
         <span class="n">chain</span><span class="o">.</span><span class="n">parent</span>    <span class="o">=</span> <span class="bp">self</span>
@@ -482,7 +482,7 @@
 </div>
 <div class="viewcode-block" id="PDBmodel.AddResidue"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBmodel.AddResidue">[docs]</a>    <span class="k">def</span> <span class="nf">AddResidue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">resid</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add a residue to this model. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add a residue to this model. &quot;&quot;&quot;</span>
 
         <span class="n">resid</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resid</span><span class="p">)</span>
@@ -508,7 +508,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure">[docs]</a><span class="k">class</span> <span class="nc">PDBstructure</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="sd">&#39;&#39;&#39; A PDB protein structure (a collection of chains/models). &#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot; A PDB protein structure (a collection of chains/models). &quot;&quot;&quot;</span>
 
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;chains&#39;</span><span class="p">,</span><span class="s">&#39;orderofchains&#39;</span><span class="p">,</span><span class="s">&#39;models&#39;</span><span class="p">,</span><span class="s">&#39;orderofmodels&#39;</span><span class="p">,</span><span class="s">&#39;remarks&#39;</span><span class="p">,</span>
                  <span class="s">&#39;filepath&#39;</span><span class="p">,</span><span class="s">&#39;organism&#39;</span><span class="p">,</span><span class="s">&#39;taxid&#39;</span><span class="p">,</span><span class="s">&#39;mutation&#39;</span><span class="p">,</span><span class="s">&#39;contactmap&#39;</span><span class="p">,</span><span class="s">&#39;handle&#39;</span><span class="p">,</span>
@@ -540,21 +540,21 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.GetChain"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.GetChain">[docs]</a>    <span class="k">def</span> <span class="nf">GetChain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ch</span><span class="p">):</span> 
 
-        <span class="sd">&#39;&#39;&#39; Get a chain by name. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Get a chain by name. &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">ch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">None</span>
 </div>
 <div class="viewcode-block" id="PDBstructure.GetModel"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.GetModel">[docs]</a>    <span class="k">def</span> <span class="nf">GetModel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mod</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Get a model by name. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Get a model by name. &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">mod</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">mod</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">None</span>
 </div>
 <div class="viewcode-block" id="PDBstructure.NewChain"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.NewChain">[docs]</a>    <span class="k">def</span> <span class="nf">NewChain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Construct and add a new chain by name to the PDB. Returns the chain. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Construct and add a new chain by name to the PDB. Returns the chain. &quot;&quot;&quot;</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">PDBchain</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">AddChain</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
@@ -562,7 +562,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.NewModel"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.NewModel">[docs]</a>    <span class="k">def</span> <span class="nf">NewModel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Construct and add a new model by name to the PDB. Returns the model. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Construct and add a new model by name to the PDB. Returns the model. &quot;&quot;&quot;</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">PDBmodel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">AddModel</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
@@ -570,7 +570,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.RemoveChain"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.RemoveChain">[docs]</a>    <span class="k">def</span> <span class="nf">RemoveChain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Remove a chain from the structure (by name). Returns the chain. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Remove a chain from the structure (by name). Returns the chain. &quot;&quot;&quot;</span>
 
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetChain</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span>
@@ -581,7 +581,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.RemoveModel"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.RemoveModel">[docs]</a>    <span class="k">def</span> <span class="nf">RemoveModel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Remove a model from the structure (by name). Returns the chain. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Remove a model from the structure (by name). Returns the chain. &quot;&quot;&quot;</span>
 
         <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetModel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">:</span>
@@ -592,7 +592,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.AddChain"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.AddChain">[docs]</a>    <span class="k">def</span> <span class="nf">AddChain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chainname</span><span class="p">,</span><span class="n">chain</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add a chain as a list of residues to the PDB. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add a chain as a list of residues to the PDB. &quot;&quot;&quot;</span>
 
         <span class="c"># Do chain addition operations.</span>
         <span class="k">if</span> <span class="n">chainname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span>
@@ -608,7 +608,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.AddModel"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.AddModel">[docs]</a>    <span class="k">def</span> <span class="nf">AddModel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">modelname</span><span class="p">,</span><span class="n">model</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add a model as a list of residues to the PDB. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add a model as a list of residues to the PDB. &quot;&quot;&quot;</span>
 
         <span class="c"># Do chain addition operations.</span>
         <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">:</span>
@@ -624,21 +624,21 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.AddResidueToChain"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.AddResidueToChain">[docs]</a>    <span class="k">def</span> <span class="nf">AddResidueToChain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add a residue to a chain. Deprecated; use chain class function. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add a residue to a chain. Deprecated; use chain class function. &quot;&quot;&quot;</span>
 
         <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetChain</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ch</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span> <span class="n">ch</span><span class="o">.</span><span class="n">AddResidue</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="PDBstructure.AddResidueToModel"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.AddResidueToModel">[docs]</a>    <span class="k">def</span> <span class="nf">AddResidueToModel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add a residue to a model. Deprecated; use model class function. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add a residue to a model. Deprecated; use model class function. &quot;&quot;&quot;</span>
 
         <span class="n">mo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetModel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mo</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span> <span class="n">mo</span><span class="o">.</span><span class="n">AddResidue</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>      
 </div>
 <div class="viewcode-block" id="PDBstructure.AddRemark"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.AddRemark">[docs]</a>    <span class="k">def</span> <span class="nf">AddRemark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">remark</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Add a remark (note/comment) to the structure/PDB file. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Add a remark (note/comment) to the structure/PDB file. &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">remark</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
@@ -648,14 +648,14 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.GetRemarks"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.GetRemarks">[docs]</a>    <span class="k">def</span> <span class="nf">GetRemarks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Return all remarks from the PDB as a list of strings. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Return all remarks from the PDB as a list of strings. &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span>
 </div>
 <div class="viewcode-block" id="PDBstructure.CheckComplete"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.CheckComplete">[docs]</a>    <span class="k">def</span> <span class="nf">CheckComplete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; For every chain, check to see if every residue is complete (see </span>
-<span class="sd">        aa_list dictionary). &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; For every chain, check to see if every residue is complete (see </span>
+<span class="sd">        aa_list dictionary). &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderofchains</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">re</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">ch</span><span class="p">]:</span>
@@ -685,7 +685,7 @@
 
 <div class="viewcode-block" id="PDBstructure.view"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.view">[docs]</a>    <span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">istrajectory</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; View the structure in a Pymol window. Requires an installation of Pymol. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; View the structure in a Pymol window. Requires an installation of Pymol. &quot;&quot;&quot;</span>
 
         <span class="n">pym</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pymol</span><span class="p">()</span>
         <span class="n">pym</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">read_pdbstr</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span><span class="s">&#39;PDBnet&#39;</span><span class="p">)</span>
@@ -697,7 +697,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.WriteFile"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.WriteFile">[docs]</a>    <span class="k">def</span> <span class="nf">WriteFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Write this PDB structure as a single PDB file. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Write this PDB structure as a single PDB file. &quot;&quot;&quot;</span>
 
         <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
         <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
@@ -705,13 +705,13 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.read"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Alias for ReadFile(). &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Alias for ReadFile(). &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ReadFile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="PDBstructure.ReadFile"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.ReadFile">[docs]</a>    <span class="k">def</span> <span class="nf">ReadFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Read a PDB file. Populate this PDBstructure. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Read a PDB file. Populate this PDBstructure. &quot;&quot;&quot;</span>
 
         <span class="c"># Map to memory and read the file.</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">PDBfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -759,14 +759,14 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.ChainAsFASTA"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.ChainAsFASTA">[docs]</a>    <span class="k">def</span> <span class="nf">ChainAsFASTA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Return the chain as a FASTA. Deprecated; use chain class function. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Return the chain as a FASTA. Deprecated; use chain class function. &quot;&quot;&quot;</span>
 
         <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetChain</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ch</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span> <span class="k">return</span> <span class="n">ch</span><span class="o">.</span><span class="n">AsFASTA</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="PDBstructure.ModelAsFASTA"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.ModelAsFASTA">[docs]</a>    <span class="k">def</span> <span class="nf">ModelAsFASTA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Return the model as a FASTA. Deprecated; use chain class function. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Return the model as a FASTA. Deprecated; use chain class function. &quot;&quot;&quot;</span>
 
         <span class="n">mo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetModel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mo</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span> <span class="k">return</span> <span class="n">mo</span><span class="o">.</span><span class="n">AsFASTA</span><span class="p">()</span>
@@ -775,10 +775,10 @@
 </div>
     <span class="k">def</span> <span class="nf">_iterResidueAssociations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fasta</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">fast</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; PRIVATE: Use an input FASTA file to determine associations</span>
+        <span class="sd">&quot;&quot;&quot; PRIVATE: Use an input FASTA file to determine associations</span>
 <span class="sd">        between residues as they exist between 2+ chains. Constructs a</span>
 <span class="sd">		mapping between chain and sequence and yields all strictly</span>
-<span class="sd">		homologous positions as residues, chain-by-chain.&#39;&#39;&#39;</span>
+<span class="sd">		homologous positions as residues, chain-by-chain.&quot;&quot;&quot;</span>
 
         <span class="n">ismodel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span>
         <span class="k">if</span> <span class="n">ismodel</span><span class="p">:</span>
@@ -815,14 +815,14 @@
 
 <div class="viewcode-block" id="PDBstructure.tmscore"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.tmscore">[docs]</a>    <span class="k">def</span> <span class="nf">tmscore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fasta</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">native</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">CA</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Get the TMscore between two chains. Requires a </span>
+        <span class="sd">&quot;&quot;&quot; Get the TMscore between two chains. Requires a </span>
 <span class="sd">        FASTA alignment and a value for the length of the</span>
 <span class="sd">        native structure (e.g., for a pairwise alignment,</span>
 <span class="sd">        the length of the structure used as a reference</span>
 <span class="sd">        before alignment was done). The latter is computed</span>
 <span class="sd">        by assuming the first of both provided chains is the</span>
 <span class="sd">        native structure; otherwise, uses a provided chain</span>
-<span class="sd">        name (native input). &#39;&#39;&#39;</span>
+<span class="sd">        name (native input). &quot;&quot;&quot;</span>
 
         <span class="n">ismodel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span>
         <span class="k">if</span> <span class="n">ismodel</span><span class="p">:</span>
@@ -871,8 +871,8 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.gdt"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.gdt">[docs]</a>    <span class="k">def</span> <span class="nf">gdt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fasta</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">distcutoffs</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">],</span><span class="n">CA</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Get the GDT score between two chains. Requires a</span>
-<span class="sd">        FASTA alignment. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Get the GDT score between two chains. Requires a</span>
+<span class="sd">        FASTA alignment. &quot;&quot;&quot;</span>
 
         <span class="n">ismodel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span>
 
@@ -927,7 +927,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.rmsd"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.rmsd">[docs]</a>    <span class="k">def</span> <span class="nf">rmsd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fasta</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">CA</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39;Get the RMSD between chains. Requires a FASTA alignment.&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;Get the RMSD between chains. Requires a FASTA alignment.&quot;&quot;&quot;</span>
 
         <span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterResidueAssociations</span><span class="p">(</span><span class="n">fasta</span><span class="p">,</span><span class="n">chains</span><span class="p">)</span>
         <span class="c"># Get all relevant atoms.</span>
@@ -961,9 +961,9 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.rrmsd"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.rrmsd">[docs]</a>    <span class="k">def</span> <span class="nf">rrmsd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fasta</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">CA</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Get the RRMSD between chains. Requires a FASTA alignment. </span>
+        <span class="sd">&quot;&quot;&quot; Get the RRMSD between chains. Requires a FASTA alignment. </span>
 <span class="sd">        See Betancourt &amp; Skolnick, &quot;Universal Similarity Measure for</span>
-<span class="sd">        Comparison Protein Structures&quot;. &#39;&#39;&#39;</span>
+<span class="sd">        Comparison Protein Structures&quot;. &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span><span class="p">:</span>
             <span class="n">orderofthings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderofmodels</span>
@@ -990,8 +990,8 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.GetAverage"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.GetAverage">[docs]</a>    <span class="k">def</span> <span class="nf">GetAverage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">newname</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Acquire a new chain or model corresponding to an average of all present</span>
-<span class="sd">        chains or models specified. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Acquire a new chain or model corresponding to an average of all present</span>
+<span class="sd">        chains or models specified. &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span><span class="p">:</span>
             <span class="n">orderofthings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderofmodels</span>
@@ -1053,8 +1053,8 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.RadiusOfGyration"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.RadiusOfGyration">[docs]</a>    <span class="k">def</span> <span class="nf">RadiusOfGyration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Acquire the radius of the gyration of the entire, or a portion of, the</span>
-<span class="sd">        PDB protein molecule. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Acquire the radius of the gyration of the entire, or a portion of, the</span>
+<span class="sd">        PDB protein molecule. &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span><span class="p">:</span>
             <span class="n">orderofthings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderofmodels</span>
@@ -1097,7 +1097,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.GetAllCentroid"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.GetAllCentroid">[docs]</a>    <span class="k">def</span> <span class="nf">GetAllCentroid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Populates the centroids of all residues. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Populates the centroids of all residues. &quot;&quot;&quot;</span>
 
         <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">chain</span><span class="p">:</span>
@@ -1119,9 +1119,9 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.IndexSeq"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.IndexSeq">[docs]</a>    <span class="k">def</span> <span class="nf">IndexSeq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">fst</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Store in residues the correct index to the fasta.</span>
+        <span class="sd">&quot;&quot;&quot; Store in residues the correct index to the fasta.</span>
 <span class="sd">        Requires a 1-to-1 correspondance at least a portion</span>
-<span class="sd">        of the way through. Deprecated; use GetFASTAIndices(). &#39;&#39;&#39;</span>
+<span class="sd">        of the way through. Deprecated; use GetFASTAIndices(). &quot;&quot;&quot;</span>
 
         <span class="n">ismodel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span>
 
@@ -1131,8 +1131,8 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.GetFASTAIndices"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.GetFASTAIndices">[docs]</a>    <span class="k">def</span> <span class="nf">GetFASTAIndices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thing</span><span class="p">,</span> <span class="n">fst</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Given a PDBchain, find 1-to-1 correspondances between</span>
-<span class="sd">        it and a FASTA sequence. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Given a PDBchain, find 1-to-1 correspondances between</span>
+<span class="sd">        it and a FASTA sequence. &quot;&quot;&quot;</span>
 
         <span class="n">chainseq</span> <span class="o">=</span> <span class="n">thing</span><span class="o">.</span><span class="n">AsFASTA</span><span class="p">()</span>
         <span class="n">ungapped</span> <span class="o">=</span> <span class="n">fst</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
@@ -1156,7 +1156,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.IterResiduesFor"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.IterResiduesFor">[docs]</a>    <span class="k">def</span> <span class="nf">IterResiduesFor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         
-        <span class="sd">&#39;&#39;&#39; Produce an iterator to allow one to iterate over all residues for a subset of the structure. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Produce an iterator to allow one to iterate over all residues for a subset of the structure. &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span><span class="p">:</span>
             <span class="n">orderofthings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderofmodels</span>
@@ -1172,7 +1172,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.IterAllResidues"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.IterAllResidues">[docs]</a>    <span class="k">def</span> <span class="nf">IterAllResidues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Produce an iterator to allow one to iterate over all possible residues. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Produce an iterator to allow one to iterate over all possible residues. &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetChain</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
@@ -1183,13 +1183,13 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.gm"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.gm">[docs]</a>    <span class="k">def</span> <span class="nf">gm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fasta</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">CA</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">typeof</span><span class="o">=</span><span class="s">&#39;str&#39;</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Acquire Geometric Morphometric data corresponding to the</span>
+        <span class="sd">&quot;&quot;&quot; Acquire Geometric Morphometric data corresponding to the</span>
 <span class="sd">        (x,y,z) coordinates between all homologous residue positions.</span>
 <span class="sd">        Requires a FASTA alignment. Options include using alpha-carbon</span>
 <span class="sd">        positions. By default, uses centroids of residues. Returns a list</span>
-<span class="sd">        of labels and a list of coordinates as raw GM data. The typeof </span>
-<span class="sd">		option provides an option for coordinate output; they are returned </span>
-<span class="sd">		as a semicolon-delimited string (str) or as a numpy 2d array (matrix). &#39;&#39;&#39;</span>
+<span class="sd">        of labels and a list of coordinates as raw GM data. The typeof option </span>
+<span class="sd">        provides an option for coordinate output; they are returned </span>
+<span class="sd">        as a semicolon-delimited string (str) or as a numpy 2d array (matrix). &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span><span class="p">:</span>
             <span class="n">orderofthings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderofmodels</span>
@@ -1231,12 +1231,12 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.WriteGM"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.WriteGM">[docs]</a>    <span class="k">def</span> <span class="nf">WriteGM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fasta</span><span class="p">,</span><span class="n">gm</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">CA</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Write the information present in this PDB between multiple</span>
+        <span class="sd">&quot;&quot;&quot; Write the information present in this PDB between multiple</span>
 <span class="sd">        chains as a Geometric Morphometric text file. This file will be</span>
 <span class="sd">        formatted such that individual lines correspond to chains and semi-colons</span>
 <span class="sd">        separate the (x,y,z) coordinates between all homologous residue positions. </span>
 <span class="sd">        Requires a FASTA alignment. Options include using alpha-carbon positions.</span>
-<span class="sd">        By default, uses centroids of residues. &#39;&#39;&#39;</span>
+<span class="sd">        By default, uses centroids of residues. &quot;&quot;&quot;</span>
 
         <span class="n">fgm</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">gm</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
 
@@ -1252,12 +1252,12 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.WriteLandmarks"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.WriteLandmarks">[docs]</a>    <span class="k">def</span> <span class="nf">WriteLandmarks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fasta</span><span class="p">,</span><span class="n">lm</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Write the information present in this PDB between multiple</span>
+        <span class="sd">&quot;&quot;&quot; Write the information present in this PDB between multiple</span>
 <span class="sd">        chains as a landmark text file. This file will be formatted such that </span>
 <span class="sd">        the file is partitioned in sections starting with chain names and individual </span>
 <span class="sd">        lines in these correspond to homologous residue positions denoted by</span>
 <span class="sd">        homologous position, residue number, and residue name tab-delimited. Requires</span>
-<span class="sd">        a FASTA file. &#39;&#39;&#39;</span>
+<span class="sd">        a FASTA file. &quot;&quot;&quot;</span>
 
         <span class="n">ismodel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span>
 
@@ -1293,7 +1293,7 @@
 
 </div>
 <div class="viewcode-block" id="PDBstructure.FDmatrix"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.FDmatrix">[docs]</a>    <span class="k">def</span> <span class="nf">FDmatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fasta</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">scaled</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the form difference matrix (FDM) as explained in Claude 2008. It relates to</span>
 <span class="sd">        the identification of the most influential residue, with respect to the overall</span>
 <span class="sd">        shape/structure. If the scaled option is True, will return an scaled list </span>
@@ -1301,7 +1301,7 @@
 <span class="sd">        the raw FDM, rounded so it can be included in a PDB. The scaled version is better for</span>
 <span class="sd">        vizualization. By default the FDM is computed far all chains, but a subset can be passed</span>
 <span class="sd">        to the chains option.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">names</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gm</span><span class="p">(</span><span class="n">fasta</span><span class="p">,</span><span class="n">chains</span><span class="o">=</span><span class="n">chains</span><span class="p">,</span><span class="n">typeof</span><span class="o">=</span><span class="s">&#39;matrix&#39;</span><span class="p">)</span>
         <span class="c">#get dimensions</span>
         <span class="n">n_obs</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>     <span class="c"># number observations/structures</span>
@@ -1333,11 +1333,11 @@
             <span class="k">return</span> <span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">FD</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">FD</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">FD</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">FD</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
 </div>
 <div class="viewcode-block" id="PDBstructure.Map2Protein"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.Map2Protein">[docs]</a>    <span class="k">def</span> <span class="nf">Map2Protein</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">outname</span><span class="p">,</span><span class="n">lis</span><span class="p">,</span><span class="n">chain</span><span class="p">,</span><span class="n">fasta</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Map a list of values (lis), that must have a lenght equal to that of the number</span>
 <span class="sd">        of residues in the PDB to be mapped (chain). If a list of list is provided, the </span>
 <span class="sd">        first list will be mapped as the beta factor and the second as occupancy</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Check if more than one thing need to be included</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">lis</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">lis</span><span class="o">=</span><span class="p">[</span><span class="n">lis</span><span class="p">]</span>
@@ -1384,11 +1384,11 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.Contacts"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.Contacts">[docs]</a>    <span class="k">def</span> <span class="nf">Contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chain</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">thres</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Compute the contact map of all chains or a chain.</span>
-<span class="sd">        :param chains: A list of chain or model names. By default, entire structure.</span>
+        <span class="sd">&quot;&quot;&quot; Compute the contact map of all chains or a chain.</span>
+<span class="sd">        :param chains: A list of chain or model names or a single string or integer. By default, entire structure.</span>
 <span class="sd">        :param thres: A threshold for distinguishing contact in Angstroms.</span>
 <span class="sd">        :returns: A list of tuples of indices (integers) which correspond to</span>
-<span class="sd">        chains or models and their residues. &#39;&#39;&#39;</span>     
+<span class="sd">        chains or models and their residues. &quot;&quot;&quot;</span>     
 
         <span class="n">ismodel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismodel</span>
         
@@ -1434,7 +1434,7 @@
 </div>
 <div class="viewcode-block" id="PDBstructure.WriteContacts"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.WriteContacts">[docs]</a>    <span class="k">def</span> <span class="nf">WriteContacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Write contact map. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Write contact map. &quot;&quot;&quot;</span>
 
         <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">contactmap</span><span class="p">:</span>
@@ -1445,14 +1445,14 @@
 </div>
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Returns all PDBchains as an iterator. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Returns all PDBchains as an iterator. &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span> <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">mo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">:</span> <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">mo</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Returns the length of the protein. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Returns the length of the protein. &quot;&quot;&quot;</span>
 
         <span class="c"># For all chains.</span>
         <span class="n">chs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span>
@@ -1467,7 +1467,7 @@
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; As a string, outputs structure in the PDB format. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; As a string, outputs structure in the PDB format. &quot;&quot;&quot;</span>
 
         <span class="n">out</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remarksToString</span><span class="p">()</span>
@@ -1491,13 +1491,13 @@
 
 <div class="viewcode-block" id="PDBfile.isLargeFile"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBfile.isLargeFile">[docs]</a>    <span class="k">def</span> <span class="nf">isLargeFile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Return whether or on the PDB file this object represents is incredibly large. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Return whether or on the PDB file this object represents is incredibly large. &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="n">PDB_LARGE_FILE_SIZE</span><span class="p">)</span>	
 </div>
 <div class="viewcode-block" id="PDBfile.close"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBfile.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Close the file. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Close the file. &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">memHandle</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">memHandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -1505,9 +1505,9 @@
 </div>
 <div class="viewcode-block" id="PDBfile.read"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBfile.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Acquire all remarks, and the indices of all models and residues. Returns</span>
+        <span class="sd">&quot;&quot;&quot; Acquire all remarks, and the indices of all models and residues. Returns</span>
 <span class="sd">		remarks, and biological source information as a tuple (remarks, organism, </span>
-<span class="sd">		taxid, mutant). &#39;&#39;&#39;</span>
+<span class="sd">		taxid, mutant). &quot;&quot;&quot;</span>
 
         <span class="c"># Metadata.</span>
         <span class="n">remarks</span><span class="p">,</span><span class="n">organism</span><span class="p">,</span><span class="n">taxid</span><span class="p">,</span><span class="n">mutant</span> <span class="o">=</span> <span class="p">[],</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="bp">False</span>
@@ -1557,7 +1557,7 @@
 </div>
 <div class="viewcode-block" id="PDBfile.readResidue"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBfile.readResidue">[docs]</a>    <span class="k">def</span> <span class="nf">readResidue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chain</span><span class="p">,</span><span class="n">res</span><span class="p">,</span><span class="n">model</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Parse a residue from the PDB file and return a PDBresidue. &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot; Parse a residue from the PDB file and return a PDBresidue. &quot;&quot;&quot;</span>
 
         <span class="n">resObj</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residueIndices</span><span class="p">[(</span><span class="nb">int</span><span class="p">(</span><span class="n">model</span><span class="p">),</span><span class="n">chain</span><span class="p">,</span><span class="n">res</span><span class="p">)]</span>
@@ -1598,9 +1598,9 @@
 </div>
 <div class="viewcode-block" id="PDBfile.iterResidueData"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBfile.iterResidueData">[docs]</a>    <span class="k">def</span> <span class="nf">iterResidueData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="sd">&#39;&#39;&#39; Yield the model number, chain name, and residue number </span>
+        <span class="sd">&quot;&quot;&quot; Yield the model number, chain name, and residue number </span>
 <span class="sd">        for all residues present in this PDB file, not necessarily </span>
-<span class="sd">        in order. &#39;&#39;&#39;</span>
+<span class="sd">        in order. &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">mod</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residueIndices</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">yield</span> <span class="n">mod</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">res</span>
