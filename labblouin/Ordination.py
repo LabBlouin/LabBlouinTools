@@ -9,29 +9,45 @@ This file is based on Nelle Varoquaux <nelle.varoquaux@gmail.com> code plotmds.p
 at http://scikit-learn.org/stable/auto_examples/manifold/plot_mds.html, and recomendations in
 stackoverflow by Jaime Fernandez (http://numericalrecipes.wordpress.com/)
 
-Dependencies: SKlearn, PDBnet
+Dependencies: SKlearn, PDBnet, Scipy, matplotlib
 
 Author: Jose Sergio Hleap
 email: jshleap@dal.ca
 '''
 
 # importing bit###################################################################################
-import numpy as np
-import scipy.spatial.distance as sp
-from sklearn import manifold
-from sklearn.metrics import euclidean_distances
-from sklearn.decomposition import PCA
-from sklearn.lda import LDA
-from sklearn.qda import QDA
-from labblouin.PDBnet import PDBstructure as P
-from matplotlib.patches import Ellipse
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
+try:
+ import numpy as np
+ import scipy.spatial.distance as sp
+except:
+ print "Dependency Scipy not installed. Please use sudo easy_install scipy, or make sure is installed"
+
+try:
+ from sklearn import manifold
+ from sklearn.metrics import euclidean_distances
+ from sklearn.decomposition import PCA
+ from sklearn.lda import LDA
+ from sklearn.qda import QDA
+except:
+ print "Dependency sklearn not installed. Please use sudo easy_install scikit-learn, or make sure is installed"
+
+try:
+ from labblouin.PDBnet import PDBstructure as P
+except:
+ print "Dependency PDBnet not installed or labblouin folder not in pythonpath. Please make sure is set up correctly"
+
+try:
+ from matplotlib.patches import Ellipse
+ import matplotlib.pyplot as plt
+ import matplotlib.cm as cm
+ from pylab import ion,ioff,draw,plot
+except:
+ print "Dependency Matplotlib not installed. Please use sudo easy_install matplotlib, or make sure is installed"
+
 from random import shuffle
 import pickle
 from os.path import isfile
 from glob import glob as G
-from pylab import ion,ioff,draw,plot
 from time import sleep
 
 # END importing bit###############################################################################
@@ -277,9 +293,9 @@ class ORD:
 					color = str(i/float(len(comp)))				
 					a = 0.5
 					
-				ax.plot(point[0],point[1],c=color,marker=marker,markersize=8,linestyle='None',alpha=a)
+				ax.plot(point[0],point[1],c=color,marker=marker,markersize=options.markersize,linestyle='None',alpha=a)
 				if options.interactive:
-					plot(point[0],point[1],c=color,marker=marker,markersize=8,linestyle='None',alpha=a)
+					plot(point[0],point[1],c=color,marker=marker,markersize=options.markersize,linestyle='None',alpha=a)
 					if count < 10:	
 						sleep(1)
 						draw()
@@ -288,8 +304,8 @@ class ORD:
 						
 					
 			if options.MD:
-				ax.plot(start[0],start[1],c="red",marker=r'$\circlearrowleft$',markersize=8,linestyle='None')
-				ax.plot(last[0] , last[1],c="blue",marker=r'$\lambda$',markersize=8,linestyle='None')
+				ax.plot(start[0],start[1],c="red",marker=r'$\circlearrowleft$',markersize=options.markersize,linestyle='None')
+				ax.plot(last[0] , last[1],c="blue",marker=r'$\lambda$',markersize=options.markersize,linestyle='None')
 				
 			#ax.scatter(comp[:,0],comp[:,1],c=color,cmap = colormap, s=15)
 			
@@ -305,10 +321,10 @@ class ORD:
 				fout.write('%s\t%s\t%s'%(l,self.labels[l],groups[l]))
 
 		if self.type == 'PCA':
-			ax.set_xlabel('PC 1', fontsize=fontsize)
-			ax.set_ylabel('PC 2', fontsize=fontsize)
+			ax.set_xlabel('PC 1 (%.2f)'%(self.explained_variance_ratio[0]), fontsize=fontsize)
+			ax.set_ylabel('PC 2 (%.2f)'%(self.explained_variance_ratio[1]), fontsize=fontsize)
 			if dim >= 3:
-				ax.set_zlabel('PC 3', fontsize=fontsize)
+				ax.set_zlabel('PC 3(%.2f)'%(self.explained_variance_ratio[2]), fontsize=fontsize)
 				ax.view_init(30, 45)
 		else:
 			ax.set_xlabel('Axis 1', fontsize=fontsize)
@@ -322,7 +338,7 @@ class ORD:
 
 		fig.tight_layout()
 		#plt.show()
-		fig.savefig(self.prefix+'_%s.png'%(self.type), dpi=dpi)
+		fig.savefig(self.prefix+'_%s.%s'%(self.type,options.of), dpi=dpi)
 		fout.close()		
 		
 		if options.MD:
@@ -335,7 +351,7 @@ class ORD:
 			ax.annotate('Final conformation', xy=(lastx, lasty),
 				        xytext=(float(lastx)+10, float(lasty)+40),
 				        arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
-			fig.savefig(self.prefix+'_%s_startStop.png'%(self.type), dpi=dpi)
+			fig.savefig(self.prefix+'_%s_startStop.%s'%(self.type,options.of), dpi=dpi)
 
 		
 
@@ -390,7 +406,7 @@ class ORD:
 		                arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
 
 		plt.show()
-		fig.savefig(self.prefix+'_%s.png'%(typeof), dpi=300)
+		fig.savefig(self.prefix+'_%s.%s'%(typeof,options.of), dpi=dpi)
 
 	def ellipse(self, singlegroupx,singlegroupy,std=2,color='k'):
 		''' 
@@ -461,7 +477,7 @@ class ORD:
 if __name__ == "__main__":
 	import optparse,sys
 	opts = optparse.OptionParser(usage='%prog <prefix> <GM file> [options]')
-	opts.add_option('-s','--std',dest='std', action="store", default=3,type='int', help='Standard '\
+	opts.add_option('-s','--std',dest='std', action="store", default=3,type=int, help='Standard '\
 	                'deviations to plot ellipses. Has no effect for PCA or any of the MDS.'\
 	                'Default:3')
 	opts.add_option('-m','--mem',dest='mem', action="store", default=None, help='File name for '\
@@ -474,20 +490,27 @@ if __name__ == "__main__":
 	opts.add_option('-M','--MD',dest='MD', action="store_true", default=False, help='If too many '\
 	                'snapshots in a molecular dynamic simulation are used, this option will stop '\
 	                'printing the labels, and will point at the extremes of the trajectory')
-	opts.add_option('-d','--dpi',dest='dpi', action="store", default=300, help='Modify the dpi of' \
-	                ' the plots. Default: 300')	
+	opts.add_option('-d','--dpi',dest='dpi', action="store", default=300, type=int,
+	                help='Modify the dpi of the plots. Default: 300')	
 	opts.add_option('-c','--ncomp',dest='ncomp', action="store", default=2, help='Modify the number'\
 	                ' of components to be estimated. Default: 2')		
 	opts.add_option('-g','--groups',dest='groups', action="store", default=None, help='Provide a '\
 	                'grouping vector to color plots by. This file is a space sepatated format, just'\
 	                ' as the membership file. Default=No')	
-	opts.add_option('-T','--textsize',dest='textsize', action="store", default=10, help='Modify the '
-	                'text size in the plot. Default=10')
+	opts.add_option('-T','--textsize',dest='textsize', action="store", default=10, type=int,
+	                help='Modify the text size in the plot. Default=10')
 	opts.add_option('-e','--ellipses',dest='ellipses', action="store_false", default=True, help='Turn off '\
 	                'the ellipses drawing.')	
 	opts.add_option('-i','--interactive',dest='interactive', action="store_true", default=False, 
-	                help='Whether or not to do interactive plotting in cuch a way that the trajectory'\
+	                help='Whether or not to do interactive plotting in such a way that the trajectory'\
 	                ' can be seen. This can be really slow if too many points are being drawn. Default = False')		
+	opts.add_option('--ms','--markersize',dest='markersize', action="store", default=8, type=int,
+	                help='the size of the marker in the plot. Default = 8')
+	opts.add_option('-o','--outputformat',dest='of', action="store", default='pdf', help='Select the format of'\
+	                ' the plot. pgf: LaTeX PGF Figure, svgz: Scalable Vector Graphics , tiff: Tagged Image File Format'\
+	                ', jpg: Joint Photographic Experts Group, raw: Raw RGBA bitmap, jpeg: Joint Photographic Experts Group'\
+	                'png: Portable Network Graphics, ps: Postscript, svg: Scalable Vector Graphics, eps: Encapsulated Postscript'\
+	                ', rgba: Raw RGBA bitmap, pdf: Portable Document Format, tif: Tagged Image File Format. Default = pdf')		
 	
 	options, args = opts.parse_args()
 	
@@ -500,7 +523,6 @@ if __name__ == "__main__":
 		groups = np.array(open(options.groups).read().strip().split())
 	else:
 		groups=None
-	
 	if not G('*.pckl'):
 		O = ORD(args[0], args[1])
 		if options.type == 'All' or options.type == 'PCoA': O.MDS(options,groups=groups)
