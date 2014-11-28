@@ -9,6 +9,7 @@ Submodules
    labblouin.FASTAnet
    labblouin.IO
    labblouin.Ordination
+   labblouin.PDBS2VMDstate
    labblouin.PDBnet
    labblouin.RegExpress
    labblouin.SeqMask

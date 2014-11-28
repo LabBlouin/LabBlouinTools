@@ -1,0 +1,7 @@
+labblouin.PDBS2VMDstate module
+==============================
+
+.. automodule:: labblouin.PDBS2VMDstate
+    :members:
+    :undoc-members:
+    :show-inheritance:
