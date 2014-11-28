@@ -450,6 +450,13 @@ class PDBmodel(PDBchain):
 			return self.residues[self.indices.index(str(i))]
 		else: return None		
 
+	def __len__(self):
+		
+		l = len(self.indices)
+		for c in self.GetChains():
+			l += len(c)
+		return l
+
 	def __str__(self):
 
 		model = 'MODEL%9s\n' % (str(self.name)) + super(
@@ -1405,7 +1412,8 @@ class PDBstructure(object):
 
 		# For all chains.
 		chs = self.chains
-		return sum([len(chs[x]) for x in chs])
+		mds = self.models
+		return sum([len(chs[x]) for x in chs] + [len(mds[x]) for x in mds])
 
 	def _remarksToString(self):
 
