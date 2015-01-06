@@ -17,32 +17,32 @@ email: jshleap@dal.ca
 
 # importing bit###################################################################################
 try:
- import numpy as np
- import scipy.spatial.distance as sp
+	import numpy as np
+	import scipy.spatial.distance as sp
 except:
- print "Dependency Scipy not installed. Please use sudo easy_install scipy, or make sure is installed"
+	print "Dependency Scipy not installed. Please use sudo easy_install scipy, or make sure is installed"
 
 try:
- from sklearn import manifold
- from sklearn.metrics import euclidean_distances
- from sklearn.decomposition import PCA
- from sklearn.lda import LDA
- from sklearn.qda import QDA
+	from sklearn import manifold
+	from sklearn.metrics import euclidean_distances
+	from sklearn.decomposition import PCA
+	from sklearn.lda import LDA
+	from sklearn.qda import QDA
 except:
- print "Dependency sklearn not installed. Please use sudo easy_install scikit-learn, or make sure is installed"
+	print "Dependency sklearn not installed. Please use sudo easy_install scikit-learn, or make sure is installed"
 
 try:
- from labblouin.PDBnet import PDBstructure as P
+	from labblouin.PDBnet import PDBstructure as P
 except:
- print "Dependency PDBnet not installed or labblouin folder not in pythonpath. Please make sure is set up correctly"
+	print "Dependency PDBnet not installed or labblouin folder not in pythonpath. Please make sure is set up correctly"
 
 try:
- from matplotlib.patches import Ellipse
- import matplotlib.pyplot as plt
- import matplotlib.cm as cm
- from pylab import ion,ioff,draw,plot
+	from matplotlib.patches import Ellipse
+	import matplotlib.pyplot as plt
+	import matplotlib.cm as cm
+	from pylab import ion,ioff,draw,plot
 except:
- print "Dependency Matplotlib not installed. Please use sudo easy_install matplotlib, or make sure is installed"
+	print "Dependency Matplotlib not installed. Please use sudo easy_install matplotlib, or make sure is installed"
 
 from random import shuffle
 import pickle
@@ -152,7 +152,7 @@ class ORD:
 				coords.append([float(x) for x in bl[1:]])
 		self.data   = np.matrix(coords)
 		self.labels = labels
-	
+
 	def dict2array2matrix(self,dict):
 		'''
 		Giving an upper-triangle distance matrix in a dictionary, returns a distance-like array
@@ -165,14 +165,14 @@ class ORD:
 					ar.append[dict[k][ke]]
 		dist = sp.squareform(np.array(ar))
 		return dist
-	
+
 	def Store(self):
 		self.fit.tofile(self.prefix+'_vecs.temp',sep='\t')
 		fout=open(self.prefix+'_infovecs.temp','w')
 		fout.write('Number of components:\t%s\nType of ordination:\t%s'%(self.ncomp,self.type))
 		fout.close()
 		pickle.dump(self, open('%s.current%s.pckl'%(self.prefix,self.type),'wb'))
-		
+
 	def MDS(self,options,typeof='classic',dist=False,groups=None,):
 		'''
 		Perform Multidimensional Scaling wither classic (PCoA) or non-metric.
@@ -190,7 +190,7 @@ class ORD:
 		else: 
 			metric = False
 			self.type = "nMDS"
-		
+
 		if dist:
 			similarities=self.dict2array2matrix(dist)
 		else:
@@ -220,7 +220,7 @@ class ORD:
 		pca = self.clf.fit_transform(self.data)
 		self.type='PCA'
 		self.fit = pca
-		self.explained_variance_ratio = pca.explained_variance_ratio_
+		self.explained_variance_ratio = self.clf.explained_variance_ratio_
 		self.Plot(options,groups=groups)
 		self.Store()
 
@@ -234,7 +234,7 @@ class ORD:
 		'''
 		dpi = options.dpi
 		fontsize = options.textsize
-	
+
 		components=self.fit
 		markers = ['k.','b+','g*','r.','c+','m*','y.','k+','b*','g.','r+','c*','m.','y+','k*','b.',
 		           'g+','r*','c.','m+','y*']	
@@ -251,24 +251,26 @@ class ORD:
 			ax  = fig.add_subplot(111)
 
 		comp = components[:, 0:dim]
-		
+
 		#if MD:
 		#	colormap=cm.gray
-			
+
 		ax.spines['top'].set_color('none')
 		ax.xaxis.tick_bottom()
 		ax.spines['right'].set_color('none')
 		ax.yaxis.tick_left()
 		if options.interactive:
 			draw()
-		if groups and len(groups) <= len(markers):
-			d = {}
-			g=set(groups)
-			for gr in range(len(groups)):
-				d[groups[gr]]=markers[gr]
-
-			for i in range(len(groups)):
-				ax.scatter(comp[i,], d[groups[i]],label=groups[i],s=15)
+		if groups != None:
+			if len(set(groups)) <= len(markers):
+				g=set(groups)
+				for gr in sorted(g):
+					c  = markers[list(g).index(gr)][0]
+					m  = markers[list(g).index(gr)][1]
+					ms = options.markersize + 10
+					#d[gr]=markers[list(g).index(gr)]
+					ax.scatter(comp[np.where(groups == gr),0],comp[np.where(groups == gr),1], c= c, marker=m,label=gr,s=ms)
+							#markersize=options.markersize,linestyle='None',label=gr)#c=color,marker=marker
 
 		elif dim == 2:
 			if options.interactive:
@@ -292,7 +294,7 @@ class ORD:
 					marker='o'
 					color = str(i/float(len(comp)))				
 					a = 0.5
-					
+
 				ax.plot(point[0],point[1],c=color,marker=marker,markersize=options.markersize,linestyle='None',alpha=a)
 				if options.interactive:
 					plot(point[0],point[1],c=color,marker=marker,markersize=options.markersize,linestyle='None',alpha=a)
@@ -301,14 +303,14 @@ class ORD:
 						draw()
 					elif i in step:
 						draw()
-						
-					
+
+
 			if options.MD:
 				ax.plot(start[0],start[1],c="red",marker=r'$\circlearrowleft$',markersize=options.markersize,linestyle='None')
 				ax.plot(last[0] , last[1],c="blue",marker=r'$\lambda$',markersize=options.markersize,linestyle='None')
-				
+
 			#ax.scatter(comp[:,0],comp[:,1],c=color,cmap = colormap, s=15)
-			
+
 			groups=[None]*len(self.labels)
 		else:
 			ax.scatter(comp[:,0],comp[:1],comp[:2],c=color,s=15)
@@ -321,8 +323,8 @@ class ORD:
 				fout.write('%s\t%s\t%s'%(l,self.labels[l],groups[l]))
 
 		if self.type == 'PCA':
-			ax.set_xlabel('PC 1 (%.2f)'%(self.explained_variance_ratio[0]), fontsize=fontsize)
-			ax.set_ylabel('PC 2 (%.2f)'%(self.explained_variance_ratio[1]), fontsize=fontsize)
+			ax.set_xlabel('PC 1 (%.2f%%)'%(self.explained_variance_ratio[0]*100), fontsize=fontsize)
+			ax.set_ylabel('PC 2 (%.2f%%)'%(self.explained_variance_ratio[1]*100), fontsize=fontsize)
 			if dim >= 3:
 				ax.set_zlabel('PC 3(%.2f)'%(self.explained_variance_ratio[2]), fontsize=fontsize)
 				ax.view_init(30, 45)
@@ -333,27 +335,28 @@ class ORD:
 				ax.set_zlabel('Axis 3', fontsize=fontsize)
 				ax.view_init(30, 45)
 		if groups[0]:
-			ax.legend(loc=0, fancybox=True, shadow=True)
+			#handles, labels = ax.get_legend_handles_labels()
+			ax.legend(loc=0, fancybox=True, shadow=True, fontsize='small')
 
 
 		fig.tight_layout()
 		#plt.show()
 		fig.savefig(self.prefix+'_%s.%s'%(self.type,options.of), dpi=dpi)
 		fout.close()		
-		
+
 		if options.MD:
 			initx,inity = comp[:,0][0],comp[:,1][0]
 			lastx,lasty = comp[:,0][-1],comp[:,1][-1]
 			ax.annotate('Initial conformation', xy=(initx, inity), 
-				        xytext= (float(initx)+10, float(inity)+20),
-				        arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
-				
+			            xytext= (float(initx)+10, float(inity)+20),
+			            arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
+
 			ax.annotate('Final conformation', xy=(lastx, lasty),
-				        xytext=(float(lastx)+10, float(lasty)+40),
-				        arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
+			            xytext=(float(lastx)+10, float(lasty)+40),
+			            arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
 			fig.savefig(self.prefix+'_%s_startStop.%s'%(self.type,options.of), dpi=dpi)
 
-		
+
 
 
 	def PlotXDA(self,membership,options,group_labels=None,):
@@ -368,7 +371,7 @@ class ORD:
 		typeof=self.type
 		fontsize=options.textsize
 		MD=options.MD
-		
+
 		if group_labels:
 			target_names = group_labels
 		else:
@@ -398,12 +401,12 @@ class ORD:
 			initx,inity = self.fit[:,0][0],self.fit[:,1][0]
 			lastx,lasty = self.fit[:,0][-1],self.fit[:,1][-1]
 			ax.annotate('Initial conformation', xy=(initx, inity), 
-		                xytext= (float(initx)+10, float(inity)+20),
-		                arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
-				
+			            xytext= (float(initx)+10, float(inity)+20),
+			            arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
+
 			ax.annotate('Final conformation', xy=(lastx, lasty),
-		                xytext=(float(lastx)+10, float(lasty)+40),
-		                arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
+			            xytext=(float(lastx)+10, float(lasty)+40),
+			            arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
 
 		plt.show()
 		fig.savefig(self.prefix+'_%s.%s'%(typeof,options.of), dpi=dpi)
@@ -443,7 +446,7 @@ class ORD:
 
 	def getEllipses(self,stds):
 		'''will populate the ellipses attribute'''
-		
+
 		for mem,col in zip(list(set(membership)),colors):
 			self.ellipses[mem]={}
 			sub = self.fit[membership == mem, ]
@@ -511,9 +514,9 @@ if __name__ == "__main__":
 	                ', jpg: Joint Photographic Experts Group, raw: Raw RGBA bitmap, jpeg: Joint Photographic Experts Group'\
 	                'png: Portable Network Graphics, ps: Postscript, svg: Scalable Vector Graphics, eps: Encapsulated Postscript'\
 	                ', rgba: Raw RGBA bitmap, pdf: Portable Document Format, tif: Tagged Image File Format. Default = pdf')		
-	
+
 	options, args = opts.parse_args()
-	
+
 	if options.type == 'All' and not options.mem:
 		print 'You choose to use all the functions but did not provide a membership file.'
 		sys.exit()
@@ -536,6 +539,4 @@ if __name__ == "__main__":
 			if 'DA' in i:	
 				O.PlotXDA(membership,options)
 			else:
-				O.Plot(options)
-	
-	
+				O.Plot(options,groups=groups)

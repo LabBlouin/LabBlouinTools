@@ -21,7 +21,7 @@ from scipy.spatial.distance import cdist
 # Metadata
 
 __author__  = ['Christian Blouin','Jose Sergio Hleap','Alexander Safatli']
-__version__ = '1.0.5'
+__version__ = '1.1.0'
 
 # Constants
 
@@ -352,15 +352,20 @@ class PDBchain(object):
 		""" Force the object to load the residue if not present
 		in this structure. """
 
+		if self.parent == None: parent = -1
+		else:                   parent = self.parent.name
 		handle = self.structure.handle
 		if str(i) in self.indices:
-			if (handle and handle.isLargeFile()) or (len(self.indices) > len(self.residues)):
-				if self.parent == None:
-					resid = handle.readResidue(self.name,str(i))
+			if handle and ((handle.isLargeFile()) or (len(self.indices) > len(self.residues))):
+				if handle.hasResidue(self.name,str(i),parent):
+					resid = handle.readResidue(self.name,str(i),parent)
+					resid.chain = self.name
+					return resid
+				elif self.indices.index(str(i)) < len(self.residues):
+					return self.residues[self.indices.index(str(i))]
 				else:
-					resid = handle.readResidue(self.name,str(i),self.parent.name)
-				resid.chain = self.name
-				return resid
+					raise KeyError('Could not find residue %s in %s:%s in file or structure.' % (
+					str(i),str(self.name),str(parent)))
 			return self.residues[self.indices.index(str(i))]
 		else: return None
 
@@ -576,9 +581,11 @@ class PDBstructure(object):
 			cast = PDBmodel(modelname)
 			for i in model: cast.AddResidue(model[i])
 			model = cast
+		model.name = modelname
 		self.models[modelname] = model
 		self.orderofmodels.append(modelname)
 		model.structure = self
+		return model
 
 	def AddResidueToChain(self, chain, res):
 
@@ -1233,6 +1240,9 @@ class PDBstructure(object):
 		f = FASTAnet.FASTAstructure(fasta,uniqueOnly=False)
 		name = lambda d: f.orderedSequences[d].name
 
+		# Acquire all homologous positions as defined in FASTA.
+		items = self._iterResidueAssociations(fasta,chains,f)
+
 		# Start writing.
 		chainsSaw = []
 		ind       = -1
@@ -1511,6 +1521,12 @@ class PDBfile(object):
 
 		# Return metadata.
 		return (remarks,organism,taxid,mutant)
+
+	def hasResidue(self,chain,res,model=-1):
+		
+		""" Determine if a residue is present in the PDBfile. """
+		
+		return ((int(model),chain,res) in self.residueIndices)
 
 	def readResidue(self,chain,res,model=-1):
 
