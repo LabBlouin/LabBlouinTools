@@ -8,6 +8,7 @@ Submodules
 
    labblouin.FASTAnet
    labblouin.IO
+   labblouin.MATT2GM
    labblouin.Ordination
    labblouin.PDBS2VMDstate
    labblouin.PDBnet

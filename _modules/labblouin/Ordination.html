@@ -66,32 +66,32 @@
 
 <span class="c"># importing bit###################################################################################</span>
 <span class="k">try</span><span class="p">:</span>
- <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
- <span class="kn">import</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">as</span> <span class="nn">sp</span>
+	<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+	<span class="kn">import</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">as</span> <span class="nn">sp</span>
 <span class="k">except</span><span class="p">:</span>
- <span class="k">print</span> <span class="s">&quot;Dependency Scipy not installed. Please use sudo easy_install scipy, or make sure is installed&quot;</span>
+	<span class="k">print</span> <span class="s">&quot;Dependency Scipy not installed. Please use sudo easy_install scipy, or make sure is installed&quot;</span>
 
 <span class="k">try</span><span class="p">:</span>
- <span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">manifold</span>
- <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">euclidean_distances</span>
- <span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
- <span class="kn">from</span> <span class="nn">sklearn.lda</span> <span class="kn">import</span> <span class="n">LDA</span>
- <span class="kn">from</span> <span class="nn">sklearn.qda</span> <span class="kn">import</span> <span class="n">QDA</span>
+	<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">manifold</span>
+	<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">euclidean_distances</span>
+	<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+	<span class="kn">from</span> <span class="nn">sklearn.lda</span> <span class="kn">import</span> <span class="n">LDA</span>
+	<span class="kn">from</span> <span class="nn">sklearn.qda</span> <span class="kn">import</span> <span class="n">QDA</span>
 <span class="k">except</span><span class="p">:</span>
- <span class="k">print</span> <span class="s">&quot;Dependency sklearn not installed. Please use sudo easy_install scikit-learn, or make sure is installed&quot;</span>
+	<span class="k">print</span> <span class="s">&quot;Dependency sklearn not installed. Please use sudo easy_install scikit-learn, or make sure is installed&quot;</span>
 
 <span class="k">try</span><span class="p">:</span>
- <span class="kn">from</span> <span class="nn">labblouin.PDBnet</span> <span class="kn">import</span> <span class="n">PDBstructure</span> <span class="k">as</span> <span class="n">P</span>
+	<span class="kn">from</span> <span class="nn">labblouin.PDBnet</span> <span class="kn">import</span> <span class="n">PDBstructure</span> <span class="k">as</span> <span class="n">P</span>
 <span class="k">except</span><span class="p">:</span>
- <span class="k">print</span> <span class="s">&quot;Dependency PDBnet not installed or labblouin folder not in pythonpath. Please make sure is set up correctly&quot;</span>
+	<span class="k">print</span> <span class="s">&quot;Dependency PDBnet not installed or labblouin folder not in pythonpath. Please make sure is set up correctly&quot;</span>
 
 <span class="k">try</span><span class="p">:</span>
- <span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">Ellipse</span>
- <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
- <span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="kn">as</span> <span class="nn">cm</span>
- <span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">ion</span><span class="p">,</span><span class="n">ioff</span><span class="p">,</span><span class="n">draw</span><span class="p">,</span><span class="n">plot</span>
+	<span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+	<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+	<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="kn">as</span> <span class="nn">cm</span>
+	<span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">ion</span><span class="p">,</span><span class="n">ioff</span><span class="p">,</span><span class="n">draw</span><span class="p">,</span><span class="n">plot</span>
 <span class="k">except</span><span class="p">:</span>
- <span class="k">print</span> <span class="s">&quot;Dependency Matplotlib not installed. Please use sudo easy_install matplotlib, or make sure is installed&quot;</span>
+	<span class="k">print</span> <span class="s">&quot;Dependency Matplotlib not installed. Please use sudo easy_install matplotlib, or make sure is installed&quot;</span>
 
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">shuffle</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
@@ -201,7 +201,7 @@
 				<span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bl</span><span class="p">[</span><span class="mi">1</span><span class="p">:]])</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">data</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
-	</div>
+</div>
 <div class="viewcode-block" id="ORD.dict2array2matrix"><a class="viewcode-back" href="../../labblouin.Ordination.html#labblouin.Ordination.ORD.dict2array2matrix">[docs]</a>	<span class="k">def</span> <span class="nf">dict2array2matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">		Giving an upper-triangle distance matrix in a dictionary, returns a distance-like array</span>
@@ -214,14 +214,14 @@
 					<span class="n">ar</span><span class="o">.</span><span class="n">append</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">ke</span><span class="p">]]</span>
 		<span class="n">dist</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">squareform</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ar</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">dist</span>
-	</div>
+</div>
 <div class="viewcode-block" id="ORD.Store"><a class="viewcode-back" href="../../labblouin.Ordination.html#labblouin.Ordination.ORD.Store">[docs]</a>	<span class="k">def</span> <span class="nf">Store</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">+</span><span class="s">&#39;_vecs.temp&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
 		<span class="n">fout</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">+</span><span class="s">&#39;_infovecs.temp&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
 		<span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Number of components:</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s">Type of ordination:</span><span class="se">\t</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ncomp</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">))</span>
 		<span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 		<span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.current</span><span class="si">%s</span><span class="s">.pckl&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">),</span><span class="s">&#39;wb&#39;</span><span class="p">))</span>
-		</div>
+</div>
 <div class="viewcode-block" id="ORD.MDS"><a class="viewcode-back" href="../../labblouin.Ordination.html#labblouin.Ordination.ORD.MDS">[docs]</a>	<span class="k">def</span> <span class="nf">MDS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">options</span><span class="p">,</span><span class="n">typeof</span><span class="o">=</span><span class="s">&#39;classic&#39;</span><span class="p">,</span><span class="n">dist</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">groups</span><span class="o">=</span><span class="bp">None</span><span class="p">,):</span>
 		<span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">		Perform Multidimensional Scaling wither classic (PCoA) or non-metric.</span>
@@ -239,7 +239,7 @@
 		<span class="k">else</span><span class="p">:</span> 
 			<span class="n">metric</span> <span class="o">=</span> <span class="bp">False</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s">&quot;nMDS&quot;</span>
-		
+
 		<span class="k">if</span> <span class="n">dist</span><span class="p">:</span>
 			<span class="n">similarities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dict2array2matrix</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
@@ -269,7 +269,7 @@
 		<span class="n">pca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clf</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">=</span><span class="s">&#39;PCA&#39;</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">fit</span> <span class="o">=</span> <span class="n">pca</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">explained_variance_ratio</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">explained_variance_ratio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clf</span><span class="o">.</span><span class="n">explained_variance_ratio_</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">Store</span><span class="p">()</span>
 
@@ -283,7 +283,7 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">dpi</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">dpi</span>
 		<span class="n">fontsize</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">textsize</span>
-	
+
 		<span class="n">components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fit</span>
 		<span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;k.&#39;</span><span class="p">,</span><span class="s">&#39;b+&#39;</span><span class="p">,</span><span class="s">&#39;g*&#39;</span><span class="p">,</span><span class="s">&#39;r.&#39;</span><span class="p">,</span><span class="s">&#39;c+&#39;</span><span class="p">,</span><span class="s">&#39;m*&#39;</span><span class="p">,</span><span class="s">&#39;y.&#39;</span><span class="p">,</span><span class="s">&#39;k+&#39;</span><span class="p">,</span><span class="s">&#39;b*&#39;</span><span class="p">,</span><span class="s">&#39;g.&#39;</span><span class="p">,</span><span class="s">&#39;r+&#39;</span><span class="p">,</span><span class="s">&#39;c*&#39;</span><span class="p">,</span><span class="s">&#39;m.&#39;</span><span class="p">,</span><span class="s">&#39;y+&#39;</span><span class="p">,</span><span class="s">&#39;k*&#39;</span><span class="p">,</span><span class="s">&#39;b.&#39;</span><span class="p">,</span>
 		           <span class="s">&#39;g+&#39;</span><span class="p">,</span><span class="s">&#39;r*&#39;</span><span class="p">,</span><span class="s">&#39;c.&#39;</span><span class="p">,</span><span class="s">&#39;m+&#39;</span><span class="p">,</span><span class="s">&#39;y*&#39;</span><span class="p">]</span>	
@@ -300,24 +300,26 @@
 			<span class="n">ax</span>  <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 
 		<span class="n">comp</span> <span class="o">=</span> <span class="n">components</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">dim</span><span class="p">]</span>
-		
+
 		<span class="c">#if MD:</span>
 		<span class="c">#	colormap=cm.gray</span>
-			
+
 		<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s">&#39;none&#39;</span><span class="p">)</span>
 		<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">tick_bottom</span><span class="p">()</span>
 		<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s">&#39;none&#39;</span><span class="p">)</span>
 		<span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">tick_left</span><span class="p">()</span>
 		<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">interactive</span><span class="p">:</span>
 			<span class="n">draw</span><span class="p">()</span>
-		<span class="k">if</span> <span class="n">groups</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">):</span>
-			<span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-			<span class="n">g</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
-			<span class="k">for</span> <span class="n">gr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)):</span>
-				<span class="n">d</span><span class="p">[</span><span class="n">groups</span><span class="p">[</span><span class="n">gr</span><span class="p">]]</span><span class="o">=</span><span class="n">markers</span><span class="p">[</span><span class="n">gr</span><span class="p">]</span>
-
-			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)):</span>
-				<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">comp</span><span class="p">[</span><span class="n">i</span><span class="p">,],</span> <span class="n">d</span><span class="p">[</span><span class="n">groups</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span><span class="n">label</span><span class="o">=</span><span class="n">groups</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">s</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">groups</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">groups</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">):</span>
+				<span class="n">g</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+				<span class="k">for</span> <span class="n">gr</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+					<span class="n">c</span>  <span class="o">=</span> <span class="n">markers</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">gr</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+					<span class="n">m</span>  <span class="o">=</span> <span class="n">markers</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">gr</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+					<span class="n">ms</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">markersize</span> <span class="o">+</span> <span class="mi">10</span>
+					<span class="c">#d[gr]=markers[list(g).index(gr)]</span>
+					<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">comp</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">groups</span> <span class="o">==</span> <span class="n">gr</span><span class="p">),</span><span class="mi">0</span><span class="p">],</span><span class="n">comp</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">groups</span> <span class="o">==</span> <span class="n">gr</span><span class="p">),</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span> <span class="n">c</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="n">m</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">gr</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="n">ms</span><span class="p">)</span>
+							<span class="c">#markersize=options.markersize,linestyle=&#39;None&#39;,label=gr)#c=color,marker=marker</span>
 
 		<span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">interactive</span><span class="p">:</span>
@@ -341,7 +343,7 @@
 					<span class="n">marker</span><span class="o">=</span><span class="s">&#39;o&#39;</span>
 					<span class="n">color</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">comp</span><span class="p">)))</span>				
 					<span class="n">a</span> <span class="o">=</span> <span class="mf">0.5</span>
-					
+
 				<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">markersize</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
 				<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">interactive</span><span class="p">:</span>
 					<span class="n">plot</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">markersize</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
@@ -350,14 +352,14 @@
 						<span class="n">draw</span><span class="p">()</span>
 					<span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">step</span><span class="p">:</span>
 						<span class="n">draw</span><span class="p">()</span>
-						
-					
+
+
 			<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">MD</span><span class="p">:</span>
 				<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">c</span><span class="o">=</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s">r&#39;$\circlearrowleft$&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">markersize</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">)</span>
 				<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">last</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="n">last</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">c</span><span class="o">=</span><span class="s">&quot;blue&quot;</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s">r&#39;$\lambda$&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">markersize</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">)</span>
-				
+
 			<span class="c">#ax.scatter(comp[:,0],comp[:,1],c=color,cmap = colormap, s=15)</span>
-			
+
 			<span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">comp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">comp</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span><span class="n">comp</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span><span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
@@ -370,8 +372,8 @@
 				<span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">l</span><span class="p">],</span><span class="n">groups</span><span class="p">[</span><span class="n">l</span><span class="p">]))</span>
 
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;PCA&#39;</span><span class="p">:</span>
-			<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&#39;PC 1 (</span><span class="si">%.2f</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">explained_variance_ratio</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
-			<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;PC 2 (</span><span class="si">%.2f</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">explained_variance_ratio</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+			<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&#39;PC 1 (</span><span class="si">%.2f%%</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">explained_variance_ratio</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+			<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;PC 2 (</span><span class="si">%.2f%%</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">explained_variance_ratio</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
 			<span class="k">if</span> <span class="n">dim</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
 				<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s">&#39;PC 3(</span><span class="si">%.2f</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">explained_variance_ratio</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
 				<span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">45</span><span class="p">)</span>
@@ -382,27 +384,28 @@
 				<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s">&#39;Axis 3&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
 				<span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">45</span><span class="p">)</span>
 		<span class="k">if</span> <span class="n">groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-			<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fancybox</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">shadow</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+			<span class="c">#handles, labels = ax.get_legend_handles_labels()</span>
+			<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fancybox</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">shadow</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s">&#39;small&#39;</span><span class="p">)</span>
 
 
 		<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 		<span class="c">#plt.show()</span>
 		<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">+</span><span class="s">&#39;_</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span><span class="n">options</span><span class="o">.</span><span class="n">of</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
 		<span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>		
-		
+
 		<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">MD</span><span class="p">:</span>
 			<span class="n">initx</span><span class="p">,</span><span class="n">inity</span> <span class="o">=</span> <span class="n">comp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">comp</span><span class="p">[:,</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 			<span class="n">lastx</span><span class="p">,</span><span class="n">lasty</span> <span class="o">=</span> <span class="n">comp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">comp</span><span class="p">[:,</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 			<span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s">&#39;Initial conformation&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">initx</span><span class="p">,</span> <span class="n">inity</span><span class="p">),</span> 
-				        <span class="n">xytext</span><span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">initx</span><span class="p">)</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">inity</span><span class="p">)</span><span class="o">+</span><span class="mi">20</span><span class="p">),</span>
-				        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="mf">0.15</span><span class="p">))</span>
-				
+			            <span class="n">xytext</span><span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">initx</span><span class="p">)</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">inity</span><span class="p">)</span><span class="o">+</span><span class="mi">20</span><span class="p">),</span>
+			            <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="mf">0.15</span><span class="p">))</span>
+
 			<span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s">&#39;Final conformation&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">lastx</span><span class="p">,</span> <span class="n">lasty</span><span class="p">),</span>
-				        <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">lastx</span><span class="p">)</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">lasty</span><span class="p">)</span><span class="o">+</span><span class="mi">40</span><span class="p">),</span>
-				        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="mf">0.15</span><span class="p">))</span>
+			            <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">lastx</span><span class="p">)</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">lasty</span><span class="p">)</span><span class="o">+</span><span class="mi">40</span><span class="p">),</span>
+			            <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="mf">0.15</span><span class="p">))</span>
 			<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">+</span><span class="s">&#39;_</span><span class="si">%s</span><span class="s">_startStop.</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span><span class="n">options</span><span class="o">.</span><span class="n">of</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
 
-		
+
 
 </div>
 <div class="viewcode-block" id="ORD.PlotXDA"><a class="viewcode-back" href="../../labblouin.Ordination.html#labblouin.Ordination.ORD.PlotXDA">[docs]</a>	<span class="k">def</span> <span class="nf">PlotXDA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">membership</span><span class="p">,</span><span class="n">options</span><span class="p">,</span><span class="n">group_labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,):</span>
@@ -417,7 +420,7 @@
 		<span class="n">typeof</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span>
 		<span class="n">fontsize</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">textsize</span>
 		<span class="n">MD</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">MD</span>
-		
+
 		<span class="k">if</span> <span class="n">group_labels</span><span class="p">:</span>
 			<span class="n">target_names</span> <span class="o">=</span> <span class="n">group_labels</span>
 		<span class="k">else</span><span class="p">:</span>
@@ -447,12 +450,12 @@
 			<span class="n">initx</span><span class="p">,</span><span class="n">inity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">[:,</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">[:,</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 			<span class="n">lastx</span><span class="p">,</span><span class="n">lasty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">[:,</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">[:,</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 			<span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s">&#39;Initial conformation&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">initx</span><span class="p">,</span> <span class="n">inity</span><span class="p">),</span> 
-		                <span class="n">xytext</span><span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">initx</span><span class="p">)</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">inity</span><span class="p">)</span><span class="o">+</span><span class="mi">20</span><span class="p">),</span>
-		                <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="mf">0.15</span><span class="p">))</span>
-				
+			            <span class="n">xytext</span><span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">initx</span><span class="p">)</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">inity</span><span class="p">)</span><span class="o">+</span><span class="mi">20</span><span class="p">),</span>
+			            <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="mf">0.15</span><span class="p">))</span>
+
 			<span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s">&#39;Final conformation&#39;</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">lastx</span><span class="p">,</span> <span class="n">lasty</span><span class="p">),</span>
-		                <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">lastx</span><span class="p">)</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">lasty</span><span class="p">)</span><span class="o">+</span><span class="mi">40</span><span class="p">),</span>
-		                <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="mf">0.15</span><span class="p">))</span>
+			            <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">lastx</span><span class="p">)</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">lasty</span><span class="p">)</span><span class="o">+</span><span class="mi">40</span><span class="p">),</span>
+			            <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="mf">0.15</span><span class="p">))</span>
 
 		<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 		<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">+</span><span class="s">&#39;_</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">typeof</span><span class="p">,</span><span class="n">options</span><span class="o">.</span><span class="n">of</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
@@ -492,7 +495,7 @@
 </div>
 <div class="viewcode-block" id="ORD.getEllipses"><a class="viewcode-back" href="../../labblouin.Ordination.html#labblouin.Ordination.ORD.getEllipses">[docs]</a>	<span class="k">def</span> <span class="nf">getEllipses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">stds</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;will populate the ellipses attribute&#39;&#39;&#39;</span>
-		
+
 		<span class="k">for</span> <span class="n">mem</span><span class="p">,</span><span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">membership</span><span class="p">)),</span><span class="n">colors</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">ellipses</span><span class="p">[</span><span class="n">mem</span><span class="p">]</span><span class="o">=</span><span class="p">{}</span>
 			<span class="n">sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">[</span><span class="n">membership</span> <span class="o">==</span> <span class="n">mem</span><span class="p">,</span> <span class="p">]</span>
@@ -560,9 +563,9 @@
 	                <span class="s">&#39;, jpg: Joint Photographic Experts Group, raw: Raw RGBA bitmap, jpeg: Joint Photographic Experts Group&#39;</span>\
 	                <span class="s">&#39;png: Portable Network Graphics, ps: Postscript, svg: Scalable Vector Graphics, eps: Encapsulated Postscript&#39;</span>\
 	                <span class="s">&#39;, rgba: Raw RGBA bitmap, pdf: Portable Document Format, tif: Tagged Image File Format. Default = pdf&#39;</span><span class="p">)</span>		
-	
+
 	<span class="n">options</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
-	
+
 	<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;All&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">mem</span><span class="p">:</span>
 		<span class="k">print</span> <span class="s">&#39;You choose to use all the functions but did not provide a membership file.&#39;</span>
 		<span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
@@ -585,9 +588,7 @@
 			<span class="k">if</span> <span class="s">&#39;DA&#39;</span> <span class="ow">in</span> <span class="n">i</span><span class="p">:</span>	
 				<span class="n">O</span><span class="o">.</span><span class="n">PlotXDA</span><span class="p">(</span><span class="n">membership</span><span class="p">,</span><span class="n">options</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="n">O</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
-	
-	
+				<span class="n">O</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -626,7 +627,7 @@
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+        &copy; Copyright 2015, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

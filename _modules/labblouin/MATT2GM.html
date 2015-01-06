@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>labblouin.MATT2GM &mdash; LabBlouinTools 0.3.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="LabBlouinTools 0.3.5 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.5 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for labblouin.MATT2GM</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">   Process MATT output and convert them to the GM format.</span>
+<span class="sd">   </span>
+<span class="sd">   MATT2GM Copyright (C) 2012 Christian Blouin</span>
+<span class="sd">   MATT2GM Version Copyright (C) 2013 Christian Blouin - Jose Sergio Hleap - Alex Safatli</span>
+<span class="sd">   </span>
+<span class="sd">   This program is free software: you can redistribute it and/or modify</span>
+<span class="sd">   it under the terms of the GNU General Public License as published by</span>
+<span class="sd">   the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">   (at your option) any later version.</span>
+<span class="sd">   </span>
+<span class="sd">   This program is distributed in the hope that it will be useful,</span>
+<span class="sd">   but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">   GNU General Public License for more details.</span>
+<span class="sd">   </span>
+<span class="sd">   You should have received a copy of the GNU General Public License</span>
+<span class="sd">   along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="sd">   </span>
+<span class="sd">   E-mail: cblouin@cs.dal.ca, jshleap@squalus.org, iltafas@gmail.com</span>
+<span class="sd">   </span>
+<span class="sd">   Requirements:</span>
+<span class="sd">   1) Python:</span>
+<span class="sd">	  a) PDBnet.py</span>
+<span class="sd">	  #######################################</span>
+<span class="sd">	  #PDBnet.py is a python script and have#</span>
+<span class="sd">	  #to be provided with this code        #</span>
+<span class="sd">	  #######################################</span>
+<span class="sd">   </span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c"># Import section</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">PDBnet</span> <span class="kn">import</span> <span class="n">PDBstructure</span>
+<span class="c"># Constants</span>
+<span class="n">aa</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;A&#39;</span><span class="p">:</span><span class="s">&#39;ALA&#39;</span><span class="p">,</span><span class="s">&#39;C&#39;</span><span class="p">:</span><span class="s">&#39;CYS&#39;</span><span class="p">,</span><span class="s">&#39;D&#39;</span><span class="p">:</span><span class="s">&#39;ASP&#39;</span><span class="p">,</span><span class="s">&#39;E&#39;</span><span class="p">:</span><span class="s">&#39;GLU&#39;</span><span class="p">,</span><span class="s">&#39;F&#39;</span><span class="p">:</span><span class="s">&#39;PHE&#39;</span><span class="p">,</span><span class="s">&#39;G&#39;</span><span class="p">:</span><span class="s">&#39;GLY&#39;</span><span class="p">,</span><span class="s">&#39;H&#39;</span><span class="p">:</span><span class="s">&#39;HIS&#39;</span><span class="p">,</span><span class="s">&#39;I&#39;</span><span class="p">:</span><span class="s">&#39;ILE&#39;</span><span class="p">,</span><span class="s">&#39;K&#39;</span><span class="p">:</span><span class="s">&#39;LYS&#39;</span><span class="p">,</span><span class="s">&#39;L&#39;</span><span class="p">:</span><span class="s">&#39;LEU&#39;</span><span class="p">,</span><span class="s">&#39;M&#39;</span><span class="p">:</span><span class="s">&#39;MET&#39;</span><span class="p">,</span><span class="s">&#39;N&#39;</span><span class="p">:</span><span class="s">&#39;ASN&#39;</span><span class="p">,</span><span class="s">&#39;P&#39;</span><span class="p">:</span><span class="s">&#39;PRO&#39;</span><span class="p">,</span><span class="s">&#39;Q&#39;</span><span class="p">:</span><span class="s">&#39;GLN&#39;</span><span class="p">,</span><span class="s">&#39;R&#39;</span><span class="p">:</span><span class="s">&#39;ARG&#39;</span><span class="p">,</span><span class="s">&#39;S&#39;</span><span class="p">:</span><span class="s">&#39;SER&#39;</span><span class="p">,</span><span class="s">&#39;T&#39;</span><span class="p">:</span><span class="s">&#39;THR&#39;</span><span class="p">,</span><span class="s">&#39;V&#39;</span><span class="p">:</span><span class="s">&#39;VAL&#39;</span><span class="p">,</span><span class="s">&#39;W&#39;</span><span class="p">:</span><span class="s">&#39;TRP&#39;</span><span class="p">,</span><span class="s">&#39;Y&#39;</span><span class="p">:</span><span class="s">&#39;TYR&#39;</span><span class="p">}</span>
+
+<span class="c"># definition section</span>
+<div class="viewcode-block" id="LoadFasta"><a class="viewcode-back" href="../../labblouin.MATT2GM.html#labblouin.MATT2GM.LoadFasta">[docs]</a><span class="k">def</span> <span class="nf">LoadFasta</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+	<span class="c"># Load Fasta into a dictionary of sequences indexed by chain name</span>
+	<span class="n">data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;:&gt;&#39;</span><span class="p">,</span><span class="s">&#39;:####boo&#39;</span><span class="p">)</span>
+	<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+		<span class="k">if</span> <span class="s">&#39;:####boo&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+			<span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;:####boo&#39;</span><span class="p">,</span> <span class="s">&#39;:&gt;&#39;</span><span class="p">)</span>
+
+	<span class="c"># Output data structure</span>
+	<span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">outorder</span> <span class="o">=</span> <span class="p">[]</span>
+
+	<span class="c"># Read in the sequences</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+		<span class="c"># chain name</span>
+		<span class="n">colon</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+		<span class="n">endline</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+		<span class="n">chain</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="n">colon</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">endline</span><span class="p">]</span>
+
+		<span class="c"># Sequence</span>
+		<span class="n">seq</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="n">endline</span><span class="p">:]</span>
+		<span class="n">seq</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+
+		<span class="n">out</span><span class="p">[</span><span class="n">chain</span><span class="p">]</span> <span class="o">=</span> <span class="n">seq</span>
+		<span class="n">outorder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">out</span><span class="p">,</span> <span class="n">outorder</span>
+</div>
+<div class="viewcode-block" id="GetMask"><a class="viewcode-back" href="../../labblouin.MATT2GM.html#labblouin.MATT2GM.GetMask">[docs]</a><span class="k">def</span> <span class="nf">GetMask</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+	<span class="c"># Returns a string with * for all homologous sites and . for non all-homologous sites.</span>
+	<span class="c"># Assume that no gaps can occur in such sites</span>
+
+	<span class="c"># Output data structure</span>
+	<span class="n">out</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+	<span class="c"># Get the lenght of any sequence (they are all the same length)</span>
+	<span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">A</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]])</span>
+
+	<span class="n">keys</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+		<span class="n">c</span> <span class="o">=</span> <span class="s">&#39;*&#39;</span>
+		<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">A</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;-&#39;</span><span class="p">:</span>
+				<span class="n">c</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span>
+				<span class="k">break</span>
+		<span class="n">out</span> <span class="o">+=</span> <span class="n">c</span>
+
+	<span class="k">return</span> <span class="n">out</span>
+</div>
+<div class="viewcode-block" id="RemoveNonHomologous"><a class="viewcode-back" href="../../labblouin.MATT2GM.html#labblouin.MATT2GM.RemoveNonHomologous">[docs]</a><span class="k">def</span> <span class="nf">RemoveNonHomologous</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">aln</span><span class="p">,</span> <span class="n">msk</span><span class="p">,</span> <span class="n">mapfile</span><span class="p">):</span>
+	<span class="c"># Delete the residues that are not homologous through the whole alignment</span>
+
+	<span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">mapfile</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+
+	<span class="c"># Get all chains</span>
+	<span class="n">keys</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+	<span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+		<span class="n">struct</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">chain</span><span class="p">]</span>
+		<span class="n">seq</span> <span class="o">=</span> <span class="n">aln</span><span class="p">[</span><span class="n">chain</span><span class="p">]</span>
+		<span class="n">indexlist</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">chain</span><span class="p">]</span><span class="o">.</span><span class="n">GetIndices</span><span class="p">()</span>
+		<span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+
+		<span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="o">+</span><span class="n">chain</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+		<span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indexlist</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">msk</span><span class="p">[</span><span class="n">struct</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fstindex</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span><span class="p">:</span>
+				<span class="c"># Delete</span>
+				<span class="k">del</span> <span class="n">struct</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="c"># Keep</span>
+				<span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%d</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">counter</span><span class="p">,</span><span class="n">struct</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span><span class="n">struct</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+				<span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+	<span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Rename_fasta"><a class="viewcode-back" href="../../labblouin.MATT2GM.html#labblouin.MATT2GM.Rename_fasta">[docs]</a><span class="k">def</span> <span class="nf">Rename_fasta</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	Rename the chains in the fasta file</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="c"># chain names</span>
+	<span class="n">chains</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span><span class="s">&#39;B&#39;</span><span class="p">,</span><span class="s">&#39;C&#39;</span><span class="p">,</span><span class="s">&#39;D&#39;</span><span class="p">,</span><span class="s">&#39;E&#39;</span><span class="p">,</span><span class="s">&#39;F&#39;</span><span class="p">,</span><span class="s">&#39;G&#39;</span><span class="p">,</span><span class="s">&#39;H&#39;</span><span class="p">,</span><span class="s">&#39;I&#39;</span><span class="p">,</span><span class="s">&#39;J&#39;</span><span class="p">,</span><span class="s">&#39;K&#39;</span><span class="p">,</span><span class="s">&#39;L&#39;</span><span class="p">,</span><span class="s">&#39;M&#39;</span><span class="p">,</span><span class="s">&#39;N&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span><span class="p">,</span><span class="s">&#39;P&#39;</span><span class="p">,</span><span class="s">&#39;Q&#39;</span><span class="p">,</span><span class="s">&#39;R&#39;</span><span class="p">,</span><span class="s">&#39;S&#39;</span><span class="p">,</span><span class="s">&#39;T&#39;</span><span class="p">,</span><span class="s">&#39;U&#39;</span><span class="p">,</span><span class="s">&#39;V&#39;</span><span class="p">,</span><span class="s">&#39;W&#39;</span><span class="p">,</span><span class="s">&#39;X&#39;</span><span class="p">,</span><span class="s">&#39;Y&#39;</span><span class="p">,</span><span class="s">&#39;Z&#39;</span><span class="p">,</span>
+		      <span class="s">&#39;1&#39;</span><span class="p">,</span><span class="s">&#39;2&#39;</span><span class="p">,</span><span class="s">&#39;3&#39;</span><span class="p">,</span><span class="s">&#39;4&#39;</span><span class="p">,</span><span class="s">&#39;5&#39;</span><span class="p">,</span><span class="s">&#39;6&#39;</span><span class="p">,</span><span class="s">&#39;7&#39;</span><span class="p">,</span><span class="s">&#39;8&#39;</span><span class="p">,</span><span class="s">&#39;9&#39;</span><span class="p">,</span><span class="s">&#39;0&#39;</span><span class="p">,</span><span class="s">&#39;~&#39;</span><span class="p">,</span><span class="s">&#39;!&#39;</span><span class="p">,</span><span class="s">&#39;@&#39;</span><span class="p">,</span><span class="s">&#39;#&#39;</span><span class="p">,</span><span class="s">&#39;$&#39;</span><span class="p">,</span><span class="s">&#39;%&#39;</span><span class="p">,</span><span class="s">&#39;^&#39;</span><span class="p">,</span><span class="s">&#39;&amp;&#39;</span><span class="p">,</span><span class="s">&#39;(&#39;</span><span class="p">,</span><span class="s">&#39;)&#39;</span><span class="p">,</span><span class="s">&#39;-&#39;</span><span class="p">,</span><span class="s">&#39;+&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="s">&#39;_&#39;</span><span class="p">,</span><span class="s">&#39;&lt;&#39;</span><span class="p">,</span><span class="s">&#39;&gt;&#39;</span><span class="p">,</span>
+		      <span class="s">&#39;/&#39;</span><span class="p">,</span><span class="s">&quot;&#39;&quot;</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">&quot;</span><span class="p">,</span><span class="s">&#39;?&#39;</span><span class="p">,</span><span class="s">&#39;&quot;&#39;</span><span class="p">,</span><span class="s">&#39;[&#39;</span><span class="p">,</span><span class="s">&#39;]&#39;</span><span class="p">,</span><span class="s">&#39;{&#39;</span><span class="p">,</span><span class="s">&#39;}&#39;</span><span class="p">,</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="s">&#39;b&#39;</span><span class="p">,</span><span class="s">&#39;c&#39;</span><span class="p">,</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="s">&#39;e&#39;</span><span class="p">,</span><span class="s">&#39;f&#39;</span><span class="p">,</span><span class="s">&#39;g&#39;</span><span class="p">,</span><span class="s">&#39;h&#39;</span><span class="p">,</span><span class="s">&#39;i&#39;</span><span class="p">,</span><span class="s">&#39;j&#39;</span><span class="p">,</span><span class="s">&#39;k&#39;</span><span class="p">,</span><span class="s">&#39;l&#39;</span><span class="p">,</span><span class="s">&#39;m&#39;</span><span class="p">,</span><span class="s">&#39;n&#39;</span><span class="p">,</span><span class="s">&#39;o&#39;</span><span class="p">,</span><span class="s">&#39;p&#39;</span><span class="p">,</span><span class="s">&#39;q&#39;</span><span class="p">,</span>
+		      <span class="s">&#39;r&#39;</span><span class="p">,</span><span class="s">&#39;s&#39;</span><span class="p">,</span><span class="s">&#39;t&#39;</span><span class="p">,</span><span class="s">&#39;u&#39;</span><span class="p">,</span><span class="s">&#39;v&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span><span class="s">&#39;z&#39;</span><span class="p">]</span>
+	<span class="c"># create a backup of the fasta</span>
+	<span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;cp </span><span class="si">%s</span><span class="s">.fasta ./</span><span class="si">%s</span><span class="s">.fasta_backup&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">prefix</span><span class="p">))</span>
+	<span class="c">#get the fasta file</span>
+	<span class="n">names</span><span class="o">=</span><span class="p">[]</span>
+	<span class="n">seqs</span><span class="o">=</span><span class="p">[]</span>
+	<span class="n">fasta</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">prefix</span><span class="o">+</span><span class="s">&#39;.fasta&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="p">)</span>
+	<span class="n">c</span><span class="o">=</span><span class="mi">0</span>
+	<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fasta</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+		<span class="n">bline</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+		<span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="o">+</span><span class="n">bline</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s">&#39;:&#39;</span><span class="o">+</span><span class="n">chains</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+		<span class="n">c</span><span class="o">+=</span><span class="mi">1</span>
+		<span class="n">seqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bline</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">bline</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
+
+	<span class="c">#open outfile</span>
+	<span class="n">out</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">prefix</span><span class="o">+</span><span class="s">&#39;.fasta&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+	<span class="c">#write the new fastafile</span>
+	<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)):</span>
+		<span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">+</span><span class="n">seqs</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+	<span class="n">out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../labblouin.MATT2GM.html#labblouin.MATT2GM.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">alphaC</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">redundant</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+	<span class="c"># Form the proper file names</span>
+	<span class="n">pdbfile</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s">&#39;.pdb&#39;</span>
+	<span class="n">fastafile</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s">&#39;.fasta&#39;</span>
+	<span class="n">mapfile</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s">&#39;.landmarks&#39;</span>
+	<span class="n">outfile</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s">&#39;.gm&#39;</span>
+
+	<span class="c"># Read all structures into RAM</span>
+	<span class="n">pdbs</span> <span class="o">=</span> <span class="n">PDBstructure</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">)</span>
+
+	<span class="c"># if redundant structure fasta need to rename the chains</span>
+	<span class="k">if</span> <span class="n">redundant</span><span class="p">:</span>
+		<span class="n">Rename_fasta</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+
+	<span class="c"># Get the alignment</span>
+	<span class="n">alns</span><span class="p">,</span> <span class="n">kalns</span> <span class="o">=</span> <span class="n">LoadFasta</span><span class="p">(</span><span class="n">fastafile</span><span class="p">)</span>
+
+	<span class="c"># Check that both the alignment and the pdb have the same chain names</span>
+	<span class="n">kpdbs</span><span class="o">=</span> <span class="n">pdbs</span><span class="o">.</span><span class="n">orderofchains</span>
+	<span class="n">newalns</span><span class="o">=</span><span class="p">{}</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">kalns</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">kpdbs</span><span class="p">):</span>
+		<span class="k">print</span> <span class="s">&#39;not the same number of chains in the PDB and FASTA files&#39;</span>
+		<span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kalns</span><span class="p">)):</span>
+			<span class="n">newalns</span><span class="p">[</span><span class="n">kpdbs</span><span class="p">[</span><span class="n">a</span><span class="p">]]</span> <span class="o">=</span> <span class="n">alns</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">kalns</span><span class="p">[</span><span class="n">a</span><span class="p">])</span>
+	<span class="n">alns</span> <span class="o">=</span> <span class="bp">None</span>
+	<span class="n">alns</span> <span class="o">=</span> <span class="n">newalns</span>
+				
+	<span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">pdbs</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span>
+		<span class="n">pdbs</span><span class="o">.</span><span class="n">IndexSeq</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="n">alns</span><span class="p">[</span><span class="n">chain</span><span class="p">])</span>
+
+	<span class="c"># Get the mask</span>
+	<span class="n">mask</span> <span class="o">=</span> <span class="n">GetMask</span><span class="p">(</span><span class="n">alns</span><span class="p">)</span>
+
+	<span class="c"># Delete unaliagned sites</span>
+	<span class="n">RemoveNonHomologous</span><span class="p">(</span><span class="n">pdbs</span><span class="p">,</span> <span class="n">alns</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">mapfile</span><span class="p">)</span>
+
+	<span class="c"># Write to an output</span>
+	<span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">pdbs</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span>
+		<span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="o">+</span><span class="n">prefix</span><span class="o">+</span><span class="s">&#39;:&#39;</span><span class="o">+</span><span class="n">chain</span><span class="o">+</span><span class="s">&#39;;&#39;</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">pdbs</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">chain</span><span class="p">]</span><span class="o">.</span><span class="n">GetIndices</span><span class="p">():</span>
+			<span class="c"># deleted item</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">pdbs</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">chain</span><span class="p">]</span><span class="o">.</span><span class="n">GetResidueByIndex</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+				<span class="k">continue</span>
+			<span class="c"># Write XYZ</span>
+			<span class="n">pdbs</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">chain</span><span class="p">][</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">Centroid</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">alphaC</span><span class="p">:</span>
+				<span class="n">ca</span><span class="o">=</span> <span class="n">pdbs</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">chain</span><span class="p">][</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="s">&#39;CA&#39;</span><span class="p">]</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">ca</span> <span class="o">=</span> <span class="n">pdbs</span><span class="o">.</span><span class="n">chains</span><span class="p">[</span><span class="n">chain</span><span class="p">][</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">centroid</span>
+
+			<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ca</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">ca</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">ca</span><span class="o">.</span><span class="n">z</span><span class="p">]:</span>
+				<span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%f</span><span class="s">;&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+		<span class="c"># End of line</span>
+		<span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+		
+<span class="c"># Application code</span></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+	<span class="c"># Read in the file prefix to process</span>
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+		<span class="k">print</span> <span class="s">&quot;Usage: MATT2GM.py prefix [options: -alphaC, -redundant]&quot;</span>
+		<span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+	<span class="n">alphaC</span><span class="o">=</span><span class="bp">False</span>
+	<span class="n">redundant</span><span class="o">=</span><span class="bp">False</span>
+	<span class="n">prefix</span><span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+	<span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+		<span class="k">if</span> <span class="n">arg</span> <span class="o">==</span> <span class="s">&#39;-alphaC&#39;</span><span class="p">:</span>
+			<span class="n">alphaC</span><span class="o">=</span><span class="bp">True</span>
+		<span class="k">elif</span> <span class="n">arg</span> <span class="o">==</span> <span class="s">&#39;-redundant&#39;</span><span class="p">:</span>
+			<span class="n">redundant</span><span class="o">=</span><span class="bp">True</span>
+	
+	<span class="n">main</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">alphaC</span><span class="p">,</span><span class="n">redundant</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LabBlouinTools 0.3.5 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

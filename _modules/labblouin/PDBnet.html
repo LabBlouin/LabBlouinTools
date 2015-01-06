@@ -70,7 +70,7 @@
 <span class="c"># Metadata</span>
 
 <span class="n">__author__</span>  <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Christian Blouin&#39;</span><span class="p">,</span><span class="s">&#39;Jose Sergio Hleap&#39;</span><span class="p">,</span><span class="s">&#39;Alexander Safatli&#39;</span><span class="p">]</span>
-<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;1.0.5&#39;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;1.1.0&#39;</span>
 
 <span class="c"># Constants</span>
 
@@ -401,15 +401,20 @@
 		<span class="sd">&quot;&quot;&quot; Force the object to load the residue if not present</span>
 <span class="sd">		in this structure. &quot;&quot;&quot;</span>
 
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span> <span class="n">parent</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+		<span class="k">else</span><span class="p">:</span>                   <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span>
 		<span class="n">handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">handle</span>
 		<span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">:</span>
-			<span class="k">if</span> <span class="p">(</span><span class="n">handle</span> <span class="ow">and</span> <span class="n">handle</span><span class="o">.</span><span class="n">isLargeFile</span><span class="p">())</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">)):</span>
-				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-					<span class="n">resid</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">readResidue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+			<span class="k">if</span> <span class="n">handle</span> <span class="ow">and</span> <span class="p">((</span><span class="n">handle</span><span class="o">.</span><span class="n">isLargeFile</span><span class="p">())</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">))):</span>
+				<span class="k">if</span> <span class="n">handle</span><span class="o">.</span><span class="n">hasResidue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">parent</span><span class="p">):</span>
+					<span class="n">resid</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">readResidue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">parent</span><span class="p">)</span>
+					<span class="n">resid</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+					<span class="k">return</span> <span class="n">resid</span>
+				<span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">):</span>
+					<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))]</span>
 				<span class="k">else</span><span class="p">:</span>
-					<span class="n">resid</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">readResidue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-				<span class="n">resid</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
-				<span class="k">return</span> <span class="n">resid</span>
+					<span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&#39;Could not find residue </span><span class="si">%s</span><span class="s"> in </span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s"> in file or structure.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+					<span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">parent</span><span class="p">)))</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))]</span>
 		<span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span>
 
@@ -625,9 +630,11 @@
 			<span class="n">cast</span> <span class="o">=</span> <span class="n">PDBmodel</span><span class="p">(</span><span class="n">modelname</span><span class="p">)</span>
 			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">model</span><span class="p">:</span> <span class="n">cast</span><span class="o">.</span><span class="n">AddResidue</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 			<span class="n">model</span> <span class="o">=</span> <span class="n">cast</span>
+		<span class="n">model</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">modelname</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">modelname</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">orderofmodels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">modelname</span><span class="p">)</span>
 		<span class="n">model</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="bp">self</span>
+		<span class="k">return</span> <span class="n">model</span>
 </div>
 <div class="viewcode-block" id="PDBstructure.AddResidueToChain"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBstructure.AddResidueToChain">[docs]</a>	<span class="k">def</span> <span class="nf">AddResidueToChain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
 
@@ -1282,6 +1289,9 @@
 		<span class="n">f</span> <span class="o">=</span> <span class="n">FASTAnet</span><span class="o">.</span><span class="n">FASTAstructure</span><span class="p">(</span><span class="n">fasta</span><span class="p">,</span><span class="n">uniqueOnly</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 		<span class="n">name</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">orderedSequences</span><span class="p">[</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
 
+		<span class="c"># Acquire all homologous positions as defined in FASTA.</span>
+		<span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterResidueAssociations</span><span class="p">(</span><span class="n">fasta</span><span class="p">,</span><span class="n">chains</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+
 		<span class="c"># Start writing.</span>
 		<span class="n">chainsSaw</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="n">ind</span>       <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
@@ -1561,6 +1571,12 @@
 		<span class="c"># Return metadata.</span>
 		<span class="k">return</span> <span class="p">(</span><span class="n">remarks</span><span class="p">,</span><span class="n">organism</span><span class="p">,</span><span class="n">taxid</span><span class="p">,</span><span class="n">mutant</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="PDBfile.hasResidue"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBfile.hasResidue">[docs]</a>	<span class="k">def</span> <span class="nf">hasResidue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chain</span><span class="p">,</span><span class="n">res</span><span class="p">,</span><span class="n">model</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+		
+		<span class="sd">&quot;&quot;&quot; Determine if a residue is present in the PDBfile. &quot;&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">model</span><span class="p">),</span><span class="n">chain</span><span class="p">,</span><span class="n">res</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residueIndices</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="PDBfile.readResidue"><a class="viewcode-back" href="../../labblouin.PDBnet.html#labblouin.PDBnet.PDBfile.readResidue">[docs]</a>	<span class="k">def</span> <span class="nf">readResidue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chain</span><span class="p">,</span><span class="n">res</span><span class="p">,</span><span class="n">model</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
 
 		<span class="sd">&quot;&quot;&quot; Parse a residue from the PDB file and return a PDBresidue. &quot;&quot;&quot;</span>
@@ -1706,7 +1722,7 @@
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2014, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
+        &copy; Copyright 2015, Christian Blouin, Alex Safatli, Jose Sergio Hleap.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
