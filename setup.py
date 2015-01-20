@@ -6,7 +6,7 @@
 
 from setuptools import setup
 
-VERSION = '0.3.5'
+VERSION = '0.3.7'
 DESCRIP = 'Bioinformatic python utilities modules, and libraries for use with Lab Blouin applications.'
 URL     = 'http://www.github.com/LabBlouin/LabBlouinTools'
 AUTHOR  = 'Christian Blouin et al.'

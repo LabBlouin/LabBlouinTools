@@ -29,6 +29,9 @@ def calculateTime(timevector):
     y,w,d,h,m,s = timevector
     return y*3.15569e7+w*604800+d*86400+h*3600+m*60+s
 
+def timeToString():
+    return datetime.now().strftime("%y-%m-%d %H:%M")
+
 class XMLfile():
     def __init__(self,xmlf,root='root'):
         self.path = xmlf
@@ -107,7 +110,7 @@ class logfile():
         numat = self.numat+1
         totnum = self.totalnum+1
         tim = timer.estimateRemainingTime(self.stime,numat,totnum) # time remaining
-        cur = datetime.now().strftime("%y-%m-%d %H:%M")
+        cur = timeToString()
         perc = (float(numat)/totnum)*100
         if temp: suff = '\r'
         else:    suff = ''

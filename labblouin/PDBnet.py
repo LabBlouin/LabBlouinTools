@@ -21,7 +21,7 @@ from scipy.spatial.distance import cdist
 # Metadata
 
 __author__  = ['Christian Blouin','Jose Sergio Hleap','Alexander Safatli']
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 
 # Constants
 
@@ -340,6 +340,16 @@ class PDBchain(object):
 
 		for res in o: self.AddResidue(res)
 
+	def populate(self):
+
+		""" If a large file, load all residues from memory into this
+		object. Otherwise, do nothing. """
+		
+		if self.structure:
+			handle = self.structure.handle
+			if handle and handle.isLargeFile():
+				self.residues = self.GetResidues()
+
 	def __str__(self):
 
 		get = lambda d: self.GetResidueByIndex(d)
@@ -444,16 +454,31 @@ class PDBmodel(PDBchain):
 		self.residues.append(resid)
 		self.indices.append(str(resid.index))
 
+	def ContactMap(self,thres=4.5):
+
+		""" Compute the contact map of this model (and any possible chains). """
+
+		contactmap = super(PDBmodel,self).ContactMap(thres)
+		for chain in self.GetChains(): # Deal with children.
+			contactmap.extend(chain.ContactMap(thres))
+		return sorted(contactmap, key=lambda e: (e[0], e[1]))
+
 	def __getitem__(self, i):
 
 		handle = self.structure.handle
 		if str(i) in self.indices:
-			if (handle and handle.isLargeFile()) or len(self.indices) > len(self.residues):
-				resid = handle.readResidue('',str(i),self.name)
-				resid.model = self.name
-				return resid
+			if handle and ((handle.isLargeFile()) or (len(self.indices) > len(self.residues))):
+				if handle.hasResidue('',str(i),self.name):
+					resid = handle.readResidue('',str(i),self.name)
+					resid.model = self.name
+					return resid
+				elif self.indices.index(str(i)) < len(self.residues):
+					return self.residues[self.indices.index(str(i))]
+				else:
+					raise KeyError('Could not find residue %s in MODEL %s in file or structure.' % (
+					str(i),str(self.name)))
 			return self.residues[self.indices.index(str(i))]
-		else: return None		
+		else: return None
 
 	def __len__(self):
 		
@@ -537,20 +562,48 @@ class PDBstructure(object):
 
 		c = self.GetChain(name)
 		if not name in self.chains:
-			raise KeyError('Chain does not exist in structure by that name!')
+			raise KeyError('Chain %s does not exist in structure!' % (name))
 		del self.chains[name]
 		self.orderofchains.remove(name)
 		return c
 
+	def RenameChain(self,name,newname):
+		
+		""" Rename a chain in the structure (by name). Returns the chain. """
+		
+		c = self.GetChain(name)
+		if not name in self.chains:
+			raise KeyError('Chain %s does not exist in structure!' % (name))
+		elif newname in self.chains:
+			raise KeyError('New name %s already exists in structure!' % (name))
+		self.chains[newname] = c
+		del self.chains[name]
+		self.orderofchains[self.orderofchains.index(name)] = newname
+		c.name = newname
+		return c
+
 	def RemoveModel(self,name):
 
-		""" Remove a model from the structure (by name). Returns the chain. """
+		""" Remove a model from the structure (by name). Returns the model. """
 
 		m = self.GetModel(name)
 		if not name in self.models:
-			raise KeyError('Model does not exist in structure by that name!')
+			raise KeyError('MODEL %s does not exist in structure!' % (str(name)))
 		del self.models[name]
 		self.orderofmodels.remove(name)
+		return m
+
+	def RenameModel(self,name,newname):
+		
+		""" Renames a model in the structure (by name). Returns the model. """
+
+		m = self.GetModel(name)
+		if not name in self.models:
+			raise KeyError('MODEL %s does not exist in structure!' % (str(name)))
+		self.models[newname] = m
+		del self.models[name]
+		self.orderofmodels[self.orderofmodels.index(name)] = newname
+		m.name = newname
 		return m
 
 	def AddChain(self,chainname,chain):
@@ -565,6 +618,8 @@ class PDBstructure(object):
 			cast = PDBchain(chainname)
 			for i in chain: cast.AddResidue(chain[i])
 			chain = cast
+		chain.name = chainname
+		chain.populate() # Ensure all residues are loaded (if large file).
 		self.chains[chainname] = chain
 		self.orderofchains.append(chainname)
 		chain.structure = self
@@ -582,6 +637,7 @@ class PDBstructure(object):
 			for i in model: cast.AddResidue(model[i])
 			model = cast
 		model.name = modelname
+		model.populate() # Ensure all residues are loaded (if large file).
 		self.models[modelname] = model
 		self.orderofmodels.append(modelname)
 		model.structure = self
@@ -1133,7 +1189,7 @@ class PDBstructure(object):
 
 		for ch in chains:
 			chain = things[ch]
-			for res in chain: yield chain[res]
+			for res in chain.IterResidues(): yield res
 
 	def IterAllResidues(self):
 
@@ -1375,7 +1431,7 @@ class PDBstructure(object):
 				chain = things[chain[0]]
 			else: chain = things[chain]
 			self.contactmap = chain.ContactMap(thres)
-		else: # A number of chains.
+		else: # A number of chains (or models).
 			iteratorA = self.IterResiduesFor(chain)
 			iteratorB = self.IterResiduesFor(chain)
 			for resA in iteratorA:
