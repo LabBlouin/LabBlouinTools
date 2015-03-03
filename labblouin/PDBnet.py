@@ -4,7 +4,7 @@
 PDB protein data.
 
 PDBnet Copyright (C) 2012 Christian Blouin
-Contributions by Alex Safatli and Jose Sergio Hleap
+Contributions by Alex Safatli, Jose Sergio Hleap, and Jack Ryan
 Major Refactoring (2014) done by Alex Safatli and Jose Sergio Hleap
 
 E-mail: cblouin@cs.dal.ca, safatli@cs.dal.ca, jshleap@dal.ca
@@ -13,6 +13,7 @@ Dependencies: Scipy, BioPython, FASTAnet (contained in LabBlouinTools) """
 from mmap import mmap as memoryMappedFile
 import numpy as np
 import sys, FASTAnet, math
+import matplotlib.pyplot as plt
 from math import sqrt
 from os.path import getsize as sizeOfFile
 from Bio.SeqUtils.ProtParam import ProteinAnalysis as PA
@@ -20,7 +21,7 @@ from scipy.spatial.distance import cdist
 
 # Metadata
 
-__author__  = ['Christian Blouin','Jose Sergio Hleap','Alexander Safatli']
+__author__  = ['Christian Blouin','Jose Sergio Hleap','Alexander Safatli','Jack Ryan']
 __version__ = '1.1.1'
 
 # Constants
@@ -99,7 +100,7 @@ class PDBterminator(PDBatom):
 	def __str__(self):
 
 		return 'TER   %5s %4s %3s %1s%4s' % (
-		    self.serial,'',self.lastresname,self.lastreschain,self.lastresind)
+		        self.serial,'',self.lastresname,self.lastreschain,self.lastresind)
 
 class PDBresidue:
 
@@ -344,7 +345,7 @@ class PDBchain(object):
 
 		""" If a large file, load all residues from memory into this
 		object. Otherwise, do nothing. """
-		
+
 		if self.structure:
 			handle = self.structure.handle
 			if handle and handle.isLargeFile():
@@ -375,7 +376,7 @@ class PDBchain(object):
 					return self.residues[self.indices.index(str(i))]
 				else:
 					raise KeyError('Could not find residue %s in %s:%s in file or structure.' % (
-					str(i),str(self.name),str(parent)))
+					        str(i),str(self.name),str(parent)))
 			return self.residues[self.indices.index(str(i))]
 		else: return None
 
@@ -392,8 +393,8 @@ class PDBmodel(PDBchain):
 
 	def __init__(self,name):
 
-		if type(name) != int: raise TypeError('Model names should be integers.')
-		elif name < 0: raise ValueError('Model name should be zero or a positive integer.')
+		if type(name) != int or name < 0: 
+			raise ValueError('Model name should be zero or a positive integer.')
 		super(PDBmodel,self).__init__(name)
 		self.chains     = list()
 		self.chainNames = list()
@@ -476,12 +477,12 @@ class PDBmodel(PDBchain):
 					return self.residues[self.indices.index(str(i))]
 				else:
 					raise KeyError('Could not find residue %s in MODEL %s in file or structure.' % (
-					str(i),str(self.name)))
+					        str(i),str(self.name)))
 			return self.residues[self.indices.index(str(i))]
 		else: return None
 
 	def __len__(self):
-		
+
 		l = len(self.indices)
 		for c in self.GetChains():
 			l += len(c)
@@ -490,7 +491,7 @@ class PDBmodel(PDBchain):
 	def __str__(self):
 
 		model = 'MODEL%9s\n' % (str(self.name)) + super(
-		    PDBmodel,self).__str__()
+		        PDBmodel,self).__str__()
 		for ch in self.chains: model += str(ch)
 		return model + 'ENDMDL\n'
 
@@ -568,9 +569,9 @@ class PDBstructure(object):
 		return c
 
 	def RenameChain(self,name,newname):
-		
+
 		""" Rename a chain in the structure (by name). Returns the chain. """
-		
+
 		c = self.GetChain(name)
 		if not name in self.chains:
 			raise KeyError('Chain %s does not exist in structure!' % (name))
@@ -594,7 +595,7 @@ class PDBstructure(object):
 		return m
 
 	def RenameModel(self,name,newname):
-		
+
 		""" Renames a model in the structure (by name). Returns the model. """
 
 		m = self.GetModel(name)
@@ -1450,9 +1451,173 @@ class PDBstructure(object):
 					done.append((resA,resB))
 					done.append((resB,resA))
 			self.contactmap = sorted(self.contactmap, key=lambda element: (
-			    element[0], element[1]))
+			        element[0], element[1]))
 
 		return self.contactmap
+
+	def ContactMatrix(self, index, fname):
+
+		'''
+                Computes a contact matrix for a single state of a pdb file, and saves it as a text file that can be read by other methods.
+
+                :param index: the first actual residue index of the chain to be analyzed (so that array does not go out of bounds)
+                :param fname: name of the protein file, so that a properly formatted numpy array text file name can be passed.
+                :returns: a numpy matrix of the contacts computed.
+
+                '''
+
+		if len(self.GetModelNames()) != 0:
+			plength = self.GetModel(self.GetModelNames()[0]).__len__()	# using models
+			start = int(self.GetModel(self.GetModelNames()[0]).GetResidues()[0].index)
+		else:
+			plength = self.GetChain(self.GetChainNames()[0]).__len__()	# using chains
+			start = int(self.GetChain(self.GetChainNames()[0]).GetResidues()[0].index)
+
+		matrix = np.zeros((plength, plength))    # Initialize a numpy array of zeroes to hold values.
+
+		contact_tuples = self.Contacts(index)
+		for i in range(0, len(contact_tuples)):
+			# add the found contacts into the matrix (-1 for proper indexing)
+			matrix[(contact_tuples[i][0] - start), (contact_tuples[i][1] - start)] += 1
+
+		np.save('arrays/{}-contactmatrix-state{}.npy'.format(fname, index), matrix)
+
+		return matrix
+
+
+
+	def ProbCM(self, fname):
+
+		"""
+		Compute a probabilistic contact matrix -- a matrix representation of
+		every protein state's contact matrix aggregated together, and divided
+		by the number of states present in the protein. Gives a decimal frequency
+		of the presence of a contact over all states.
+
+		:returns: a numpy matrix holding probabilistic values for all contact frequencies. 
+		"""
+
+		# Check to see if file uses Models or Chains
+
+		if len(self.GetModelNames()) != 0:
+			plength = self.GetModel(self.GetModelNames()[0]).__len__()	# using models
+			pstates = self.GetModelNames()
+			# find the index name of the first residue
+			# (so that the matrix does not go out of bounds)
+			# Because sometimes the first index name is not 0
+			start = int(self.GetModel(self.GetModelNames()[0]).GetResidues()[0].index)
+		else:
+			plength = self.GetChain(self.GetChainNames()[0]).__len__()	# using chains
+			pstates = self.GetChainNames()
+			start = int(self.GetChain(self.GetChainNames()[0]).GetResidues()[0].index)
+
+
+		numstates = len(pstates)	# number of protein states present in this PDB file
+
+		print "plength: {}".format(plength)
+		print "pstates: {}".format(numstates)
+
+		matrix = np.zeros((plength, plength))    # Initialize a numpy array of zeroes to hold values.
+
+		# fill the contact matrix
+		for i in range(0, numstates):
+			contact_tuples = self.Contacts(pstates[i])
+			print 'Progress: {}/{} states'.format(i+1,numstates)
+			for j in range(0, len(contact_tuples)):
+				# add the found contacts into the matrix (-1 for proper indexing)
+				matrix[(contact_tuples[j][0] - start), (contact_tuples[j][1] - start)] += 1
+
+		# divide each element in the contact matrix by the number of states, to get frequency ratio
+		for i in range(0, plength):
+			for j in range(0, plength):
+				matrix[i][j] /= numstates
+
+		np.save('arrays/{}-ProbCM'.format(fname), matrix)
+
+		return matrix
+
+
+
+	def Heatmap(self, matrixfile, fname):
+
+		"""
+		Create a visual 2D histogram representation
+		(a "heatmap") of a probabilistic contact matrix.
+		Display the heatmap to the screen.
+
+		:param matrix: A numpy contact matrix file
+		"""
+
+		matrix = np.load(matrixfile)
+
+		plt.matshow(matrix)
+		plt.colorbar()
+		plt.savefig('figures/{}-heatmap.jpg'.format(fname))
+		plt.show()
+
+
+
+
+	def Heatmap_negative(self, matrixfile, subtractmatrixfile, fname):
+
+		"""
+		Create a visual 2D histogram representation
+		(a "heatmap") of a probabilistic contact matrix,
+		and take the 'negative' of this matrix, given a
+		specific model/chain. Display the heatmap
+		to the screen.
+
+		:param matrixfile: A numpy contact matrix file (can be computed using ContactMatrix() or ProbCM().)
+		:param subtractmatrix: the negative protein state's contact matrix file, computed with ContactMatrix().
+		"""
+
+		matrix = np.load(matrixfile)
+		subtractmatrix = np.load(subtractmatrixfile)
+
+		if len(self.GetModelNames()) != 0:
+			plength = self.GetModel(self.GetModelNames()[0]).__len__()
+		else:
+			plength = self.GetChain(self.GetChainNames()[0]).__len__()
+
+		finalmatrix = np.subtract(matrix, subtractmatrix)
+
+		plt.matshow(finalmatrix)
+		plt.colorbar()
+		plt.savefig('figures/{}-negative_heatmap.jpg'.format(fname))          
+		plt.show()
+
+
+	def Histogram(self, matrixfile, nbins, fname):
+
+		"""
+		 Create a visual 1D histogram representation
+		 (a "bar chart") of a probabilistic contact matrix.
+		 Probabilistic contact matrix can be generated
+		 using the ProbCM method. Display the heatmap
+		 to the screen.
+
+		 :param matrix: A numpy contact matrix (can be computed using ContactMatrix() or ProbCM().)
+		 :param nbins: number of bins to display in histogram.
+                :param fname: name of the protein file, so that a properly formatted numpy array text file name can be passed.
+		 """
+
+		matrix = np.load(matrixfile)
+
+		ml = matrix.tolist()
+		list = []
+
+		for i in range(0, len(ml)):
+			for j in range(0, len(ml[i])):
+				list.append(ml[i][j])
+
+
+		plt.hist(list, bins=nbins)
+		plt.xlabel('Frequency of Contacts Over All States')
+		plt.ylabel('Density of Frequency')
+		plt.savefig('figures/{}-histogram.jpg'.format(fname))
+		plt.show()
+
+
 
 	def WriteContacts(self, filename):
 
@@ -1579,9 +1744,9 @@ class PDBfile(object):
 		return (remarks,organism,taxid,mutant)
 
 	def hasResidue(self,chain,res,model=-1):
-		
+
 		""" Determine if a residue is present in the PDBfile. """
-		
+
 		return ((int(model),chain,res) in self.residueIndices)
 
 	def readResidue(self,chain,res,model=-1):

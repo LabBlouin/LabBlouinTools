@@ -37,6 +37,7 @@ except:
 	print "Dependency PDBnet not installed or labblouin folder not in pythonpath. Please make sure is set up correctly"
 
 try:
+	from mpl_toolkits.mplot3d import Axes3D
 	from matplotlib.patches import Ellipse
 	import matplotlib.pyplot as plt
 	import matplotlib.cm as cm
@@ -54,8 +55,7 @@ from time import sleep
 
 # Constants ######################################################################################
 colors=['b','r','k','g','y','m','c']
-hexa  =[
-    '#ED9121', '#EE8262', '#EE1289', '#556B2F', '#FF8C00', '#8B7B8B', '#0000EE', '#EED5D2', 
+hexa  =['#ED9121', '#EE8262', '#EE1289', '#556B2F', '#FF8C00', '#8B7B8B', '#0000EE', '#EED5D2', 
     '#BA55D3', '#912CEE', '#2F4F4F', '#D15FEE', '#008B8B', '#B23AEE', '#8B7765', '#54FF9F',
     '#8B8386', '#FF4040', '#EEA9B8', '#388E8E', '#6E8B3D', '#33A1C9', '#EE3A8C', '#FF00FF',
     '#436EEE', '#8B864E', '#808000', '#1874CD', '#BCD2EE', '#A9A9A9', '#F4A460', '#FF3030',
@@ -117,6 +117,7 @@ colors.extend(hexa)
 # END Constants ##################################################################################
 
 # Functions bit###################################################################################
+
 class ORD:
 	'''
 	A class for the most popular ordination methods using PDBnet instaces or gm files.
@@ -173,7 +174,7 @@ class ORD:
 		fout.close()
 		pickle.dump(self, open('%s.current%s.pckl'%(self.prefix,self.type),'wb'))
 
-	def MDS(self,options,typeof='classic',dist=False,groups=None,):
+	def MDS(self,options,typeof='classic',dist=False,groups=None):
 		'''
 		Perform Multidimensional Scaling wither classic (PCoA) or non-metric.
 		If you have the upper triangle of a distance matrix as a dictionary,
@@ -223,7 +224,25 @@ class ORD:
 		self.explained_variance_ratio = self.clf.explained_variance_ratio_
 		self.Plot(options,groups=groups)
 		self.Store()
-
+	
+	def loopoverpcs(self,prefix,comp,options):
+		samemarker = ['b.','r.','k.','g.','y.','m.','c.']
+		for z in zip([0,1,0],[1,2,2]):
+			fig2 = plt.figure(dpi=options.dpi)
+			ax2  = fig2.add_subplot(111)
+			ax2.spines['top'].set_color('none')
+			ax2.xaxis.tick_bottom()
+			ax2.spines['right'].set_color('none')
+			ax2.yaxis.tick_left()
+			for i in xrange(len(comp)):
+				point = comp[i,:]
+				color = str(i/float(len(comp)))				
+				ax2.plot(point[z[0]],point[z[1]],c=color,marker=samemarker,markersize=options.markersize,linestyle='None',alpha=a)
+				ax.set_xlabel('PC %d (%.2f%%)'%(z[0],self.explained_variance_ratio[0]*100), fontsize=fontsize)
+				ax.set_ylabel('PC %d (%.2f%%)'%(z[1],self.explained_variance_ratio[1]*100), fontsize=fontsize)				
+			fig2.savefig(prefix+'PC%d.PC%d.%s'%(z[0],z[1],options.of))
+			fig2 = plt.figure(dpi=options.dpi)	
+				
 
 	def Plot(self,options,groups=None):
 		'''
@@ -236,6 +255,7 @@ class ORD:
 		fontsize = options.textsize
 
 		components=self.fit
+		samemarker = ['b.','r.','k.','g.','y.','m.','c.']
 		markers = ['k.','b+','g*','r.','c+','m*','y.','k+','b*','g.','r+','c*','m.','y+','k*','b.',
 		           'g+','r*','c.','m+','y*']	
 		if options.interactive:
@@ -243,38 +263,48 @@ class ORD:
 		if components.shape[1] >= 3: 
 			dim = 3
 			fig = plt.figure(dpi=dpi)
-			ax  = fig3D.gca(projection='3d')
+			#ax  = fig.gca(projection='3d')
+			ax = Axes3D(fig)
+			
 
 		else: 
 			dim = 2
 			fig = plt.figure(dpi=dpi)
 			ax  = fig.add_subplot(111)
+			ax.spines['top'].set_color('none')
+			ax.xaxis.tick_bottom()
+			ax.spines['right'].set_color('none')
+			ax.yaxis.tick_left()
 
 		comp = components[:, 0:dim]
 
 		#if MD:
 		#	colormap=cm.gray
+		if options.samemarker:
+			markers = samemarker
 
-		ax.spines['top'].set_color('none')
-		ax.xaxis.tick_bottom()
-		ax.spines['right'].set_color('none')
-		ax.yaxis.tick_left()
 		if options.interactive:
 			draw()
-		if groups != None:
+		if groups != None and dim == 2:			
 			if len(set(groups)) <= len(markers):
-				g=set(groups)
-				for gr in sorted(g):
-					c  = markers[list(g).index(gr)][0]
-					m  = markers[list(g).index(gr)][1]
+				g=sorted(list(set(groups)))
+				for gr in g:
+					c  = markers[g.index(gr)][0]
+					m  = markers[g.index(gr)][1]
 					ms = options.markersize + 10
-					#d[gr]=markers[list(g).index(gr)]
-					ax.scatter(comp[np.where(groups == gr),0],comp[np.where(groups == gr),1], c= c, marker=m,label=gr,s=ms)
-							#markersize=options.markersize,linestyle='None',label=gr)#c=color,marker=marker
+					#d[gr]=markers[list(g).index(gr)]	
+					x = comp[np.where(groups == gr),0]
+					y = comp[np.where(groups == gr),1]
+					ax.scatter(x, y, c= c, marker=m,label=gr,s=ms)
+					if options.numbered:
+						gg = len(comp[np.where(groups == gr)])	
+						for num in range(gg):
+							ax.annotate('%d'%(num),xy=(list(x[0])[num],list(y[0])[num]),xycoords='data')
+					#markersize=options.markersize,linestyle='None',label=gr)#c=color,marker=marker
+						
 
-		elif dim == 2:
-			if options.interactive:
-				ion()
+		elif options.interactive:
+			ion()
 			count=-1
 			step = range(5,len(comp),50)
 			for i in xrange(len(comp)):
@@ -302,7 +332,8 @@ class ORD:
 						sleep(1)
 						draw()
 					elif i in step:
-						draw()
+						draw()				
+
 
 
 			if options.MD:
@@ -310,23 +341,37 @@ class ORD:
 				ax.plot(last[0] , last[1],c="blue",marker=r'$\lambda$',markersize=options.markersize,linestyle='None')
 
 			#ax.scatter(comp[:,0],comp[:,1],c=color,cmap = colormap, s=15)
-
+			
 			groups=[None]*len(self.labels)
-		else:
-			ax.scatter(comp[:,0],comp[:1],comp[:2],c=color,s=15)
-			groups=[None]*len(self.labels)			
-
+		elif groups != None and dim == 3:
+			g=sorted(list(set(groups)))
+			for gr in g:
+				c  = markers[g.index(gr)][0]
+				m  = markers[g.index(gr)][1]
+				ms = options.markersize + 10
+				x = comp[np.where(groups == gr),0]
+				y = comp[np.where(groups == gr),1]
+				z = comp[np.where(groups == gr),2]
+				ax.scatter(x,y,z,color=c,marker=m,label=gr,s=ms)
+				if options.rotate > 0:
+						for ii in xrange(0,360,options.rotate):
+							ax.view_init(elev=0, azim=ii)
+							ax.set_xlabel('PC 1 (%.2f%%)'%(self.explained_variance_ratio[0]*100), fontsize=fontsize)
+							ax.set_ylabel('PC 2 (%.2f%%)'%(self.explained_variance_ratio[1]*100), fontsize=fontsize)
+							ax.set_zlabel('PC 3 (%.2f%%)'%(self.explained_variance_ratio[2]*100), fontsize=fontsize)
+							fig.savefig(self.prefix + "rotation%d"%(ii) + ".%s"%(options.of),dpi=dpi)				
+					
 		fout=open('%s.equivalences'%self.prefix,'w')
 		if not options.MD:
 			for l in range(len(self.labels)):
 				ax.annotate(l,comp[l,]+0.1,fontsize=fontsize)
 				fout.write('%s\t%s\t%s'%(l,self.labels[l],groups[l]))
-
+					
 		if self.type == 'PCA':
 			ax.set_xlabel('PC 1 (%.2f%%)'%(self.explained_variance_ratio[0]*100), fontsize=fontsize)
 			ax.set_ylabel('PC 2 (%.2f%%)'%(self.explained_variance_ratio[1]*100), fontsize=fontsize)
 			if dim >= 3:
-				ax.set_zlabel('PC 3(%.2f)'%(self.explained_variance_ratio[2]), fontsize=fontsize)
+				ax.set_zlabel('PC 3 (%.2f%%)'%(self.explained_variance_ratio[2]*100), fontsize=fontsize)
 				ax.view_init(30, 45)
 		else:
 			ax.set_xlabel('Axis 1', fontsize=fontsize)
@@ -338,10 +383,12 @@ class ORD:
 			#handles, labels = ax.get_legend_handles_labels()
 			ax.legend(loc=0, fancybox=True, shadow=True, fontsize='small')
 
-
-		fig.tight_layout()
+		if dim == 2:
+			fig.tight_layout()
 		#plt.show()
-		fig.savefig(self.prefix+'_%s.%s'%(self.type,options.of), dpi=dpi)
+				
+		else:
+			fig.savefig(self.prefix+'_%s.%s'%(self.type,options.of), dpi=dpi)
 		fout.close()		
 
 		if options.MD:
@@ -355,9 +402,7 @@ class ORD:
 			            xytext=(float(lastx)+10, float(lasty)+40),
 			            arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
 			fig.savefig(self.prefix+'_%s_startStop.%s'%(self.type,options.of), dpi=dpi)
-
-
-
+		
 
 	def PlotXDA(self,membership,options,group_labels=None,):
 		'''
@@ -371,11 +416,13 @@ class ORD:
 		typeof=self.type
 		fontsize=options.textsize
 		MD=options.MD
+		legend = options.legend
+		numbered = options.numbered
 
 		if group_labels:
 			target_names = group_labels
 		else:
-			target_names=list(set(membership))	
+			target_names=sorted(list(set(membership)))	
 		fig = plt.figure()
 		ax = fig.add_subplot(111)
 		for c, i, target_name in zip(colors, list(set(membership)), target_names):
@@ -386,13 +433,19 @@ class ORD:
 				for j in xrange(1, stds+1):
 					ax.add_artist(self.ellipses[i][j])
 				ax.scatter(x, Y, c=c, label=target_name)
+				if numbered:
+					for num in range(len(sub)):
+						ax.annotate('%d'%(num),xy=(list(x)[num],list(Y)[num]),xycoords='data')				
+				if legend:
+					plt.legend(target_names,bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 		ax.spines['top'].set_color('none')
 		ax.xaxis.tick_bottom()
 		ax.spines['right'].set_color('none')
 		ax.yaxis.tick_left()
+	
 		if typeof == 'LDA':
 			ax.set_xlabel('LD 1', fontsize=fontsize)
-			ax.set_ylabel('LD 2', fontsize=fontsize)
+			ax.set_ylabel('LD 2', fontsize=fontsize)			
 		else:
 			ax.set_xlabel('QD 1', fontsize=fontsize)
 			ax.set_ylabel('QD 2', fontsize=fontsize)
@@ -406,8 +459,7 @@ class ORD:
 
 			ax.annotate('Final conformation', xy=(lastx, lasty),
 			            xytext=(float(lastx)+10, float(lasty)+40),
-			            arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))
-
+			            arrowprops=dict(facecolor='blue', shrink=0.05, frac=0.15))		
 		plt.show()
 		fig.savefig(self.prefix+'_%s.%s'%(typeof,options.of), dpi=dpi)
 
@@ -463,8 +515,8 @@ class ORD:
 		self.type='LDA'
 		lda = LDA(n_components=2)
 		self.fit = lda.fit(self.data, membership).transform(self.data)
-		if ellipses:
-			self.getEllipses(stds)
+		if options.ellipses:
+			self.getEllipses(options.std)
 		self.PlotXDA(membership, options, group_labels=group_labels)
 		self.Store()
 
@@ -472,8 +524,8 @@ class ORD:
 		self.type = 'QDA'
 		qda = QDA()
 		self.fit = qda.fit(self.data, membership).predict(self.data)
-		if ellipses:
-			self.getEllipses(stds)
+		if options.ellipses:
+			self.getEllipses(options.std)
 		self.PlotXDA(membership,options,group_labels=group_labels)
 		self.Store()
 # END Functions bit###############################################################################
@@ -496,7 +548,7 @@ if __name__ == "__main__":
 	opts.add_option('-d','--dpi',dest='dpi', action="store", default=300, type=int,
 	                help='Modify the dpi of the plots. Default: 300')	
 	opts.add_option('-c','--ncomp',dest='ncomp', action="store", default=2, help='Modify the number'\
-	                ' of components to be estimated. Default: 2')		
+	                ' of components to be estimated. Default: 2',type=int)		
 	opts.add_option('-g','--groups',dest='groups', action="store", default=None, help='Provide a '\
 	                'grouping vector to color plots by. This file is a space sepatated format, just'\
 	                ' as the membership file. Default=No')	
@@ -514,9 +566,21 @@ if __name__ == "__main__":
 	                ', jpg: Joint Photographic Experts Group, raw: Raw RGBA bitmap, jpeg: Joint Photographic Experts Group'\
 	                'png: Portable Network Graphics, ps: Postscript, svg: Scalable Vector Graphics, eps: Encapsulated Postscript'\
 	                ', rgba: Raw RGBA bitmap, pdf: Portable Document Format, tif: Tagged Image File Format. Default = pdf')		
+	opts.add_option('-l','--legend',dest='legend',action='store_true',default=False,help='Indicate if you want to add a legend to the '\
+	                'XDA plot. Default = False')
+	opts.add_option('--sm', '--samemarker', dest='samemarker', action='store_true', default=False,help='This feature is avaible if you want to plot XDA with'\
+	                ' the same marker (dot) but with different colors when # of clusters <= 7. Also, the colors match with a LDA plot with the same data provided.'\
+	                ' Default = False.')
+	opts.add_option('-n','--numbered',dest='numbered',action='store_true',default=False, help='This feature is available if you want'\
+	                ' the PCA or XDA plot with model names indicated. Default = False.')
+	opts.add_option('-r','--rotate',dest='rotate',action='store',default=0,help='This option helps you'\
+	                ' create a series of snapshots of rotating the 3D PCA plot. Please indicate the stepsize (from 0 to 360 deg).'\
+	                ' Default = 0',type=int)
+	opts.add_option('-L','--loop',dest='loop',action='store_true',default=False,help='This feature is available to'\
+	                ' plot PC1 vs PC2, PC2 vs PC3 and PC1 vs PC3. Default=False')
 
 	options, args = opts.parse_args()
-
+	ncomp = int(options.ncomp)
 	if options.type == 'All' and not options.mem:
 		print 'You choose to use all the functions but did not provide a membership file.'
 		sys.exit()
@@ -527,7 +591,7 @@ if __name__ == "__main__":
 	else:
 		groups=None
 	if not G('*.pckl'):
-		O = ORD(args[0], args[1])
+		O = ORD(args[0], args[1],n_comp=ncomp)
 		if options.type == 'All' or options.type == 'PCoA': O.MDS(options,groups=groups)
 		if options.type == 'All' or options.type == 'nMDS': O.MDS(options,typeof='non-metric',groups=groups)
 		if options.type == 'All' or options.type == 'PCA' : O.PCA(options,groups=groups)
@@ -535,8 +599,9 @@ if __name__ == "__main__":
 		if options.type == 'All' or options.type == 'QDA' : O.QDA(membership,options,group_labels=groups)
 	else:
 		for i in G('*.pckl'):
-			O = pickle.load(open(i))
+			O = pickle.load(open(i,'rb'))
 			if 'DA' in i:	
 				O.PlotXDA(membership,options)
 			else:
 				O.Plot(options,groups=groups)
+		
