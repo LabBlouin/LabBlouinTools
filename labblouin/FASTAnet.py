@@ -84,6 +84,7 @@ class FASTAstructure:
         self.sequences        = {}
         self.orderedSequences = []
         self.sequenceNames    = {}
+        self.full             = {}
         self.uniqueOnly       = uniqueOnly
         self.curate           = curate
 
@@ -98,24 +99,34 @@ class FASTAstructure:
     def getSequences(self):        return self.orderedSequences
     def getSequenceByName(self,n): return self.sequenceNames[n]
 
-    def getStrictlyUngappedPositions(self,seqInds=None):
+    def getStrictlyUngappedPositions(self,seqInds=None,absolutepos=False):
 
         ''' Acquire the positions of all strictly ungapped sites. If parameter
         is set, expects a list of what sequences (by index) you are checking. 
-        Defaults to all sequences. '''
+        Defaults to all sequences Abosulutepos will return also a dictionary of
+        the indices in the ungap sequence'''
 
         if seqInds == None:
             seqInds = range(len(self.sequences))
         seqs = self.orderedSequences
         mask = {}
         posv = []
+        abso = {}
         for n in seqInds:
             seq = seqs[n].sequence
+            name = seqs[n].name
             mask[n] = []
+            abso[name] = []
+            c = 0
             for i in xrange(len(seq)):
                 char = seq[i]
-                if char.isalpha(): mask[n].append(True)
-                else: mask[n].append(False)
+                if char.isalpha(): 
+                    mask[n].append(True)
+                    abso[name].append(c)
+                    c+=1
+                else: 
+                    mask[n].append(False)
+                    abso[name].append(None)
         alnlen = len(mask.values()[0])
         for pos in xrange(alnlen):
             homologous = True
@@ -124,7 +135,8 @@ class FASTAstructure:
                     homologous = False
                     break
             if homologous: posv.append(pos)       
-        return posv
+        if absolutepos: return posv, abso
+        else: return posv
 
     def readFile(self,fin):
 
@@ -173,6 +185,7 @@ class FASTAstructure:
         # a different or same name.
         f = FASTAsequence(name,seq)
         seqs = self.sequences.values()
+        self.full[name]=seq
         if name not in self.sequences:
             if (f not in seqs or not self.uniqueOnly):
                 self.sequences[name] = f
@@ -253,8 +266,8 @@ class FASTAstructure:
     def __len__(self):
 
         ''' Return the number of sequences in the FASTA object. '''
-
-        return len(self.sequences)
+        if self.uniqueOnly: return len(self.sequences)
+        else: return len(self.full.keys())
 
     def __str__(self):
 
