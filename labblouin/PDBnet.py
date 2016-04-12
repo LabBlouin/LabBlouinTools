@@ -971,9 +971,9 @@ class PDBstructure(object):
 	__slots__ = ('chains','orderofchains','models','orderofmodels','remarks',
 		         'filepath','organism','taxid','mutation','EC_code','DOI','PMID','contactmap','handle',
 		         'ismodel','FastaAssociations', 'fastaresiduehomologs', 'FastaChainEquivalence', 'array',
-	             'rmsd_matrix','average_rmsd')
+	             'rmsd_matrix','average_rmsd','verbose')
 
-	def __init__(self, filein='',ismodel=False):
+	def __init__(self, filein='',ismodel=False, verbose=False):
 
 		# Attributes.
 		self.filepath      = filein
@@ -991,6 +991,7 @@ class PDBstructure(object):
 		self.FastaAssociations = {}
 		self.fastaresiduehomologs = {}
 		self.FastaChainEquivalence = {}
+		self.verbose=verbose
 		# Read a file?
 		if filein != '':
 			self.ReadFile(filein)
@@ -1429,8 +1430,8 @@ class PDBstructure(object):
 				resdict[thing] = finalreslist
 
 			else:
-
-				print 'mismatch! model/chain {} has no FASTA match'.format(thing)
+				print 'mismatch! model/chain {} has no FASTA match'.format(
+				    thing)
 				resdict[thing] = None
 
 		# Assign the resdict to the class variable
@@ -1441,7 +1442,8 @@ class PDBstructure(object):
 	
 	def _asArray(self, fasta, chains=None, CA=False):
 		'''
-		Transform the structure into a numpy array of shape = (n_chains, n_atoms, 3)
+		Transform the structure into a numpy array of shape = (n_chains, 
+		n_atoms, 3)
 		:param fasta: string with the filename of the fasta file or :class FASTAnet.FASTAstructure instance
 		:param list chains: list of particular chains to be transformed
 		:param bool CA: Whether to use alpha carbon or centroid. By default is centroid
@@ -2051,19 +2053,23 @@ class PDBstructure(object):
 		# Acquire all homologous positions as defined in FASTA.
 		#items = self._iterResidueAssociations(fasta,chains,f)
 		if not self.IsTrajectory():
-			print 'isn\'t a trajectory. doing FastaPDBMatch...'
+			if self.verbose:
+				print 'isn\'t a trajectory. doing FastaPDBMatch...'
 			items = self._FastaPdbMatch(fasta)
 		else:
-			print 'is a trajectory. generating data outside of\nFastaPDBMatch. generating data...'
-			print 'making item dictionary...'
+			if self.verbose:
+				print 'is a trajectory. generating data outside of\nFastaPDBMatch. generating data...'
+				print 'making item dictionary...'
 			items = {model:
 					[int(r.index) for r in self.models[model].residues]
 					for model in self.models}
-			print 'making fastaresiduehomologs...'
+			if self.verbose:
+				print 'making fastaresiduehomologs...'
 			self.fastaresiduehomologs = {chain:
 										[res.index for res in self.GetModel(chain).residues]
 										for chain in orderofthings}
-			print 'making FastaChainEquivalence...'
+			if self.verbose:
+				print 'making FastaChainEquivalence...'
 			self.FastaChainEquivalence = {chain: chain for chain in orderofthings}
 
 		chainsSaw = []
@@ -2074,7 +2080,7 @@ class PDBstructure(object):
 			item = self.FastaChainEquivalence[chain]
 			thing= things[chain]
 			for r in self.fastaresiduehomologs[chain]:
-				if self.ismodel:
+				if self.IsTrajectory():
 					res = thing.GetResidueByIndex(r)
 				else:
 					res = thing.GetResidueByPosition(r)
@@ -2255,13 +2261,15 @@ class PDBstructure(object):
 		if not scaled:
 			return [round(x,2) for x in (FD)]
 		else:
-			return [round(x,3) for x in (2*(FD - min(FD))/(max(FD) - min(FD)) - 1)]    
+			return [round(x,3) for x in (2*(FD - min(FD))/(max(FD) - min(FD)) 
+			                             - 1)]    
 
-	def Map2Protein(self,outname,lis,chain,fasta):
+	def Map2Protein(self,outname,lis,chain,fasta,betadef=0.00,occdef=0.00):
 		"""
-		Map a list of values (lis), that must have a lenght equal to that of the number
-		of residues in the PDB to be mapped (chain). If a list of list is provided, the 
-		first list will be mapped as the beta factor and the second as occupancy
+		Map a list of values (lis), that must have a lenght equal to that of 
+		the number of residues in the PDB to be mapped (chain). If a list of 
+		list is provided, the first list will be mapped as the beta factor and 
+		the second as occupancy
 		"""
 		# Check if more than one thing need to be included
 		if len([lis]) == 1:
@@ -2269,39 +2277,43 @@ class PDBstructure(object):
 
 		# Construct empty PDBstructure.
 		dummy = PDBstructure()
-
+		
+		if not self.fastaresiduehomologs:
+			_ = self._FastaPdbMatch(fasta)
 		# Reset beta and ocuppancy
 		if self.models:
 			m = self.GetModel(chain)
 			newm = dummy.NewModel(m.name)
 			for r in m.IterResidues():
 				for a in r.GetAtoms():
-					a.tempFactor=0.00
+					a.tempFactor=betadef
 					if len(lis) > 1:
-						a.occupancy=0.00
+						a.occupancy=occdef
 				newm.AddResidue(r)
 		else:
 			m = self.GetChain(chain)
 			newm = dummy.NewChain(m.name)
 			for r in m.IterResidues():
 				for a in r.GetAtoms():
-					a.tempFactor=0.00
+					a.tempFactor=betadef
 					if len(lis) > 1:
-						a.occupancy=0.00
+						a.occupancy=occdef
 				newm.AddResidue(r)			
 
 		# Acquire all homologous positions as defined in FASTA.
-		items = self._iterResidueAssociations(fasta,None,None)		
+		#items = self._iterResidueAssociations(fasta,None,None)		
 
 		# populate new field
-		for pos,chainb,res in items:
-			if not chainb == chain:
-				continue
-			res = newm.GetResidueByIndex(res.index)
+		#for pos,chainb,res in items:
+			#if not chainb == chain:
+			#	continue
+		alias = self.fastaresiduehomologs
+		for res in alias[alias.keys()[0]]:
+			res = newm.GetResidueByIndex(res)#.index)
 			for a in res.GetAtoms():
-				a.tempFactor = lis[0][pos]
+				a.tempFactor = lis[0][alias[0].index(res)]
 				if len(lis) > 1:
-					a.occupancy = lis[1][pos]
+					a.occupancy = lis[1][alias[0].index(res)]
 
 
 		newm.WriteAsPDB(outname)
@@ -2619,9 +2631,9 @@ class PDBstructure(object):
 			plength = len(self.chains[pstates[0]])
 		numstates = len(pstates)
 
-
-		print "plength: {}".format(plength)
-		print "numstates: {}".format(numstates)
+		if self.verbose:
+			print "plength: {}".format(plength)
+			print "numstates: {}".format(numstates)
 
 		matrix = np.zeros((plength,plength))
 
@@ -2666,15 +2678,12 @@ class PDBstructure(object):
 
 				# Sort the matrixlist (it may be out of order)
 				matrixlist.sort(key=operator.itemgetter(1))
+
 				for m in matrixlist:
 					matrix = np.add(matrix, m[0])
 					nameslist.append(m[1])
 
 				del g
-
-		print 'Freq:'
-		for name in nameslist:
-			print name,
 
 		translatematrix = np.triu(matrix).T + np.triu(matrix)
 		translatematrix[np.diag_indices_from(translatematrix)] /= 2
@@ -2691,7 +2700,7 @@ class PDBstructure(object):
 		if contact[0] > length or contact[1] > length: return False
 		else:                                          return True
 
-	def FreqCM(self, thres=4.5, homologset=False, subset=None):
+	def FreqCM(self, thres=4.5, homologset=False, subset=None, fasta=None):
 
 		"""
 		Computes a frequency matrix.
@@ -2705,7 +2714,12 @@ class PDBstructure(object):
 						 useful for when you want to only find the contact map
 						 between a subset of residues in an MD, for instance.
 		"""
-
+		
+		if self.fastaresiduehomologs == None:
+			if fasta == None:
+				raise  Exception('Fasta file not found')
+			self._FastaPdbMatch(fasta)
+			
 		if homologset:
 
 			results = self.AggregateHomologMatrix(matchres=self.fastaresiduehomologs)
@@ -2713,8 +2727,8 @@ class PDBstructure(object):
 			numstates = len(self.orderofmodels)
 
 		elif subset:
-
-			print 'in subset freqcm'
+			if self.verbose:
+				print 'in subset freqcm'
 
 			results = self.AggregateSubsetMatrix(subset=subset)
 			matrix = results
@@ -2729,7 +2743,8 @@ class PDBstructure(object):
 
 
 		# divide each element in the aggregate contact matrix by the number of states, to get frequency ratio
-		print 'div: {}'.format(float(numstates))
+		if self.verbose:
+			print 'div: {}'.format(float(numstates))
 		matrix /= (float(numstates))
 
 		return matrix
@@ -2809,7 +2824,8 @@ class PDBstructure(object):
 
 class PDBfile(object):
 
-	__slots__ = ('filePath','fileHandle','memHandle','modelIndices','chains','residueIndices','size')
+	__slots__ = ('filePath','fileHandle','memHandle','modelIndices','chains',
+	             'residueIndices','size')
 
 	def __init__(self,fi):
 
