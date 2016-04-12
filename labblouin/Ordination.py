@@ -261,7 +261,7 @@ class ORD:
 
 
 	def PCA(self,dpi=300,textsize=10,interactive=False,samemarker=False,markersize=8,numbered=False,
-	         legend=False,of='pdf',rotate=0,groups=None):
+	         legend=False,of='pdf',rotate=0,groups=None,plot=True):
 		'''Performs a principal coordinate analysis of the data'''
 		# Rotation instance
 		self.clf = PCA(n_components=self.ncomp)		
@@ -269,10 +269,11 @@ class ORD:
 		self.type='PCA'
 		self.fit = pca
 		self.explained_variance_ratio = self.clf.explained_variance_ratio_
-		self.Plot(dpi=dpi,textsize=textsize,interactive=interactive,samemarker=samemarker,
-		          markersize=markersize,numbered=numbered,legend=legend,of=of,rotate=rotate,
-		          groups=groups)
-		#self.Store()Trouble with pickle
+		if plot:
+			self.Plot(dpi=dpi,textsize=textsize,interactive=interactive,samemarker=samemarker,
+				      markersize=markersize,numbered=numbered,legend=legend,of=of,rotate=rotate,
+				      groups=groups)
+			#self.Store()Trouble with pickle
 	
 	def loopoverpcs(self,prefix,comp,dpi=300,markersize=8,of='pdf'):
 		samemarker = ['b.','r.','k.','g.','y.','m.','c.']
