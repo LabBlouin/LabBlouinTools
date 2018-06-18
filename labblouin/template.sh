@@ -31,7 +31,6 @@
 
 # Set runtime length.
 #$ -now y
-#$ -l h_rt=00:60:00
 
 # Pass external environment.
 #$ -V

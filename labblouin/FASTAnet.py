@@ -2,7 +2,9 @@
 
 # Date:   May 15 2013
 # Author: Alex Safatli
-# Email:  safatli@cs.dal.ca 
+# Email:  safatli@cs.dal.ca
+
+import numpy as np
 
 class FASTAsequence:
 
@@ -35,6 +37,10 @@ class FASTAsequence:
 
         return not self.__eq__(o)
 
+    def __getitem__(self, item):
+
+        return self.sequence
+
     def count(self,item):
 
         ''' Return the number of characters in the sequence equal to input string. '''
@@ -47,7 +53,12 @@ class FASTAsequence:
 
         self.sequence = self.sequence.replace('-','').replace('.','')
         return self.sequence
-
+    
+    def gapLess(self):
+        
+        ''' Return an ungapped sequence without modifying the instance'''
+        return self.sequence.replace('-','').replace('.','')
+    
     def toUpper(self):
 
         ''' Modify the sequence so it is uppercase and return it. '''
@@ -63,6 +74,19 @@ class FASTAsequence:
         self.sequence = self.sequence.lower()
         return self.sequence            
 
+    def toIndices(self):
+        '''transoform a gapped sequence into indices matrix'''
+        count=0
+        newseq=[]
+        for i in self.sequence:
+            if (i == '-') or (i == '.'):
+                newseq.append(i)
+            else:
+                newseq.append(count)
+                count+=1
+        self.Indexseq = ''.join([str(x) for x in newseq])
+        return newseq
+    
     def __len__(self):
 
         return len(self.sequence)
@@ -87,6 +111,7 @@ class FASTAstructure:
         self.full             = {}
         self.uniqueOnly       = uniqueOnly
         self.curate           = curate
+        self.matrix           = None
 
         if filein:
             # First, try to read in a path. Otherwise,
@@ -95,7 +120,8 @@ class FASTAstructure:
             try: self.readFile(filein)
             except: self.read(filein.split('\n'))
 
-    def getSequenceNames(self):    return self.sequenceNames.values()    
+    def getSequenceNames(self):    return self.sequenceNames.values()
+    def getSequenceLengths(self):  return [seq.__len__() for seq in self.sequences]
     def getSequences(self):        return self.orderedSequences
     def getSequenceByName(self,n): return self.sequenceNames[n]
 
@@ -117,16 +143,15 @@ class FASTAstructure:
             name = seqs[n].name
             mask[n] = []
             abso[name] = []
-            c = 0
             for i in xrange(len(seq)):
                 char = seq[i]
                 if char.isalpha(): 
                     mask[n].append(True)
-                    abso[name].append(c)
-                    c+=1
+                    abso[name].append(i)
                 else: 
                     mask[n].append(False)
                     abso[name].append(None)
+                    
         alnlen = len(mask.values()[0])
         for pos in xrange(alnlen):
             homologous = True
@@ -138,6 +163,31 @@ class FASTAstructure:
         if absolutepos: return posv, abso
         else: return posv
 
+    def findAlignedResidueIndices(self):
+
+        ''' Find the indexes of aligned residues in all sequences. return this as a list of indexes '''
+
+        seqlist = self.getSequences()
+
+        seq1 = seqlist[0]
+        for seq in seqlist:
+            if seq1.__len__() != seq.__len__():
+                raise ValueError('Error: These sequences are not all the same length. Perform an alignment')
+
+        self.matrix = np.zeros((len(seqlist),seqlist[0].__len__()))
+        seqs = [s.sequence for s in seqlist]
+
+        for i in range(len(seqs)):
+            for j in range(len(seqs[i])):
+                if seqs[i][j] == '-' or seqs[i][j] == '.':
+                    self.matrix[i][j] = 0
+                else:
+                    self.matrix[i][j] = 1
+
+        aligned = np.where(self.matrix.sum(axis=0) == len(seqs))[0].tolist()
+
+        return aligned
+
     def readFile(self,fin):
 
         ''' Read a file in. Return this FASTA object. '''
@@ -145,13 +195,25 @@ class FASTAstructure:
         fi = open(fin)
         fast = fi.read()
         fi.close()
-        self.read(fast.split('\n'))
+        self.read(fast.split('>'))#self.read(fast.split('\n'))
         return self
 
     def read(self,fast):
 
         ''' Read the contents of a FASTA file. '''
-
+        for fas in fast:
+            if fas == '': continue
+            bl = fas.split('\n')
+            name = bl[0].strip().strip('>')
+            seq = ''.join(bl[1:])
+            if self.curate:
+                tmp = name
+                for c in name:
+                    if not c.isalnum():
+                        tmp = tmp.replace(c,"",1)
+                name = tmp 
+            self.addSequence(name, seq)
+        '''
         name, seq = '', ''
         for line in fast:
             lineC = line.strip()
@@ -167,6 +229,7 @@ class FASTAstructure:
                     name = tmp         
             else: seq += lineC
         if name and seq: self.addSequence(name,seq)    
+        '''
 
     def writeFile(self,fout):
 
@@ -195,6 +258,8 @@ class FASTAstructure:
                 # Get that instance of FASTAsequence.
                 f = [x for x in seqs if f == x][0]
                 self.sequenceNames[f].append(name)
+        else:
+            print name
 
     def renameSequence(self,oldname,newname):
 
@@ -215,7 +280,8 @@ class FASTAstructure:
 
         if name in self.sequences:
             f = self.sequences[name]
-            self.orderedSequences.remove(f)
+            index = [i for i, x in enumerate(self.orderedSequences) if x.name == name]
+            self.orderedSequences.pop(index[0])#.remove(f)
             del self.sequences[name]
             del self.sequenceNames[f]
             return f
@@ -232,7 +298,7 @@ class FASTAstructure:
         for it in iterable:
             if it in self.sequences: neworder.append(self.sequences[it])
             else:
-                raise KeyError('Could not find %s among sequence names.' % (it))
+                raise KeyError('Could not find %s among sequence names.'% (it))
         self.orderedSequences = neworder
 
     def removeGaps(self):
@@ -240,7 +306,9 @@ class FASTAstructure:
         ''' Remove the gaps for all sequences. '''
 
         s = self.sequences
-        for seq in s: s[seq].removeGaps()
+        for seq in s: 
+            nseq = s[seq].removeGaps()
+            self.sequences[seq] = nseq
 
     def allUpper(self):
 
@@ -274,3 +342,10 @@ class FASTAstructure:
         ''' Return the FASTA object as FASTA file text content. '''
 
         return ''.join([str(x) for x in self.orderedSequences])
+
+# Debugging
+
+if __name__ == "__main__":
+    import sys
+    myfasta = FASTAstructure(sys.argv[1], uniqueOnly=False)
+    print myfasta.sequenceNames

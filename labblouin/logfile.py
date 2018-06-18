@@ -62,7 +62,8 @@ class XMLfile():
         return out
 
 class logfile():
-    def __init__(self,logf,enable=True,silent=False):
+
+    def __init__(self, logf, enable=True, silent=False, overwrite=False):
         self.logfile = logf
         self.numat = 0
         self.totalnum = 100
@@ -70,17 +71,21 @@ class logfile():
         self.lastnum = self.numat
         self.enabled = enable
         self.silent  = silent
-        if enable and not os.path.isfile(logf):
+        if enable and (not os.path.isfile(logf) or overwrite):
             fout = open(logf,'w')
             fout.close()
+
     def setTotalNum(self,tn):
         self.totalnum = tn
-    def incrementTimer(self):
-        self.numat += 1
+
+    def incrementTimer(self, amt=1):
+        self.numat += amt
+
     def updateTimer(self,numat):
         self.numat = numat
+
+    # Format seconds.
     def __fs__(self,tot):
-        # Format seconds.
         y,w,d,h,m,s = 0,0,0,0,0,0
         if (tot < 1 or self.numat == 0): return '...'
         y = tot/(60*60*24*360)
@@ -102,29 +107,46 @@ class logfile():
         if (m >= 1): out += '%dm' % m
         if (s >= 1): out += '%ds' % s
         return out
-    def writeTemporary(self,msg,silent=None):
-        self._write(msg,temp=True,silent=silent)
-    def _write(self,msg,temp=False,silent=None):
+
+    def _format(self,msg,status):
+        prefix = '\033[1m'        
+        if status == 'ERROR':
+            prefix += '\033[91mERROR '
+        elif status == 'NOTE':
+            prefix += '\033[94mNOTE '
+        elif status == 'WARNING':
+            prefix += '\033[93mWARNING '
+        return prefix + '\033[0m' + msg
+
+    def _write(self,msg,temp=False,silent=None,progress=True,status=None):
         if silent == None: silent = self.silent
         if silent and not self.enabled: return
-        numat = self.numat+1
+        numat  = self.numat+1
         totnum = self.totalnum+1
-        tim = timer.estimateRemainingTime(self.stime,numat,totnum) # time remaining
-        cur = timeToString()
-        perc = (float(numat)/totnum)*100
-        if temp: suff = '\r'
-        else:    suff = ''
-        out = '[%s | %3d%% | rem %10s] %s' % (cur,perc,self.__fs__(tim),msg)
+        tim    = timer.estimateRemainingTime(self.stime,numat,totnum) # time remaining
+        cur    = timeToString()
+        perc   = (float(numat)/totnum)*100
+        suff   = '\r' if temp else ''
+        fiout  = '!!%s!! %s' % (status,msg) if status else msg
+        tmout  = self._format(msg, status) if status else msg
+        if progress:
+            fiout = '[%s | %3d%% | rem %10s] %s' % (cur,perc,self.__fs__(tim), fiout)
+            tmout = '%s %3d%% rem %10s | %s' % (datetime.now().strftime("%H:%M"),perc,self.__fs__(tim), tmout)
         if not silent:
-            stdout.write('\033[K' + out + suff)
+            stdout.write('\033[K' + tmout + suff)
             stdout.flush()
         if not self.enabled: return
         else:
             fout = open(self.logfile,'a')
-            fout.write(out.strip('\n') + '\n')
-            fout.close()        
-    def write(self,msg,silent=None):
-        self._write(msg + '\n',silent=silent)
+            fout.write(fiout.strip('\n') + '\n')
+            fout.close()
+
+    def writeTemporary(self,msg,silent=None,status=None):
+        self._write(msg,temp=True,silent=silent,status=status)
+
+    def write(self,msg,silent=None,progress=True,status=None):
+        self._write(msg + '\n',silent=silent,progress=progress,status=status)
+
     def writeElapsedTime(self):
         t = timer.getTime()
         self.write('Elapsed: %s' % (self.__fs__(t-self.stime)))

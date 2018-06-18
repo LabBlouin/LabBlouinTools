@@ -10,11 +10,12 @@ from pfam import extractPDBChain
 import __main__
 __main__.pymol_argv = ['pymol', '-qc'] # Quiet, no GUI for Pymol.
 from IO import *
+try: import pymol
+except: warnings.warn("Could not locate Pymol.",ImportWarning)
 try:
-    import pymol
     from modeller import *
     from modeller.scripts import complete_pdb
-except: warnings.warn("Could not locate Pymol or Modeller.",ImportWarning)
+except: warnings.warn("Could not locate Modeller.",ImportWarning)
 
 # ------------ MANUAL MODELLING -------------- #
 
@@ -330,7 +331,8 @@ def checkForFileCollision(path, ext):
     Returns the path.
     '''
     if os.path.isfile(path):
-        newpath = os.path.join(getFolderName(path),getFileName(path) + '0.' + ext)
+        newpath = os.path.join(getFolderName(path),getFileName(path) + '0.' +
+                               ext)
         return checkForFileCollision(newpath, ext)
     else: return path
     

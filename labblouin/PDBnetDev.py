@@ -32,7 +32,6 @@ import sklearn.decomposition as skl
 import tempfile
 from joblib import load, dump
 import operator
-import matplotlib.pyplot as plt
 
 import pyximport;
 
@@ -85,17 +84,6 @@ def singlerun(state, thres, numstates):
 
 # compute Theobald's quaterion-based characteristic polynomial
 # taken from https://gist.github.com/rmcgibbo
-def _center(conformation):
-    """
-    Center and typecheck the conformation
-    """
-    conformation = np.asarray(conformation)
-    if not conformation.ndim == 2:
-        raise ValueError('conformation must be two dimensional')
-    _, three = conformation.shape
-    if not three == 3:
-        raise ValueError('conformation second dimension must be 3')
-    return np.subtract(conformation,np.mean(conformation, axis=0))
 
 def _rmsd_qcp(conformation1, conformation2):
     """
@@ -120,6 +108,21 @@ def _rmsd_qcp(conformation1, conformation2):
     The root-mean square deviation after alignment between the two pointsets
     """
 
+    def _center(conformation):
+        """
+        Center and typecheck the conformation
+        """
+
+        conformation = np.asarray(conformation)
+        if not conformation.ndim == 2:
+            raise ValueError('conformation must be two dimensional')
+        _, three = conformation.shape
+        if not three == 3:
+            raise ValueError('conformation second dimension must be 3')
+
+        centroid = np.mean(conformation, axis=0)
+        centered = conformation - centroid
+        return centered
 
     # center and typecheck the conformations
     A = _center(conformation1)
@@ -155,14 +158,12 @@ def _rmsd_qcp(conformation1, conformation2):
     Szx2 = Szx * Szx
 
     SyzSzymSyySzz2 = 2.0 * (Syz * Szy - Syy * Szz)
-    Sxx2Syy2Szz2Syz2Szy2 = np.sum([Syy2, Szz2, Syz2, Szy2]) - Sxx2
+    Sxx2Syy2Szz2Syz2Szy2 = Syy2 + Szz2 - Sxx2 + Syz2 + Szy2
 
     # two of the coefficients
-    C2 = -2.0 * np.sum([Sxx2, Syy2, Szz2, Sxy2, Syx2, Sxz2, Szx2, Syz2, Szy2])
+    C2 = -2.0 * (Sxx2 + Syy2 + Szz2 + Sxy2 + Syx2 + Sxz2 + Szx2 + Syz2 + Szy2)
     C1 = 8.0 * (
-        Sxx * Syz * Szy + Syy * Szx * Sxz + Szz * Sxy * Syx - Sxx * Syy * Szz - 
-        Syz * Szx * Sxy - Szy * Syx * Sxz
-    )
+        Sxx * Syz * Szy + Syy * Szx * Sxz + Szz * Sxy * Syx - Sxx * Syy * Szz - Syz * Szx * Sxy - Szy * Syx * Sxz)
 
     SxzpSzx = Sxz + Szx
     SyzpSzy = Syz + Szy
@@ -187,9 +188,9 @@ def _rmsd_qcp(conformation1, conformation2):
             -(SxymSyx) * (SyzpSzy) + (SxzmSzx) * (SxxpSyy - Szz))
 
     # Netwtorn-Raphson
-    E0 = np.sum([G_A,G_B]) / 2.0
+    E0 = (G_A + G_B) / 2.0
     max_eigenvalue = E0
-    for i in xrange(50):
+    for i in range(50):
         old_g = max_eigenvalue
         x2 = max_eigenvalue * max_eigenvalue
         b = (x2 + C2) * max_eigenvalue
@@ -286,7 +287,10 @@ class PDBatom(object):
 
 
 class PDBterminator(PDBatom):
-    """ A placeholder class that represents a terminating ATOM-like line in the PDB file. """
+    """ 
+    A placeholder class that represents a terminating ATOM-like line in the 
+    PDB file. 
+    """
 
     __slots__ = ('name', 'serial', 'x', 'y', 'z', 'occupancy', 'tempFactor',
                  'charge', 'symbol', 'parent', 'lastatom', 'lastresname',
@@ -298,11 +302,13 @@ class PDBterminator(PDBatom):
         self.lastreschain = self.lastatom.parent.chain
         self.lastresind = self.lastatom.parent.index
         newserial = str(int(self.lastatom.serial) + 1)
-        super(PDBterminator, self).__init__(newserial, '', 0, 0, 0, 0, 0, '', '')
+        super(PDBterminator, self).__init__(newserial, '', 0, 0, 0, 0, 0, '', 
+                                            '')
 
     def __str__(self):
         return 'TER   %5s %4s %3s %1s%4s' % (
-            self.serial, '', self.lastresname, self.lastreschain, self.lastresind)
+            self.serial, '', self.lastresname, self.lastreschain, 
+            self.lastresind)
 
 
 class PDBresidue:
@@ -406,7 +412,7 @@ class PDBresidue:
         # backbone hydrogen bonds detection
 
         hydrogen_bonds = {}
-        
+
         for atom1 in self.atoms:
             if atom1 in ['H']:
                 for atom2 in other.atoms:
@@ -418,7 +424,7 @@ class PDBresidue:
                         if d <= distance_cutoff and angle <= angle_cutoff:
                             hydrogen_bonds[(self.atoms[atom1].ThreeLetters() + '-main',
                                             other.atoms[atom2].ThreeLetters() + '-main')] = d
-                  
+
 
         # side chain hydrogen bonds detecton
         '''for atoms1 in self.atoms:
@@ -451,7 +457,7 @@ class PDBresidue:
             return True
         elif d < 12:  # They COULD be in contact...
             for atomA in self.atoms:
-                if atomA in ['CA', 'C', 'N', 'O']:
+                if atomA in ['C', 'N', 'O']:
                     continue
                 atomA = self.atoms[atomA]
 
@@ -546,8 +552,8 @@ class PDBchain(object):
         """ Get all comprising atoms in this chain in order of residues. """
 
         atoms = []
-        atext = atoms.extend
-        [atext(x.GetAtoms()) for x in self.IterResidues()]
+        for x in self.IterResidues():
+            atoms.extend(x.GetAtoms())
         return atoms
 
     def GetIndices(self):
@@ -596,8 +602,7 @@ class PDBchain(object):
 
         rc = [[res.boundingbox['minx'], res.boundingbox['maxx'],
                res.boundingbox['miny'], res.boundingbox['maxy'],
-               res.boundingbox['minz'], res.boundingbox['maxz']] \
-              for res in self.GetResidues()]
+               res.boundingbox['minz'], res.boundingbox['maxz']] for res in self.GetResidues()]
 
         for i in xrange(len(rc)):
             vals[i][0] = rc[i][0]
@@ -798,7 +803,8 @@ class PDBchain(object):
 
         if self.structure.handle:
             if not self.structure.handle.isLargeFile():
-                self.residues = sorted(self.residues, key=lambda d: int(numonly(d.index)))
+                self.residues = sorted(self.residues, 
+                                       key=lambda d: int(numonly(d.index)))
         self.indices = sorted(self.indices, key=lambda d: int(numonly(d)))
 
     def BoundingBoxes(self):
@@ -905,24 +911,33 @@ class PDBchain(object):
         return len(self.indices)
 
     def __iter__(self):
-        for ind in self.indices: yield int(ind)
+        if self.structure == None:
+            for ind in self.indices: 
+                yield int(ind)
+        else:
+            if self.structure.islargefile:
+                for res in self.indices:
+                    yield self.__getitem__(res)            
+            else:
+                for ind in self.indices: 
+                    yield int(ind)                            
 
 
 class PDBmodel(PDBchain):
     """ A PDB model (a special kind of chain). """
 
     __slots__ = ('name', 'structure', 'residues', 'indices', 'chains', 
-                 'chainNames', 'haschain')
+                 'chainNames')
 
     def __init__(self, name):
 
         if type(name) != int or name < 0:
-            raise ValueError('Model name should be zero or a positive integer.')
+            raise ValueError('Model name should be zero or a positive integer.'
+                             )
         super(PDBmodel, self).__init__(name)
         self.chains = list()
         self.chainNames = list()
         self.residues = None
-        self.haschain=False
 
     def GetResidues(self):
 
@@ -943,9 +958,11 @@ class PDBmodel(PDBchain):
 
     def IterResidues(self):
 
-        """ Iteratively yield all of the residues in this model. Note that if this
+        """ 
+        Iteratively yield all of the residues in this model. Note that if this
 		is a large file, this will force the object to load all of these
-		residues into memory from the file. """
+		residues into memory from the file. 
+        """
 
         for i in self.GetIndices(): yield self.GetResidueByIndex(i)
         for i in self.chains:
@@ -970,7 +987,6 @@ class PDBmodel(PDBchain):
 
         c = PDBchain(ch)
         self.AddChain(c)
-        self.haschain=True
         return c
 
     def AddChain(self, chain):
@@ -981,7 +997,6 @@ class PDBmodel(PDBchain):
         chain.parent = self
         self.chains.append(chain)
         self.chainNames.append(chain.name)
-        self.haschain=True
 
     def AddResidue(self, resid):
 
@@ -997,10 +1012,8 @@ class PDBmodel(PDBchain):
         Compute the contact map of this model (and any possible chains) using the boundingbox method.
         '''
         contactmap = super(PDBmodel, self).CAContactMap()
-        Cextend = contactmap.extend
-        
-        Cextend([chain.CAContactMap() for chain in self.GetChains()])  # Deal with children.
-        
+        for chain in self.GetChains():  # Deal with children.
+            contactmap.extend(chain.CAContactMap())
         return sorted(contactmap, key=lambda e: (e[0], e[1]))
 
     def BBContactMap(self, thres=4.5):
@@ -1040,8 +1053,8 @@ class PDBmodel(PDBchain):
             res._ComputeBoundingBox()
 
     def populate(self):
-        # this needs to be fixed is not for large files!!!! the inheritance from chain
-        # needs to be kept
+        # this needs to be fixed is not for large files!!!! the inheritance 
+        # from chain needs to be kept
         if len(self.chains) == 0:
             self.residues = self.GetResidues()
         elif len(self.chains) == 1:
@@ -1052,12 +1065,12 @@ class PDBmodel(PDBchain):
             for chain in self.chains:
                 chain.populate()
                 self.residues[chain.name] = chain.residues
-    
-    def __getitem__(self, i):
 
+    def __getitem__(self, i):
         handle = self.structure.handle
         if str(i) in self.indices:
-            if handle and ((handle.isLargeFile()) or (len(self.indices) > len(self.residues))):
+            if handle and ((handle.isLargeFile()) or (len(self.indices) > \
+                                                      len(self.residues))):
                 if handle.hasResidue('', str(i), self.name):
                     resid = handle.readResidue('', str(i), self.name)
                     resid.model = self.name
@@ -1065,8 +1078,9 @@ class PDBmodel(PDBchain):
                 elif self.indices.index(str(i)) < len(self.residues):
                     return self.residues[self.indices.index(str(i))]
                 else:
-                    raise KeyError('Could not find residue %s in MODEL %s in file or structure.' % (
-                        str(i), str(self.name)))
+                    raise KeyError('Could not find residue %s in MODEL %s in '\
+                                   'file or structure.' % (str(i), 
+                                                           str(self.name)))
             return self.residues[self.indices.index(str(i))]
         else:
             return None
@@ -1080,21 +1094,25 @@ class PDBmodel(PDBchain):
 
     def __str__(self):
         model = 'MODEL%9s\n' % (str(self.name))
-        if not self.haschain:
+        if not self.GetChainNames():
             #does not have chains
             model += super(PDBmodel, self).__str__()
         else:
             #model has chains
-            for ch in sorted(self.GetChainNames()):
-                ch = self.GetChain(ch)
-                #self.chains: 
-                model += str(ch)
+            for ch in self.chains: model += str(ch)
         return model + 'ENDMDL\n'
 
     def __iter__(self):
-        for res in self.indices:
-            yield self.__getitem__(res)
-
+        if self.structure == None:
+            for res in self.indices: 
+                yield int(res)
+        else:
+            if self.structure.islargefile:
+                for res in self.indices:
+                    yield self.__getitem__(res)
+            else:               
+                for res in self.indices: 
+                    yield int(res)
 
 class PDBstructure(object):
     """ A PDB protein structure (a collection of chains/models). """
@@ -1104,28 +1122,27 @@ class PDBstructure(object):
                  'EC_code', 'DOI', 'PMID', 'contactmap', 'handle', 'ismodel', 
                  'FastaAssociations', 'fastaresiduehomologs', 
                  'FastaChainEquivalence', 'array', 'rmsd_matrix', 
-                 'average_rmsd', 'istrajectory','verbose')
+                 'average_rmsd', 'istrajectory','verbose', 'islargefile')
 
     def __init__(self, filein='', ismodel=False, verbose=False):
 
         # Attributes.
-        self.filepath               = filein
-        self.handle                 = None
-        self.organism               = None
-        self.taxid                  = None
-        self.mutation               = False
-        self.contactmap             = list()
-        self.orderofchains          = list()
-        self.orderofmodels          = list()
-        self.remarks                = list()
-        self.chains                 = dict()
-        self.models                 = dict()
-        self.ismodel                = ismodel
-        self.FastaAssociations      = {}
-        self.fastaresiduehomologs   = {}
-        self.FastaChainEquivalence  = {}
-        self.verbose                = verbose
-        self.istrajectory           = None
+        self.filepath = filein
+        self.handle = None
+        self.organism = None
+        self.taxid = None
+        self.mutation = False
+        self.contactmap = list()
+        self.orderofchains = list()
+        self.orderofmodels = list()
+        self.remarks = list()
+        self.chains = dict()
+        self.models = dict()
+        self.ismodel = ismodel
+        self.FastaAssociations = {}
+        self.fastaresiduehomologs = {}
+        self.FastaChainEquivalence = {}
+        self.verbose = verbose
         # Read a file?
         if filein != '':
             self.ReadFile(filein)
@@ -1373,59 +1390,91 @@ class PDBstructure(object):
     def ReadFile(self, filename):
 
         """ Read a PDB file. Populate this PDBstructure. """
-
-        # Map to memory and read the file.
-        p = PDBfile(filename)
-        self.handle = p
-        self.remarks, self.organism, self.taxid, self.mutation, self.DOI, \
-            self.PMID, self.EC_code = p.read()
-        largeFile = p.isLargeFile()
-
-        # Start creating high-level structures for models/chains.
-        if p.hasModels():
-            self.ismodel = True
-            map(self.NewModel, p.getModelNames())
-            for mo, ch, re in p.iterResidueData():
-                model = self.GetModel(mo)
-                if ch != '':
-                    if not ch in model.GetChainNames(): model.NewChain(ch)
-                    chain = model.GetChain(ch)
+        filesize = sizeOfFile(filename)
+        
+        if filesize >= PDB_LARGE_FILE_SIZE:
+            self.islargefile = True
+            # Map to memory and read the file.
+            p = mappedPDBfile(filename)
+            self.handle = p
+            self.remarks, self.organism, self.taxid, self.mutation, self.DOI, \
+                self.PMID, self.EC_code = p.read()
+            largeFile = p.isLargeFile()
+    
+            # Start creating high-level structures for models/chains.
+            if p.hasModels():
+                self.ismodel = True
+                map(self.NewModel, p.getModelNames())
+                for mo, ch, re in p.iterResidueData():
+                    model = self.GetModel(mo)
+                    if ch != '':
+                        if not ch in model.GetChainNames(): 
+                            chain = model.NewChain(ch)
+                        #chain = model.GetChain(ch)
+                        if largeFile:
+                            chain.AddIndexOfResidue(re)
+                        else:
+                            chain.AddResidueByIndex(re)
+                    else:
+                        if largeFile:
+                            model.AddIndexOfResidue(re)
+                        else:
+                            model.AddResidueByIndex(re)
+                for mod in self.GetModelNames():
+                    model = self.GetModel(mod)
+                    model.structure = self
+                    model.SortByNumericalIndices()
+                    # Added by Jack
+                    model.populate()
+                    for chain in model.GetChains():
+                        chain.SortByNumericalIndices()
+            else:
+                self.ismodel = False
+                map(self.NewChain, p.getChainNames())
+                for _, ch, re in p.iterResidueData():
+                    chain = self.GetChain(ch)
                     if largeFile:
                         chain.AddIndexOfResidue(re)
                     else:
                         chain.AddResidueByIndex(re)
-                else:
-                    if largeFile:
-                        model.AddIndexOfResidue(re)
-                    else:
-                        model.AddResidueByIndex(re)
-            for mod in self.GetModelNames():
-                model = self.GetModel(mod)
-                model.structure = self
-                model.SortByNumericalIndices()
-                # Added by Jack
-                model.populate()
-                for chain in model.GetChains():
+                for cha in self.GetChainNames():
+                    chain = self.GetChain(cha)
+                    chain.structure = self
                     chain.SortByNumericalIndices()
+    
+            # Remove this component from memory if no longer necessary.
+            if not largeFile:
+                p.close()
+                self.handle = None
+                del p
         else:
-            self.ismodel = False
-            map(self.NewChain, p.getChainNames())
-            for _, ch, re in p.iterResidueData():
-                chain = self.GetChain(ch)
-                if largeFile:
-                    chain.AddIndexOfResidue(re)
-                else:
-                    chain.AddResidueByIndex(re)
-            for cha in self.GetChainNames():
-                chain = self.GetChain(cha)
-                chain.structure = self
-                chain.SortByNumericalIndices()
-
-        # Remove this component from memory if no longer necessary.
-        if not largeFile:
-            p.close()
-            self.handle = None
-            del p
+            self.islargefile = False
+            p = PDBfile(filename)
+            self.remarks, self.organism, self.taxid, self.mutation, self.DOI,\
+                self.PMID, self.EC_code = p.read()
+            if p.models != []:
+                self.ismodel=True
+                map(self.NewModel, p.models)
+                for mo, ch, re in p.iterResidueData():
+                    model = self.GetModel(mo)
+                    if ch != '':
+                        if not ch in model.GetChainNames(): 
+                            chain = model.NewChain(ch)
+                        else:
+                            chain=model.GetChain(ch)
+                        chain.AddResidue(re)
+                    else:
+                        model.AddResidue(re)
+            else:
+                self.ismodel=False
+                map(self.NewChain, p.chains)
+                for _, ch, re in p.iterResidueData():
+                    chain = self.GetChain(ch)
+                    chain.AddResidue(re)
+                for cha in self.GetChainNames():
+                    chain = self.GetChain(cha)
+                    chain.structure = self
+                    chain.SortByNumericalIndices()                
 
     def ChainAsFASTA(self, chain):
 
@@ -1532,33 +1581,26 @@ class PDBstructure(object):
             things = self.chains
 
         fastaseqlist = fasta.getSequences()
-
         # Match each chain/model with its corresponding FASTA sequence in the fasta object
         donelist = []
         matchdict = {}
-
+        # nameeq={}
         for t in orderofthings:
-
             currthing = things[t]
-            currthingseq = ''.join([aa[res.name] for res in currthing.GetResidues()])
+            currthingseq = ''.join([aa[res.name] for res in
+                                    currthing.GetResidues()])
             matchdict[t] = None
-
             for i in range(len(fastaseqlist)):
-
                 currfastaseq = fastaseqlist[i].gapLess()
-
                 if currthingseq == currfastaseq:
-
                     if i not in donelist:
-
                         matchdict[t] = fastaseqlist[i]  # key: thing number // value: fasta sequence
+                        # nameeq[t]=fastaseqlist[i].name
                         self.FastaChainEquivalence[t] = fastaseqlist[i].name
                         donelist.append(i)
                         break
-
                     else:
                         continue
-
                 else:
                     continue
 
@@ -1591,6 +1633,8 @@ class PDBstructure(object):
 
         # Assign the resdict to the class variable
         self.fastaresiduehomologs = resdict
+        # return names equivalences
+        # return nameeq
         return self.FastaChainEquivalence
 
     def _asArray(self, fasta, chains=None, CA=False):
@@ -1617,17 +1661,22 @@ class PDBstructure(object):
             things = self.chains
         if not self.fastaresiduehomologs: self._FastaPdbMatch(
             fasta)  # check if homologous residues have been identified
-        if not chains: chains = orderofthings  # if chains not specified do it for the whole structure
+        if not chains: chains = orderofthings  # if chains not specified do it 
+                                               # for the whole structure
         for ch in chains:
             residues = things[ch].GetResidues()  # get all residues in thing
-            residues = [residues[x] for x in self.fastaresiduehomologs[ch]]  # restrict residues to homologous ones
+            # restrict residues to homologous ones
+            residues = [residues[x] for x in self.fastaresiduehomologs[ch]]  
             n_atoms = []
-            if isinstance(residues, dict):  # if there is chains within models, loop over dictionary
+            if isinstance(residues, dict):  # if there is chains within models,
+                                            # loop over dictionary
                 for cha, res in residues.iteritems():
                     ca = getattr(res, CA)()
                     dims = [ca.x, ca.y, ca.z]
                     n_atoms.append(dims)
-            elif isinstance(residues, list):  # if residues is a list either self is chain or models have only one chain
+            elif isinstance(residues, list):  # if residues is a list either 
+                                              # self is chain or models have 
+                                              # only one chain
                 for res in residues:
                     ca = getattr(res, CA)()
                     dims = [ca.x, ca.y, ca.z]
@@ -1639,10 +1688,12 @@ class PDBstructure(object):
 
     def _iterResidueAssociations(self, fasta, chains=None, fast=None):
 
-        """ PRIVATE: Use an input FASTA file to determine associations
-        between residues as they exist between 2+ chains. Constructs a
-		mapping between chain and sequence and yields all strictly
-		homologous positions as residues, chain-by-chain."""
+        """ 
+        PRIVATE: Use an input FASTA file to determine associations between 
+        residues as they exist between 2+ chains. Constructs a mapping between 
+        chain and sequence and yields all strictly homologous positions as 
+        residues, chain-by-chain. DEPRECATED AVOID USING
+        """
         found, fasta = self._FastaPair(fasta)
 
         ismodel = self.ismodel
@@ -1698,7 +1749,7 @@ class PDBstructure(object):
             if residueList[0] is None:
                 nm = S.name
                 chn = things[ch].name
-                raise IOError('No relation found between sequence %s and ' % (nm)
+                raise IOError('No relation found between sequence %s and '%(nm)
                               + 'chain %s.' % (chn))
             residueList = sorted(residueList, key=lambda d: d.fstindex)
             for pos in posv:  # Go position by position.
@@ -1859,170 +1910,12 @@ class PDBstructure(object):
 
         return self.rmsd_matrix
 
-    def rmsd_new(self, fasta=None, CA=True, matrix=False, inverse=False, showmatrix=False, verbose=False):
-
-        '''
-        method to calculate the average rmsd of a structure.
-        :param fasta: a fasta file corresponding to a homolog alignment.
-        :param matrix: boolean for whether or not to calculate an rmsd matrix using the _rmsd_qcp() method.
-                       will create a matrix with each bin corresponding to the rmsd between those two models
-                       in the structure.
-        :param CA:
-        :return:
-        '''
-
-        # associations is a list which holds n tuples (n = # homologous residues) of length (# of models)
-        # for homolog structures, and holds n tuples (n = # of residues) of length (# of models) for
-        # MD sets.
-        associations = []
-
-        if fasta: # a homolog alignment
-            if self.fastaresiduehomologs == None:
-                self._FastaPdbMatch(fasta)
-            indexes = [self.fastaresiduehomologs[x] for x in sorted(self.fastaresiduehomologs.keys())]
-            associations = zip(*indexes)
-            residues = [[res for res in self.models[model].GetResidues()] for model in self.orderofmodels]
-        else:             # an MD file
-            if self.ismodel:
-                for k in range(len(self.GetModel(self.orderofmodels[0]).residues)):
-                    associations.append([i for i in range(len(self.orderofmodels))])
-                residues = [[res for res in self.models[model].GetResidues()] for model in self.orderofmodels]
-            else:
-                for k in range(len(self.GetModel(self.orderofmodels[0]).residues)):
-                    associations.append([i for i in range(len(self.orderofchains))])
-                residues = [[res for res in self.chains[chain].GetResidues()] for chain in self.orderofchains]
-
-        if matrix: # create an RMSD matrix of an all-by-all RMSD comparison.
-
-            rmsdmatrix = np.zeros((len(associations[0]), len(associations[0])))  # this is the RMSD matrix.
-
-            # create an iterator of all combinations of model names.
-            combos = itertools.combinations(range(len(self.orderofmodels)), 2)
-
-            if fasta:
-
-                # iterate through the combos.
-                for x,y in combos:
-
-                    if verbose: print (x,y)
-
-                    homX = self.fastaresiduehomologs[self.orderofmodels[x]]
-                    if CA:
-                        coordsX = [[residues[x][i].GetCA().x,
-                                    residues[x][i].GetCA().y,
-                                    residues[x][i].GetCA().z] for i in homX]
-                    else:
-                        coordsX = [[residues[x][i].Centroid().x,
-                                    residues[x][i].Centroid().y,
-                                    residues[x][i].Centroid().z] for i in homX]
-
-                    homY = self.fastaresiduehomologs[self.orderofmodels[y]]
-                    if CA:
-                        coordsY = [[residues[y][i].GetCA().x,
-                                    residues[y][i].GetCA().y,
-                                    residues[y][i].GetCA().z] for i in homY]
-                    else:
-                        coordsY = [[residues[y][i].Centroid().x,
-                                    residues[y][i].Centroid().y,
-                                    residues[y][i].Centroid().z] for i in homY]
-
-                    v = _rmsd_qcp(coordsX, coordsY)
-
-                    rmsdmatrix[x][y] = v
-                    rmsdmatrix[y][x] = v
-
-            else:
-
-                # iterate through the combos.
-                for x, y in combos:
-
-                    if verbose: print (x, y)
-
-                    if CA:
-                        coordsX = [[res.GetCA().x,
-                                    res.GetCA().y,
-                                    res.GetCA().z] for res in residues[x]]
-                        coordsY = [[res.GetCA().x,
-                                    res.GetCA().y,
-                                    res.GetCA().z] for res in residues[y]]
-                    else:
-                        coordsX = [[res.Centroid().x,
-                                    res.Centroid().y,
-                                    res.Centroid().z] for res in residues[x]]
-                        coordsY = [[res.Centroid().x,
-                                    res.Centroid().y,
-                                    res.Centroid().z] for res in residues[y]]
-
-                    v = _rmsd_qcp(coordsX, coordsY)
-
-                    rmsdmatrix[x][y] = v
-                    rmsdmatrix[y][x] = v
-
-            if inverse:
-
-                for x in np.nditer(rmsdmatrix, op_flags=['readwrite']):
-                    x[...] = 1 / x
-
-            if showmatrix:
-                plt.title('RMSD matrix')
-                plt.matshow(rmsdmatrix)
-                plt.show()
-
-            return rmsdmatrix
-
-        # ---------------------------------------------------------------------------------------------
-
-        distances_squared = {}
-
-        # iterate through the alignment tuples in the associations list.
-        for align in associations:
-
-            # create an iterator that returns combos of indexes, like this: (0,1), (0,2), ... , (n-1,n)
-            combos = itertools.combinations(range(len(align)), 2)
-
-            # iterate through these combos.
-            for a, b in combos:
-
-                if (a,b) not in distances_squared:
-                    distances_squared[(a,b)] = 0
-
-                if CA: # use the alpha-carbon of each residue
-
-                    pointA = residues[a][align[a]].GetCA()
-                    pointB = residues[b][align[b]].GetCA()
-
-                else: # use the centroid of each residue
-
-                    pointA = residues[a][align[a]].Centroid()
-                    pointB = residues[b][align[b]].Centroid()
-
-                # find the distance between these two atoms.
-                d2 = pointA.DistanceTo(pointB)**2
-
-                distances_squared[(a,b)] += d2
-
-        del residues
-
-        average_rmsd = 0
-        for pair in distances_squared:
-            v = distances_squared[pair]
-            r = sqrt((float(v) / len(associations)))
-            average_rmsd += r
-        average_rmsd /= len(distances_squared)
-
-        self.average_rmsd = average_rmsd
-        self.rmsd_matrix = distances_squared
-
-        return distances_squared, average_rmsd
-
     def rmsd(self, fasta, chains=None, CA=True, fast=None):
 
         """Get the RMSD between chains. Requires a FASTA alignment."""
 
         items = self._iterResidueAssociations(fasta, chains, fast=fast)
-
         # Get all relevant atoms.
-
         posmask = {}
         for pos, _, residue in items:
             if not pos in posmask: posmask[pos] = []
@@ -2032,10 +1925,8 @@ class PDBstructure(object):
             else:
                 atom = residue.Centroid()
             posmask[pos].append(atom)
-
         # Get the Euclidean distance squared between
         # all pairs of aligned positions.
-
         distsqs = {}
         for pos in posmask:
             cavect = posmask[pos]
@@ -2047,9 +1938,7 @@ class PDBstructure(object):
                               + (ca1.y - ca2.y) ** 2
                               + (ca1.z - ca2.z) ** 2)
                     distsqs[(a, b)] += distsq
-
         # Calculate the average RMSD.
-
         rmsd = 0
         for d in distsqs:
             d = distsqs[d]
@@ -2407,9 +2296,6 @@ class PDBstructure(object):
 
         # Acquire all homologous positions as defined in FASTA.
         # items = self._iterResidueAssociations(fasta,chains,f)
-        if self.istrajectory == None:
-            self.istrajectory=self.IsTrajectory()
-            
         if not self.istrajectory:
             if self.verbose:
                 print 'isn\'t a trajectory. doing FastaPDBMatch...'
@@ -2420,25 +2306,13 @@ class PDBstructure(object):
                 line += 'FastaPDBMatch. generating data...\n'
                 line += 'making item dictionary...'
                 print line
-                
-            if not self.models[0].haschain:
-                items = {model:[int(r.index) for r in self.models[model].residues] 
-                         for model in self.models}
-                if self.verbose:
-                    print 'making fastaresiduehomologs...'
-                self.fastaresiduehomologs = {chain:[res.index for res in \
-                                                    self.GetModel(chain).residues]
-                                             for chain in orderofthings}
-                
-            else:
-                items = {model:{chain:[int(r.index) for r in self.models[model].GetChainByName(chain.name).residues] for chain in self.models[model].GetChains()} for model in self.models}#{model:{chain:[int(r.index) for r in chain.residues\
-                 #                      for chain in self.models[model].GetChains()]} \
-                 #        for model in self.models}
-                if self.verbose:
-                    print 'making fastaresiduehomologs...'
-                self.fastaresiduehomologs = items#{chain:[res.index for res in \
-                                                 #   self.GetModel(chain).IterResidues()]
-                                             #for chain in orderofthings}
+            items = {model:[int(r.index) for r in self.models[model].residues] 
+                     for model in self.models}
+            if self.verbose:
+                print 'making fastaresiduehomologs...'
+            self.fastaresiduehomologs = {chain:[res.index for res in \
+                                                self.GetModel(chain).residues]
+                                         for chain in orderofthings}
             if self.verbose:
                 print 'making FastaChainEquivalence...'
             self.FastaChainEquivalence = {chain: chain for chain in
@@ -2453,16 +2327,9 @@ class PDBstructure(object):
         for chain in orderofthings:
             item = self.FastaChainEquivalence[chain]
             thing = things[chain]
-            if self.istrajectory and thing.haschain:
-                iterator = thing.IterResidues()
-            else:
-                iterator = self.iterate(chain)
-            for r in iterator:
+            for r in self.fastaresiduehomologs[chain]:
                 if self.istrajectory:
-                    if thing.haschain:
-                        res = r
-                    else:
-                        res = thing.GetResidueByIndex(r)
+                    res = thing.GetResidueByIndex(r)
                 else:
                     res = thing.GetResidueByPosition(r)
                 if chain not in chainsSaw:
@@ -2517,14 +2384,7 @@ class PDBstructure(object):
 
         if typeof == 'matrix': coords = np.array(coords)
         return labels, coords, landmarkinfo
-    
-    def iterate(self,chain):
-        '''
-        Create an iterator of fastaresidue homologs
-        '''
-        for r in self.fastaresiduehomologs[chain]:
-            yield r
-            
+
     def makefasta(self):
         '''
         Create a dummy fasta for models
@@ -3131,13 +2991,12 @@ class PDBstructure(object):
 						 between a subset of residues in an MD, for instance.
 		"""
 
-        if homologset:
+        if self.fastaresiduehomologs == None:
+            if fasta == None:
+                raise Exception('Fasta file not found')
+            self._FastaPdbMatch(fasta)
 
-            if not self.fastaresiduehomologs:
-                if fasta == None:
-                    raise Exception('Fasta file not found. This is needed to do FastaPdbMatch.')
-                else:
-                    self._FastaPdbMatch(fasta)
+        if homologset:
 
             results = self.AggregateHomologMatrix(matchres=self.fastaresiduehomologs)
             matrix = results
@@ -3178,8 +3037,6 @@ class PDBstructure(object):
             orderofthings = self.orderofchains
             ex = self.chains[orderofthings[0]]
 
-        ex_residues = [res for res in ex.GetResidues()]
-
         # loop through the models/chains
         for thingname in orderofthings[1:]:
 
@@ -3190,9 +3047,13 @@ class PDBstructure(object):
             if other.__len__() == ex.__len__():
 
                 # compare the info for each residue
+                ex_residues = [res for res in ex.GetResidues()]
                 other_residues = [res for res in other.GetResidues()]
 
-                for ex_res, other_res in zip(ex_residues,other_residues):
+                for i in range(len(ex_residues)):
+
+                    ex_res = ex_residues[i]
+                    other_res = other_residues[i]
 
                     if ex_res.name != other_res.name:
                         return False
@@ -3249,7 +3110,7 @@ class PDBstructure(object):
         return out
 
 
-class PDBfile(object):
+class mappedPDBfile(object):
     __slots__ = ('filePath', 'fileHandle', 'memHandle', 'modelIndices', 
                  'chains', 'residueIndices', 'size')
 
@@ -3431,6 +3292,153 @@ class PDBfile(object):
             if c == ch: res.append(r)
         return res
 
+class PDBfile(object):
+    """
+    PDBfile class without memory mapping
+    """
+    __slots__ = ('filePath',  'models', 'chains', 'residues', 'data', 'size')
+
+    def __init__(self, fi):
+
+        self.filePath = fi
+        self.size = sizeOfFile(fi)
+        self.residues = list()
+        self.models = list()
+        self.chains = list()
+
+    def read(self):
+        """ 
+        Acquire all remarks, and the indices of all models and residues. 
+        Returnsmremarks, and biological source information as a tuple (remarks,
+        organism, taxid, mutant). 
+        """
+
+        # Metadata.
+        remarks, organism, taxid, mutant, DOI, PMID, EC = [], '', '', False,\
+            '', '', ''
+        
+        # Atom data. Will include serial, atomtype, residue, chain, resindex,
+        # x, y, z, occupancy, tempfactor, atomname
+        self.data=[]
+        
+        # Cursors.
+        k = 0
+        curRes = None
+        preRes = None
+        pos = 0
+        model = -1
+
+        # Scan the file.
+        with open(self.filePath) as F:
+            for line in F:
+                recordType = line[:6].strip()
+                if recordType == 'MODEL':
+                    model = int(line.strip().split()[-1])
+                    if not model in self.models:
+                        if model != -1:
+                            self.models.append(model)
+                elif recordType == 'ATOM':
+                    sl = line.strip('\n')
+                    if len(sl) > 80:
+                        k = len(sl) - 80
+                    else:
+                        k = 0
+                    serial= int(line[6:11+k])
+                    atom_name = line[12 + k:16 + k].strip()
+                    chain = line[21 + k].strip()
+                    residue_index = line[22 + k:27 + k].strip()
+                    self.residues.append(residue_index)
+                    iCode = line[27 + k].strip()
+                    residue = residue_index + iCode
+                    resName = line[17+k:20+k]
+                    curRes = (resName,residue_index)
+                    x = float(line[30 + k:38 + k])
+                    y = float(line[38 + k:46 + k])
+                    z = float(line[46 + k:54 + k])
+                    o = float(line[54 + k:60 + k])
+                    b = float(line[60 + k:66 + k])
+                    sym = line[76 + k:78 + k].strip()
+                    try:
+                        charge = line[79 + k:80 + k].strip()
+                    except:
+                        charge = ' '                    
+                    atom = PDBatom(serial,atom_name,x,y,z,o,b,sym,charge)
+                    if curRes == preRes:
+                        Res.AddAtom(atom)
+                    elif preRes == None:
+                        Res = PDBresidue(index=residue_index, name=resName)
+                        Res.AddAtom(atom)
+                        preRes = curRes
+                    else:
+                        if not chain in self.chains:
+                            self.chains.append(chain)
+                        if not self.data:
+                            self.data.append((model, chain, Res))
+                        else:
+                            if ((model, chain, Res) not in self.data) and Res \
+                               not in self.data[-1]:
+                                self.data.append((model, chain, Res))
+                        Res = PDBresidue(index=residue_index, name=resName)
+                        Res.AddAtom(atom)
+                        preRes = curRes
+                elif recordType == 'TER':
+                    if not (model, chain, Res) in self.data and Res not in \
+                       self.data[-1]:
+                        self.data.append((model, chain, Res))
+                elif recordType == 'ENDMDL':
+                    if not (model, chain, Res) in self.data and Res not in \
+                       self.data[-1]:
+                        self.data.append((model, chain, Res))
+                elif recordType == 'REMARK':
+                    remark = line[6:].strip('\n')
+                    if not remark in remarks: remarks.append(remark)
+                elif recordType == 'SOURCE':
+                    if 'ORGANISM_SCIENTIFIC' in line:
+                        organism = '_'.join(
+                            line.strip().strip(';').split()[-2:]
+                        )
+                    elif 'ORGANISM_TAXID' in line:
+                        taxid = line.strip().strip(';').split()[-1]
+                    elif 'MUTANT' in line or 'MUTATION' in line:
+                        mutant = True
+                elif 'DOI' in line:
+                    doi = line.strip().split()[-1]
+                    if DOI != '':
+                        DOI = [DOI]
+                        DOI.append(doi)
+                    else:
+                        DOI = doi
+                elif 'PMID' in line:
+                    pmid = line.strip().split()[-1]
+                    if PMID != '':
+                        PMID = [PMID]
+                        PMID.append(pmid)
+                    else:
+                        PMID = pmid
+                elif 'EC:' in line:
+                    ec = line.strip().strip(';').split()[-1]
+                    if EC != '':
+                        EC = [EC]
+                        EC.append(ec)
+                    else:
+                        EC = ec
+        # Return metadata.
+        return (remarks, organism, taxid, mutant, DOI, PMID, EC)
+
+    def __iter__(self):
+        for e in self.data:
+            yield e
+    
+    def iterResidueData(self):
+    
+        """ 
+        Yield the model number, chain name, residue instance
+        for all residues present in this PDB file, not necessarily
+        in order. 
+        """
+        for e in self.data:
+            yield e[0], e[1], e[2]
+          
 
 # Constants
 
@@ -3474,6 +3482,7 @@ aa_lists = {'ALA': ['N', 'CA', 'C', 'O', 'CB'],
 
 if __name__ == "__main__":
     mystructure = PDBstructure(sys.argv[1])
+    print mystructure
     fasta = sys.argv[2]
     if mystructure.ismodel:
         names = mystructure.GetModelNames()
