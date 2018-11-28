@@ -1,13 +1,6 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from builtins import open
-from builtins import str
-from future import standard_library
-standard_library.install_aliases()
 import Bio
-from Bio.PDB import PDBList
+from Bio.PDB import PDBList, PDBIO, PDBParser
+from Bio.PDB.PDBIO import Select
 from labblouin import homology
 from io import StringIO
 import pandas as pd
@@ -16,7 +9,7 @@ from subprocess import Popen, PIPE
 import optparse
 import csv
 import os
-from .PDBnet import PDBstructure as st
+#from PDBnet import PDBstructure as st
 
 
 def iterfasta(fasta):
@@ -33,7 +26,6 @@ def iterfasta(fasta):
             else:
                 sp = seq.split('\n')
                 yield sp[0], '\n'.join(sp[1:]).strip()
-
 
 
 def uniblast(sequence, db, evalue, tgts):
@@ -68,6 +60,9 @@ def uniblast(sequence, db, evalue, tgts):
         ch = i[-1]
         # Download pdb
         file_path = pdbl.retrieve_pdb_file(pdb, pdir='PDBs', file_format='pdb')
-        st(file_path).GetChain(ch).WriteAsPDB(i)
+        parser = PDBParser()
+        st = parser.get_structure(pdb, file_path)
+        ou = PDBIO()
+        ou.set_structure(st)
         os.remove(os.path.join('PDBs', pdb))
     return df
