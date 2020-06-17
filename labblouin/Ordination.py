@@ -27,8 +27,8 @@ try:
 	from sklearn.metrics import euclidean_distances
 	from sklearn.neighbors import DistanceMetric
 	from sklearn.decomposition import PCA
-	from sklearn.lda import LDA
-	from sklearn.qda import QDA
+	from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+	from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 except:
 	print "Dependency sklearn not installed. Please use sudo easy_install scikit-learn, or make sure is installed"
 
